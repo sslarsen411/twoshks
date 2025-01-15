@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap'); 
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#back, #next{font-variant: small-caps;}
+.alert-error{background-color: #B0233A;}
+.alert-info{background-color: #C4D9EF;  color:black;}
+.alert-success{background-color: #14A44D; color: black ;}
+.alert-warn{background-color: #F2CB7C ;}
+[x-cloak] { display: none !important; }
+
+@layer base {
+	*:focus-visible {@apply outline-none;}
+	html{@apply font-josefin bg-zinc-200;}
+	body{@apply  w-[100dvw];}
+	section{@apply p-2 md:px-8;	}
+	h1,h2,h3,h4{@apply font-poppins;}
+	h2{@apply text-base md:text-lg lg:text-xl font-semibold; }
+	h3{@apply text-base md:text-lg font-semibold; }
+	p{@apply text-sm md:text-base text-pretty mb-5}
+	li{@apply text-sm md:text-base text-pretty mb-1}
+	a{@apply text-red-700 hover:text-red-500;}
+	header{@apply text-amber-50 bg-slate-700 w-full px-5 py-2 flex items-center justify-start;}
+	footer{@apply bg-slate-700 text-zinc-100 p-2;}
+	footer a, .modFooter{@apply  text-amber-200 hover:text-amber-500 hover:underline;}
+	input{@apply bg-zinc-50;}
+	textarea{@apply block p-2.5 w-full text-base text-gray-900 bg-gray-50 rounded-lg border border-gray-300 
+		ring-2 focus:ring-indigo-800 focus:border-indigo-700;}		
+	
+}
+
+@layer components {
+.guru-icon{@apply h-8 w-8 inline-block;}
+.error{@apply  text-red-500 ;}
+/* Progress Bar*/ 
+  progress {@apply align-baseline;}
+  .progress{@apply relative w-full overflow-hidden h-2 appearance-none rounded-2xl bg-gray-300;}  
+  .progress-secondary::-moz-progress-bar{@apply rounded-2xl bg-red-500;}  
+  .progress::-webkit-progress-bar{@apply rounded-2xl bg-transparent;}
+  .progress-secondary::-webkit-progress-value{@apply bg-red-500;}
+  .progress__bar{@apply flex flex-col justify-start p-2 lg:px-12;}   
+  @media (min-width: 976px){
+	.progress__bar{
+	  padding-left: 3rem;
+	  padding-right: 3rem;
+	}
+  }  
+
+
+}
+
+blockquote.bubble { 
+	@apply mx-auto my-0 text-left h-0 box-content  ;
+}
+blockquote.bubble p{ 
+	@apply text-sm md:text-base lg:text-lg  w-3/4 ml-6 leading-none sm:leading-tight;
+}
+blockquote.bubble h2{ 
+	@apply  mt-1 md:mt-8 pt-0 text-[.90rem] sm:text-base md:text-xl md:pt-4 text-center mb-1 md:mb-5;
+}
+blockquote.bubble h3{ 
+	@apply  ml-2 mb-1 md:mb-5;
+}
+blockquote.speech {
+	@apply bg-white w-full h-[80%] sm:h-3/4 pt-1 pb-1 md:pb-8 border-2 border-solid border-gray-900 rounded-xl;
+}
