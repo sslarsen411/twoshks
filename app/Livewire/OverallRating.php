@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Customer;
 use App\Rules\NamePlus;
 use App\Traits\Assistant;
+use Illuminate\View\View;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -51,7 +52,7 @@ class OverallRating extends Component {
         return $this->redirect('/question', navigate: true);
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.overall-rating');
     }
