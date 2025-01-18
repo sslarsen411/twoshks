@@ -1,7 +1,9 @@
 <div class="flex shrink-0 items-center pb-4 text-xl font-medium text-slate-800 scr">
-    <h1>Privacy Policy</h1>
+    <h1 class="text-xl: md:text-3xl font-bold">
+        {{ config('app.name')  }} <br> <span class="text-base md:text-2xl text-slate-700">Privacy Policy</span>
+    </h1>
 </div>
-<div class="relative border-t border-slate-200 py-4 leading-normal text-slate-900 font-medium">        
+<div class="relative border-t border-slate-200 py-4 leading-normal text-slate-900 font-medium">
     <p>Last updated: June 23, 2024</p>
     <p>This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.</p>
     <p>We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy. This Privacy Policy has been created with the help of the <a href="https://www.termsfeed.com/privacy-policy-generator/" target="_blank">Privacy Policy Generator</a>.</p>

@@ -1,7 +1,9 @@
 <div class="flex shrink-0 items-center pb-4 text-xl font-medium text-slate-800 scr">
-    <h1>Terms of Service</h1>
+    <h1 class="text-xl: md:text-3xl font-bold">
+        {{ config('app.name')  }} <br> <span class="text-base md:text-2xl text-slate-700">Terms of Service</span>
+    </h1>
 </div>
-<div class="relative border-t border-slate-200 py-4 leading-normal text-slate-900 font-medium"> 
+<div class="relative border-t border-slate-200 py-4 leading-normal text-slate-900 font-medium">
     <p>Last updated: June 23, 2024</p>
     <p>Please read these terms and conditions carefully before using Our Service.</p>
     <h2>Interpretation and Definitions</h2>
@@ -23,7 +25,7 @@
     <p><strong>Country</strong> refers to: California,  United States</p>
     </li>
     <li>
-    <p><strong>Company</strong> (referred to as either &quot;the Company&quot;, &quot;We&quot;, &quot;Us&quot; or &quot;Our&quot; in this Agreement) refers to Mojo Imact, 820 Madison Dr., Sonoma CA 95476.</p>
+    <p><strong>Company</strong> (referred to as either &quot;the Company&quot;, &quot;We&quot;, &quot;Us&quot; or &quot;Our&quot; in this Agreement) refers to Mojo Impact, 820 Madison Dr., Sonoma CA 95476.</p>
     </li>
     <li>
     <p><strong>Device</strong> means any device that can access the Service such as a computer, a cellphone or a digital tablet.</p>

@@ -1,7 +1,9 @@
 <div class="flex shrink-0 items-center pb-4 text-xl font-medium text-slate-800 scr">
-    <h1>Cookie Policy</h1>
+    <h1 class="text-xl: md:text-3xl font-bold">
+        {{ config('app.name')  }} <br> <span class="text-base md:text-2xl text-slate-700">Cookie Policy</span>
+    </h1>
 </div>
-  <div class="relative border-t border-slate-200 py-4 leading-normal text-slate-900 font-medium">       
+  <div class="relative border-t border-slate-200 py-4 leading-normal text-slate-900 font-medium">
       <p>Last updated: June 23, 2024</p>
       <p>This Cookies Policy explains what Cookies are and how We use them. You should read this policy so You can understand what type of cookies We use, or the information We collect using Cookies and how that information is used. This Cookies Policy has been created with the help of the <a href="https://www.termsfeed.com/cookies-policy-generator/" target="_blank">Cookies Policy Generator</a>.</p>
       <p>Cookies do not typically contain any information that personally identifies a user, but personal information that we store about You may be linked to the information stored in and obtained from Cookies. For further information on how We use, store and keep your personal data secure, see our Privacy Policy.</p>
@@ -44,7 +46,7 @@
       <p>For the Chrome web browser, please visit this page from Google: <a href="https://support.google.com/accounts/answer/32050" rel="external nofollow noopener" target="_blank">https://support.google.com/accounts/answer/32050</a></p>
       </li>
       <li>
-      <p>For the Internet Explorer web browser, please visit this page from Microsoft: <a href="http://support.microsoft.com/kb/278835" rel="external nofollow noopener" target="_blank">http://support.microsoft.com/kb/278835</a></p>
+      <p>For the Internet Explorer web browser, please visit this page from Microsoft: <a href="https://support.microsoft.com/kb/278835" rel="external nofollow noopener" target="_blank">https://support.microsoft.com/kb/278835</a></p>
       </li>
       <li>
       <p>For the Firefox web browser, please visit this page from Mozilla: <a href="https://support.mozilla.org/en-US/kb/delete-cookies-remove-info-websites-stored" rel="external nofollow noopener" target="_blank">https://support.mozilla.org/en-US/kb/delete-cookies-remove-info-websites-stored</a></p>
