@@ -35,7 +35,7 @@ class AppController extends Controller {
                         return Question::all();
                     });
                     session()->put('location', $location);
-                    session()->put('desc', null);
+                    session()->put('desc');
                     if ($desc = $this->getDescription(session('location.PID'))) {
                         session()->put('desc', $desc);
                     }
@@ -87,7 +87,6 @@ class AppController extends Controller {
 
     function getDescription($inPID)
     {
-        $arr = [];
         try {
             $response = Http::get("https://maps.googleapis.com/maps/api/place/details/json?place_id=$inPID&key=".config('maps.maps_api'));
             $arr = json_decode($response->body(), true);
