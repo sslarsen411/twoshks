@@ -48,7 +48,7 @@ PROMPT;
             parameters: [
                 'assistant_id' => config('openai.assistant'),
             ]);
-        // $streamResponse = '';
+        
         foreach ($stream as $content) {
             if ($content->event == 'thread.message.delta') {
                 $this->stream(

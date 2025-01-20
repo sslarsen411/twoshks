@@ -1,110 +1,59 @@
 <?php
 /**
-* @author Scott Larsen <scott@scottlarsen.net>
+ * @author Scott Larsen <scott@scottlarsen.net>
  */
+
 namespace App\Traits;
 
-use Exception;
-use App\Models\Review;
 use App\Models\Customer;
-use OpenAI\Laravel\Facades\OpenAI;
-use Illuminate\Support\Facades\Log;
+use App\Models\Review;
+use Exception;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Log;
+use OpenAI\Laravel\Facades\OpenAI;
 
-trait Assistant{
-    public function setThread(array $parameters = []){
+trait Assistant {
+    public function setThread(array $parameters = [])
+    {
         $thread = OpenAI::threads()->create($parameters);
         return $thread->id;
     }
-    public function createMessage($inMessage, $reviewPromptType = ''){ // 'first' or 'final'
-        try{
-            $response = OpenAI::threads()->messages()->create(session('threadID'), [
-                'role' => 'user',
-                'content' => $inMessage,
+
+    public function initReview(Customer $customer, $status = 'Started'): null|string
+    {
+        try {
+            $newReview = Review::create([
+                'users_id' => $customer->users_id,
+                'customer_id' => $customer->id,
+                'location_id' => $customer->location_id,
+                'rate' => session('rating')[0],
+                'status' => $status,
             ]);
-            if($reviewPromptType){
-                $val = $this->sendMessage($response['id'], $reviewPromptType);
-                return $val;
-            }else{
-                $this->streamAiResponse($this->prompt['content']);
+            $prompt = $this->createInitialPrompt(session('location.PID'));
+            //           ray($prompt);
+            $msg = $this->createMessage($prompt, 'first');
+            if ($msg) {
+                LOG::info('Review:'.$newReview->id.' Initial instructions successfully sent');
+            } else {
+                Log::error('There was a problem sending the initial instructions');
             }
-        }catch (Exception $e){
-            return "Error creating message: " . $e->getMessage();
+            return $newReview;
+        } catch (QueryException  $e) {
+            Log::error($e->errorInfo);
         }
+        return null;
     }
-    public function sendMessage($msgId, $inPromptType){
-        try{
-            $response = OpenAI::threads()->runs()->create(
-                threadId: session('threadID'),
-                parameters: [
-                    'assistant_id' => config('openai.assistant'),
-                ],
-            );
-        // Get the thread ID from the response
-                $runId = $response['id'];
-        // Poll for completion and retrieve the result
-            if($inPromptType === 'first'){
-                $jsonData = array(
-                    'status' => 'success',
-                    'message' => 'review initialized',
-                );
-                return json_encode($jsonData);
-            }
-            return $this->getThreadResult($runId);
-        }catch (Exception $e){
-            return "Error sending message: " . $e->getMessage();
-        }
-    }
-    public function getThreadResult($runId, $timeout = 30, $interval = 2){
-        $startTime = time();
-        while (true) {
-        // Query the thread for status
-            $response = OpenAI::threads()->runs()->retrieve(
-                threadId: session('threadID'),
-                runId: $runId,
-            );
-        // Check if the thread status is completed
-            if ($response['status'] === 'completed') {
-                $list = OpenAI::threads()->messages()->list(session('threadID'), [
-                    'limit' => 10,
-                ]);
-                $rev = OpenAI::threads()->messages()->retrieve(threadId: session('threadID'),    messageId: $list->firstId);
-                return $rev['content'][0]['text']['value'] ?? "No text found in the response.";
-            }
-        // Check if the timeout has been reached
-            if ((time() - $startTime) >= $timeout) {
-                return "Error: Timed out while waiting for the thread to complete.";
-            }
-        // Wait before polling again
-            sleep($interval);
-        }
-}
-    public function streamAiResponse($message)  {
-        $stream =  OpenAI::threads()->runs()->createStreamed(
-            threadId: $this->threadId,
-            parameters: [
-            'assistant_id' => config('openai.assistant'),
-        ]);
-        $streamResponse = '';
-        foreach($stream as $content){
-            if($content->event == 'thread.message.delta') {
-                $this->stream(
-                    to: 'stream-' . $this->getId(),
-                    content: $content->response->delta->content[0]->text->value,
-                    replace: false
-                );
-                $this->response .= $content->response->delta->content[0]->text->value;
-            }
-        }
-    }
-    public function createInitialPrompt($inPID){
+
+    public function createInitialPrompt($inPID): string
+    {
         $cust_fname = session('cust.first_name');
         $customers_overall_rating = session('rating')[0];
         $place = getPlaces($inPID);
         $desc = 'No description given';
-        if(session('desc'))
+        if (session('desc')) {
             $desc = session('desc');
-        $this->initPrompt = <<<PROMPT
+        }
+        $initPrompt = <<<PROMPT
         {
         "context": "A customer wants to initialize a review for a business. A prompt to compose the review will follow later.",
         "instructions":"Output this text: review initialized",
@@ -121,44 +70,120 @@ trait Assistant{
             "total_reviews": {$place->user_ratings_total},
             "reviews": [
     PROMPT;
-        if($place->reviews){
-            foreach($place->reviews as $review){
-                if (strlen($review['text']) > 0 ) {
-                    $this->initPrompt .= '"' . $review['text'] . '",';
+        if ($place->reviews) {
+            foreach ($place->reviews as $review) {
+                if (strlen($review['text']) > 0) {
+                    $initPrompt .= '"'.$review['text'].'",';
                 }
             }
-            $this->initPrompt .= rtrim($this->initPrompt , ',');
-        }else
-            $this->initPrompt .= 'No reviews';
-        $this->initPrompt .= <<<PROMPT
+            $initPrompt .= rtrim($initPrompt, ',');
+        } else {
+            $initPrompt .= 'No reviews';
+        }
+        $initPrompt .= <<<PROMPT
                 ]
             }
         }
     PROMPT;
-        return  $this->initPrompt;
+        return $initPrompt;
     }
-    public function initReview(Customer $customer, $status='Started'){
+
+    public function createMessage($inMessage, $reviewPromptType = '')
+    { // 'first' or 'final'
         try {
-            $newReview  = Review::create([
-                'users_id' => $customer->users_id,
-                'customer_id' => $customer->id,
-                'location_id' => $customer->location_id,
-                'rate' => session('rating')[0],
-                'status' => $status,
+            $response = OpenAI::threads()->messages()->create(session('threadID'), [
+                'role' => 'user',
+                'content' => $inMessage,
             ]);
-            $prompt = $this->createInitialPrompt(session('location.PID'));
- //           ray($prompt);
-            $msg = $this->createMessage($prompt, 'first');
-            if($msg)
-                LOG::info('Review:' . $newReview->id .' Initial instructions successfully sent');
-            else
-            Log::error('There was a problem sending the initial instructions');
-            return $newReview;
-        }catch (QueryException  $e) {
-          Log::error($e->errorInfo);
+
+            return $this->sendMessage($response['id'], $reviewPromptType);
+
+//            if ($reviewPromptType) {
+//                $val = $this->sendMessage($response['id'], $reviewPromptType);
+//                return $val;
+//            } else {
+//                $this->streamAiResponse($this->prompt['content']);
+//            }
+
+        } catch (Exception $e) {
+            return "Error creating message: ".$e->getMessage();
         }
-      }
-      public function makeReviewPrompt($inAnswers):string{
+    }
+
+    public function sendMessage($msgId, $inPromptType)
+    {
+        try {
+            $response = OpenAI::threads()->runs()->create(
+                threadId: session('threadID'),
+                parameters: [
+                    'assistant_id' => config('openai.assistant'),
+                ],
+            );
+            // Get the thread ID from the response
+            $runId = $response['id'];
+            // Poll for completion and retrieve the result
+            if ($inPromptType === 'first') {
+                $jsonData = array(
+                    'status' => 'success',
+                    'message' => 'review initialized',
+                );
+                return json_encode($jsonData);
+            }
+            return $this->getThreadResult($runId);
+        } catch (Exception $e) {
+            return "Error sending message: ".$e->getMessage();
+        }
+    }
+
+    public function getThreadResult($runId, $timeout = 30, $interval = 2)
+    {
+        $startTime = time();
+        while (true) {
+            // Query the thread for status
+            $response = OpenAI::threads()->runs()->retrieve(
+                threadId: session('threadID'),
+                runId: $runId,
+            );
+            // Check if the thread status is completed
+            if ($response['status'] === 'completed') {
+                $list = OpenAI::threads()->messages()->list(session('threadID'), [
+                    'limit' => 10,
+                ]);
+                $rev = OpenAI::threads()->messages()->retrieve(threadId: session('threadID'),
+                    messageId: $list->firstId);
+                return $rev['content'][0]['text']['value'] ?? "No text found in the response.";
+            }
+            // Check if the timeout has been reached
+            if ((time() - $startTime) >= $timeout) {
+                return "Error: Timed out while waiting for the thread to complete.";
+            }
+            // Wait before polling again
+            sleep($interval);
+        }
+    }
+
+//    public function streamAiResponse($message): void
+//    {
+//        $stream = OpenAI::threads()->runs()->createStreamed(
+//            threadId: $this->threadId,
+//            parameters: [
+//                'assistant_id' => config('openai.assistant'),
+//            ]);
+//        $streamResponse = '';
+//        foreach ($stream as $content) {
+//            if ($content->event == 'thread.message.delta') {
+//                $this->stream(
+//                    to: 'stream-'.$this->getId(),
+//                    content: $content->response->delta->content[0]->text->value,
+//                    replace: false
+//                );
+//                $this->response .= $content->response->delta->content[0]->text->value;
+//            }
+//        }
+//    }
+
+    public function makeReviewPrompt($inAnswers): string
+    {
         $prompt = <<<PROMPT
 
             You are an expert at crafting engaging, concise, and compelling reviews for Google Business Profiles. Use the provided business details,
