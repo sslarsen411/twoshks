@@ -10,7 +10,7 @@
                         <h2>
                             {{session('cust.first_name')}}, you&apos;re done!
                         </h2>
-                        <p class="text-lg">
+                        <p class="text-base md:text-lg">
                             @desktop
                             Click
                             @elsedesktop
@@ -20,10 +20,14 @@
                     </blockquote>
                 </div>
                 <div class="col-span-5">
-                    <div class="flex">
-                        <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-speak.webp')}}"
-                             alt="Review Guru  icon">
-                    </div>
+                    <picture class="inline-block align-top my-0">
+                        <source media="(max-width: 766px)"
+                                srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-xs.webp')}}">
+                        <source media="(min-width: 768px)"
+                                srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-sm.webp')}}">
+                        <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-sm.webp')}}"
+                             alt="The Rave Review Guru" class="sm:w-auto">
+                    </picture>
                 </div>
             </div>
             <div>

@@ -27,7 +27,7 @@ class Questions extends Component {
         $initMsg = $this->createInitialPrompt(session('location.PID'));
         $this->createMessage($initMsg, true);
         $questions = Cache::get('questions');
-        $this->question = ($questions[$this->dex]);
+        $this->question = $questions[$this->dex];
     }
 
     public function handleHelp(): void
@@ -53,12 +53,19 @@ class Questions extends Component {
             $this->answer = '';
             $this->question = $questions[$this->dex];
         else:
-            Alert::success('Congratulations! You&apos;re finished with the questions.', 'Now generate your review');
+            Alert::success('Congratulations! You&apos;re finished with the questions.',
+                'Now we\'ll compose your review');
             return $this->redirect('/review', navigate: true);
         endif;
         return null;
     }
 
+    /**
+     * @param  string|null  $inAnsStr
+     * @param  string|int  $dex
+     * @param  string  $newAns
+     * @return null | string
+     */
     function updateAnswers(string|null $inAnsStr, string|int $dex, string $newAns): string|null
     {
         if ($inAnsStr) {
@@ -81,4 +88,6 @@ class Questions extends Component {
             'answer' => 'required|string|min:6',
         ];
     }
+
+
 }

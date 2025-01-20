@@ -18,38 +18,59 @@
             </div>
             <div class="col-span-5">
                 <div class="flex">
-                    <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-speak.webp')}}"
-                         alt="Review Guru  icon">
+                    <picture class="inline-block align-top my-0">
+                        <source media="(max-width: 766px)"
+                                srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-xs.webp')}}">
+                        <source media="(min-width: 768px)"
+                                srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-sm.webp')}}">
+                        <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-sm.webp')}}"
+                             alt="The Rave Review Guru" class="sm:w-auto">
+                    </picture>
                 </div>
             </div>
         </div>
-        <h3 class="mt-0">
-            <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/new-guru-256.webp')}}" class="guru-icon"
-                 alt="Review Guru icon">
-            I make reviews <span class="font-semibold italic">fast</span> &amp; <span class="font-semibold">easy</span>!
-        </h3>
-        <ul class="mb-2 list-decimal list-inside">
-            <li class="ml-2 indent-2">
-                I&apos;ll ask you six questions about your experience at
-                <strong>{{ session('location.company') }}</strong>&hellip;
-            </li>
-            <li class="ml-2 indent-2">
-                Then I&apos;ll turn your answers into a polished review you can post online.
-            </li>
-        </ul>
-        <h3>
-            <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/new-guru-256.webp')}}" class="guru-icon"
-                 alt="Review Guru icon">
-            I&apos;m Here to Help
-        </h3>
-        <p class="indent-4">
-            You can chat with me for suggestions, and examples.
-        </p>
-        <h2>
-            <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/new-guru-256.webp')}}" class="h-8 w-8 inline-block"
-                 alt="guru icon">
-            We&apos;ll Start with an Overall Rating&hellip;
-        </h2>
+        <div class="grid grid-cols-12 grid-rows-1 gap-0 px-4 place-items-center">
+            <div class="col-span-2 ">
+                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.webp')}}" class="guru-icon"
+                     alt="Review Guru icon">
+            </div>
+            <div class="col-span-10 w-full">
+                <h3>
+                    I make reviews <span class="font-semibold italic">fast</span> &amp; <span
+                        class="font-semibold">easy</span>!
+                </h3>
+                <ul class="mb-2 list-decimal list-inside">
+                    <li class="ml-2 indent-2">
+                        I&apos;ll ask you six questions about your experience at
+                        <strong>{{ session('location.company') }}</strong>&hellip;
+                    </li>
+                    <li class="ml-2 indent-2">
+                        Then I&apos;ll turn your answers into a polished review you can post online.
+                    </li>
+                </ul>
+            </div>
+            <div class="col-span-10 w-full">
+                <h3>
+                    I&apos;m Here to Help
+                </h3>
+                <p>
+                    At a loss? Not sure what to say? You can chat with me for help, suggestions, and examples.
+                </p>
+            </div>
+            <div class="col-span-2 ">
+                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.webp')}}" class="guru-icon"
+                     alt="Review Guru icon">
+            </div>
+            <div class="col-span-2 ">
+                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.webp')}}" class="guru-icon"
+                     alt="Review Guru icon">
+            </div>
+            <div class="col-span-10 w-full">
+                <h2>
+                    We&apos;ll Start with an Overall Rating&hellip;
+                </h2>
+            </div>
+        </div>
         <livewire:overall-rating/>
     </x-main-content>
 </x-app-layout>

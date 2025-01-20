@@ -10,7 +10,6 @@
     @stack('styles')
     <link rel="icon" href='images/favicon.svg' type="image/svg+xml"/>
 </head>
-"
 <body class="mx-auto max-w-prose bg-stone-100 border-[1rem] border-t-0 border-slate-700">
 <x-header/>
 {{$slot}}

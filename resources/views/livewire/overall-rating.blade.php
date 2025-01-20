@@ -47,11 +47,11 @@
     </div>
     @if($showInstr)
         <div wire:transition>
-            {{-- <div class="main__content flex-col items-start border-0">      --}}
             <h2>
-                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/new-guru-256.webp')}}" class="guru-icon"
-                     alt="guru icon">
                 How to choose a star
+                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.webp')}}" class="guru-icon"
+                     alt="guru icon">
+
             </h2>
             <p class="text-base md:text-lg indent-2 mb-0">You can select <strong>full</strong> or <strong>half</strong>
                 (<strong>&frac12;</strong>) stars:</p>
@@ -59,7 +59,7 @@
                 @desktop
                 Click
                 @elsedesktop
-                Tap
+                < Tap
                 @enddesktop
                 on the <strong>left side</strong> of a star for a <span class="italic underline">half</span> star,
                 <picture class="inline-block align-top my-0">
@@ -80,7 +80,6 @@
                          alt="Mouse pointer on the right half of a star icon" class="sm:w-auto">
                 </picture>
             </p>
-            {{-- </div> --}}
         </div>
     @endif
     @if(! $showInstr)
@@ -93,7 +92,9 @@
                         First Name
                     </label>
                     <input
-                        class="appearance-none block w-full  text-gray-700 border border-gray-200 @error('first_name') border-red-500 bg-pink-100 @enderror rounded py-3 px-4  leading-tight focus:outline-none focus:bg-white"
+                        class="appearance-none block w-full  text-gray-700 border border-gray-200
+                            @error('first_name')  error @enderror
+                            rounded py-3 px-4  leading-tight focus:outline-none focus:bg-white"
                         id="first_name" wire:model.blur="first_name" type="text" value="{{ old('first_name') }}">
                     @error('first_name') <span class="error text-xs">{{ $message }}</span> @enderror
                 </div>
@@ -103,7 +104,9 @@
                         Last Name
                     </label>
                     <input
-                        class="appearance-none block w-full  text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 @error('last_name') border-red-500 bg-pink-100 @enderror"
+                        class="appearance-none block w-full  text-gray-700 border border-gray-200 rounded py-3
+                            @error('last_name') error @enderror
+                            px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 "
                         id="last_name" wire:model.blur="last_name" type="text" value="{{ old('last_name') }}">
                     @error('last_name') <span class="error text-xs">{{ $message }}</span> @enderror
                 </div>
@@ -115,17 +118,20 @@
                         Email
                     </label>
                     <input
-                        class="appearance-none block w-full  text-gray-700 border border-gray-200 rounded py-3 px-4  leading-tight focus:outline-none focus:bg-white focus:border-gray-500 @error('email') border-red-500 bg-pink-100 @enderror"
+                        class="appearance-none block w-full  text-gray-700 border border-gray-200 rounded py-3
+                            @error('email') error  @enderror
+                            px-4  leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                         id="email" wire:model.blur="email" type="email">
                     @error('email') <span class="text-xs error">{{ $message }}</span> @enderror
                 </div>
             </div>
-            <x-secondary-button type="submit" class="mt-5 float-right animate-bounce">
-                Sign In
-                <x-fluentui-arrow-enter-20-o class="w-6 h-6"/>
-            </x-secondary-button>
+            <div class="flex place-content-end">
+                <x-secondary-button type="submit" class="mt-5 float-right animate-bounce">
+                    Sign In
+                    <x-fluentui-arrow-enter-20-o class="w-6 h-6"/>
+                </x-secondary-button>
+            </div>
         </x-form>
-        {{-- @if($rating >= 3 )     --}}
         <p class="self-start mt-12 px-4">Or sign in with your Google account</p>
         <div class="flex flex-col place-center">
             <a type="button" href="{{ url('auth/google/') }}"
@@ -134,6 +140,5 @@
                      class="inline-block h-8 hover:animate-spin" alt="Google approved logo">Sign in with Google
             </a>
         </div>
-        {{-- @endif --}}
     @endif
 </div>

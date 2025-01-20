@@ -12,30 +12,45 @@
             </div>
             <div class="col-span-5">
                 <div class="flex">
-                    <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-speak.webp')}}"
-                         alt="Review Guru  icon">
+                    <picture class="inline-block align-top my-0">
+                        <source media="(max-width: 766px)"
+                                srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-xs.webp')}}">
+                        <source media="(min-width: 768px)"
+                                srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-sm.webp')}}">
+                        <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-sm.webp')}}"
+                             alt="The Rave Review Guru" class="sm:w-auto">
+                    </picture>
                 </div>
             </div>
         </div>
-        <h3 class="mt-10">
-            <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/new-guru-256.webp')}}" class="guru-icon"
-                 alt="Review Guru icon">
-            I make reviews <span class="font-semibold italic">fast</span> &amp; <span class="font-semibold">easy</span>!
-        </h3>
-        <p class="ml-2 indent-2">
-            I ask six questions about someone&apos;s experience at a business and then I transform the answers into a
-            review that can be posted online.
-        </p>
-        <h3>
-            <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/new-guru-256.webp')}}" class="guru-icon"
-                 alt="Review Guru icon">
-            I&apos;m Here to Help
-        </h3>
-        <p>
-            As an AI, users can chat with me during the process for help, suggestions, and examples.
-        </p>
-        <p>
-            Want to know more about me? Go <a href="https://ravereview.guru" target="_blank">here</a>
-        </p>
+        <div class="grid grid-cols-12 grid-rows-1 gap-0 px-4 place-items-center">
+            <div class="col-span-10 w-full">
+                <h3>
+                    I make reviews <span class="font-semibold italic">fast</span> &amp; <span
+                        class="font-semibold">easy</span>!
+                </h3>
+                <p>
+                    I ask six questions about someone&apos;s experience at a business and then I transform the answers
+                    into a
+                    review that can be posted online.
+                </p>
+            </div>
+            <div class="col-span-2 ">
+                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.webp')}}" class="guru-icon"
+                     alt="Review Guru icon">
+            </div>
+            <div class="col-span-2 ">
+                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.webp')}}" class="guru-icon"
+                     alt="Review Guru icon">
+            </div>
+            <div class="col-span-10 w-full">
+                <h3>
+                    I&apos;m Here to Help
+                </h3>
+                <p>
+                    Want to know more about me? Go <a href="https://ravereview.guru" target="_blank">here</a>
+                </p>
+            </div>
+        </div>
     </x-main-content>
 </x-app-layout>
