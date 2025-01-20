@@ -13,12 +13,18 @@ class ChatResponse extends Component {
     //   public array $messages;
     public ?string $response = null;
 
+    /**
+     * @return void
+     */
     public function mount(): void
     {
         $this->threadId = session('threadID');
         $this->js('$wire.getResponse()');
     }
 
+    /**
+     * @return $this
+     */
     public function getResponse(): static
     {
         $fname = session('cust.first_name');
@@ -32,6 +38,10 @@ PROMPT;
         return $this;
     }
 
+    /**
+     * @param $inMessage
+     * @return void
+     */
     public function createMessage($inMessage): void
     {
         OpenAI::threads()->messages()->create($this->threadId, [
@@ -41,6 +51,9 @@ PROMPT;
         $this->streamAiResponse();
     }
 
+    /**
+     * @return void
+     */
     public function streamAiResponse(): void
     {
         $stream = OpenAI::threads()->runs()->createStreamed(
@@ -48,19 +61,22 @@ PROMPT;
             parameters: [
                 'assistant_id' => config('openai.assistant'),
             ]);
-        
+
         foreach ($stream as $content) {
             if ($content->event == 'thread.message.delta') {
                 $this->stream(
                     to: 'stream-'.$this->getId(),
                     content: $content->response->delta->content[0]->text->value,
-                    replace: false
+                // replace: false
                 );
                 $this->response .= $content->response->delta->content[0]->text->value;
             }
         }
     }
 
+    /**
+     * @return View
+     */
     public function render(): View
     {
         return view('livewire.chat-response');

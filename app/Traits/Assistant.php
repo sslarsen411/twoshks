@@ -13,14 +13,24 @@ use Illuminate\Support\Facades\Log;
 use OpenAI\Laravel\Facades\OpenAI;
 
 trait Assistant {
-    public function setThread(array $parameters = [])
+    /**
+     * @param  array  $parameters
+     * @return string
+     */
+    public function setThread(array $parameters = []): string
     {
         $thread = OpenAI::threads()->create($parameters);
         return $thread->id;
     }
 
-    public function initReview(Customer $customer, $status = 'Started'): null|string
+    /**
+     * @param  Customer  $customer
+     * @param  string  $status
+     * @return array|Review
+     */
+    public function initReview(Customer $customer, string $status = 'Started'): array|Review
     {
+        $newReview = [];
         try {
             $newReview = Review::create([
                 'users_id' => $customer->users_id,
@@ -37,16 +47,20 @@ trait Assistant {
             } else {
                 Log::error('There was a problem sending the initial instructions');
             }
-            return $newReview;
+            //return $newReview;
         } catch (QueryException  $e) {
             Log::error($e->errorInfo);
         }
-        return null;
+        return $newReview;
     }
 
+    /**
+     * @param $inPID
+     * @return string
+     */
     public function createInitialPrompt($inPID): string
     {
-        $cust_fname = session('cust.first_name');
+        $customer_fname = session('cust.first_name');
         $customers_overall_rating = session('rating')[0];
         $place = getPlaces($inPID);
         $desc = 'No description given';
@@ -58,16 +72,16 @@ trait Assistant {
         "context": "A customer wants to initialize a review for a business. A prompt to compose the review will follow later.",
         "instructions":"Output this text: review initialized",
         "customer": {
-            "name": "$cust_fname",
+            "name": "$customer_fname",
             "overall_rating": $customers_overall_rating
         },
         "business": {
-            "name": "{$place->name}",
-            "address": "{$place->formatted_address}",
+            "name": "$place->name",
+            "address": "$place->formatted_address",
             "type": "{$place->types[0]}",
-            "average_rating": {$place->rating},
+            "average_rating": $place->rating,
             "description": "$desc",
-            "total_reviews": {$place->user_ratings_total},
+            "total_reviews": $place->user_ratings_total,
             "reviews": [
     PROMPT;
         if ($place->reviews) {
@@ -88,29 +102,31 @@ trait Assistant {
         return $initPrompt;
     }
 
-    public function createMessage($inMessage, $reviewPromptType = '')
+    /**
+     * @param $inMessage
+     * @param  string  $reviewPromptType
+     * @return string
+     */
+    public function createMessage($inMessage, string $reviewPromptType = ''): string
     { // 'first' or 'final'
         try {
-            $response = OpenAI::threads()->messages()->create(session('threadID'), [
+            //$response = OpenAI::threads()->messages()->create(session('threadID'), [
+            OpenAI::threads()->messages()->create(session('threadID'), [
                 'role' => 'user',
                 'content' => $inMessage,
             ]);
 
-            return $this->sendMessage($response['id'], $reviewPromptType);
-
-//            if ($reviewPromptType) {
-//                $val = $this->sendMessage($response['id'], $reviewPromptType);
-//                return $val;
-//            } else {
-//                $this->streamAiResponse($this->prompt['content']);
-//            }
-
+            return $this->sendMessage($reviewPromptType);
         } catch (Exception $e) {
             return "Error creating message: ".$e->getMessage();
         }
     }
 
-    public function sendMessage($msgId, $inPromptType)
+    /**
+     * @param $inPromptType
+     * @return string
+     */
+    public function sendMessage($inPromptType): string
     {
         try {
             $response = OpenAI::threads()->runs()->create(
@@ -135,7 +151,13 @@ trait Assistant {
         }
     }
 
-    public function getThreadResult($runId, $timeout = 30, $interval = 2)
+    /**
+     * @param $runId
+     * @param  int  $timeout
+     * @param  int  $interval
+     * @return string
+     */
+    public function getThreadResult($runId, int $timeout = 30, int $interval = 2): string
     {
         $startTime = time();
         while (true) {
@@ -162,41 +184,24 @@ trait Assistant {
         }
     }
 
-//    public function streamAiResponse($message): void
-//    {
-//        $stream = OpenAI::threads()->runs()->createStreamed(
-//            threadId: $this->threadId,
-//            parameters: [
-//                'assistant_id' => config('openai.assistant'),
-//            ]);
-//        $streamResponse = '';
-//        foreach ($stream as $content) {
-//            if ($content->event == 'thread.message.delta') {
-//                $this->stream(
-//                    to: 'stream-'.$this->getId(),
-//                    content: $content->response->delta->content[0]->text->value,
-//                    replace: false
-//                );
-//                $this->response .= $content->response->delta->content[0]->text->value;
-//            }
-//        }
-//    }
-
+    /**
+     * @param $inAnswers
+     * @return string
+     */
     public function makeReviewPrompt($inAnswers): string
     {
-        $prompt = <<<PROMPT
-
+        return <<<PROMPT
             You are an expert at crafting engaging, concise, and compelling reviews for Google Business Profiles. Use the provided business details,
             overall customer rating, and customer feedback to create a cohesive review.
 
               ### Customer Feedback:
 
-              - Why they rated this way: "{$inAnswers[0]}"
-              - Staff experience: "{$inAnswers[1]}"
-              - Favorite aspect: "{$inAnswers[2]}"
-              - Suggested improvement: "{$inAnswers[3]}"
-              - Likelihood to recommend: "{$inAnswers[4]}"
-              - Additional comments: "{$inAnswers[5]}"
+              - Why they rated this way: "$inAnswers[0]"
+              - Staff experience: "$inAnswers[1]"
+              - Favorite aspect: "$inAnswers[2]"
+              - Suggested improvement: "$inAnswers[3]"
+              - Likelihood to recommend: "$inAnswers[4]"
+              - Additional comments: "$inAnswers[5]"
 
               ### Instructions:
                 1. Use the provided customer feedback and business details to create a detailed review.
@@ -223,9 +228,9 @@ trait Assistant {
               answering all my questions and making my visit enjoyable. One of my favorite aspects was [Customer's Favorite Aspect], which truly stood out.
 
               While [Suggested Improvement] could be addressed, it didn't detract much from the overall experience. With their excellent service and
-              [Business reviews 1], I highly recommend [Business Name] to anyone looking for [Business revews 2]. I'll definitely be returning soon!"
+              [Business reviews 1], I highly recommend [Business Name] to anyone looking for [Business reviews 2].
+              I'll definitely be returning soon!"
 
         PROMPT;
-        return $prompt;
     }
 }

@@ -21,15 +21,21 @@ class OverallRating extends Component {
     public $isDisabled = true;
     public $showInstr = true;
 
+    /**
+     * @param $propertyName
+     * @return void
+     */
     public function updated($propertyName): void
     {
         $this->validateOnly($propertyName);
         $this->showInstr = false;
         session()->forget('rating');
         session()->push('rating', $this->rating);
-        ray(session()->all());
     }
 
+    /**
+     * @return null
+     */
     public function submitForm(): null
     {
         $this->validate();
@@ -52,11 +58,17 @@ class OverallRating extends Component {
         return $this->redirect('/question', navigate: true);
     }
 
+    /**
+     * @return View
+     */
     public function render(): View
     {
         return view('livewire.overall-rating');
     }
 
+    /**
+     * @return array
+     */
     protected function rules(): array
     {
         return [

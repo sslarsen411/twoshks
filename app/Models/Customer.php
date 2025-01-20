@@ -24,6 +24,9 @@ class Customer extends Model {
         'purchase',
         'state',
     ];
+    protected mixed $users_id;
+    protected mixed $id;
+    protected mixed $location_id;
 
     public function users(): belongsTo
     {

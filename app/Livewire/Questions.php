@@ -22,6 +22,9 @@ class Questions extends Component {
         'answer.required' => 'Please type something',
     ];
 
+    /**
+     * @return void
+     */
     public function mount(): void
     {
         $initMsg = $this->createInitialPrompt(session('location.PID'));
@@ -30,6 +33,9 @@ class Questions extends Component {
         $this->question = $questions[$this->dex];
     }
 
+    /**
+     * @return void
+     */
     public function handleHelp(): void
     {
         $this->aiMsg[] = ['role' => 'user', 'content' => $this->ask];
@@ -77,17 +83,21 @@ class Questions extends Component {
         return serialize($ansArr);
     }
 
+    /**
+     * @return View
+     */
     public function render(): View
     {
         return view('livewire.questions');
     }
 
+    /**
+     * @return string[]
+     */
     protected function rules(): array
     {
         return [
             'answer' => 'required|string|min:6',
         ];
     }
-
-
 }
