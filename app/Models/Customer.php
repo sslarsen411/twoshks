@@ -2,17 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Facades\Auth;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Fieldset;
+//use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
-use Filament\Forms\Components\TextInput;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Customer extends Model
-{
-    use HasFactory;
+//use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+class Customer extends Model {
+
     public $table = 'customers';
     protected $fillable = [
         'users_id',
@@ -23,19 +21,26 @@ class Customer extends Model
         'last_name',
         'email',
         'phone',
-        'purchase', 
-        'state', 
+        'purchase',
+        'state',
     ];
-    public function users()    {
+
+    public function users(): belongsTo
+    {
         return $this->belongsTo(User::class);
     }
-    public function locations()    {
+
+    public function locations(): belongsTo
+    {
         return $this->belongsTo(Location::class, 'location_id');
     }
-    public function reviews()    {
+
+    public function reviews(): hasMany
+    {
         return $this->hasMany(Review::class, 'customer_id');
-    } 
-    public function getFullnameAttribute()
+    }
+
+    public function getFullnameAttribute(): string
     {
         return $this->first_name.' '.$this->last_name;
     }
