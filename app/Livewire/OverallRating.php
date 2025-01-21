@@ -4,13 +4,13 @@ namespace App\Livewire;
 
 use App\Models\Customer;
 use App\Rules\NamePlus;
-use App\Traits\Assistant;
+use App\Traits\AIReview;
 use Illuminate\View\View;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class OverallRating extends Component {
-    use Assistant;
+    use AIReview;
 
     public $rating = 0;
     #[Validate]

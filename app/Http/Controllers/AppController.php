@@ -6,7 +6,7 @@ use App\Mail\InactiveAccount;
 use App\Models\Customer;
 use App\Models\Location;
 use App\Models\Question;
-use App\Traits\Assistant;
+use App\Traits\AIReview;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Mail;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class AppController extends Controller {
-    use Assistant;
+    use AIReview;
 
     public function initialize(Request $request)
     {
