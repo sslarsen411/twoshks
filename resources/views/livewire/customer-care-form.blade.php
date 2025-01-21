@@ -4,11 +4,11 @@
             <p class="self-start mb-3">
                 Please share your thoughts and concerns.
             </p>
-            <textarea rows="4" wire:model.live="concerns" x-data="{ name: '{{$concerns}}' }"
+            <textarea rows="4" wire:model.blur="concerns" x-data="{ name: '{{$concerns}}' }"
                       id="concerns">{{ $concerns }}</textarea>
             @error('concerns') <span class="error">{{ $message }}</span> @enderror
             <div class="self-start flex items-start my-4">
-                <input id="ckCallMe" wire:model.live="ckCallMe" type="checkbox" value=""
+                <input id="ckCallMe" wire:model.blur="ckCallMe" type="checkbox" value=""
                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2">
                 <label for="ckCallMe" class="ms-2 text-sm font-medium text-gray-900 ">Would you
                     like {{ session('location.company') }} to call you?</label>

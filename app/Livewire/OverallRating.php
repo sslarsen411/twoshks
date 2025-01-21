@@ -8,7 +8,6 @@ use App\Traits\Assistant;
 use Illuminate\View\View;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
-use RealRashid\SweetAlert\Facades\Alert;
 
 class OverallRating extends Component {
     use Assistant;
@@ -51,10 +50,10 @@ class OverallRating extends Component {
         $newReview = $this->initReview($newCustomer);
         session()->put('reviewID', $newReview->id);
         if ($this->rating < session('location.min_rate')) {
-            Alert::question('What happened?', 'Please tell us how we can improve your experience');
+            alert()->question('What happened?', 'Please tell us how we can improve your experience');
             return $this->redirect('/care', navigate: true);
         }
-        Alert::success($this->first_name.', You\'re ready to start', text: "Here's the first question");
+        alert()->success($this->first_name.', You\'re ready to start', text: "Here's the first question");
         return $this->redirect('/question', navigate: true);
     }
 

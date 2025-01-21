@@ -3,6 +3,7 @@
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\Auth\GoogleSocialiteController;
 use App\Http\Controllers\ReviewController;
+use App\Mail\TestEmail;
 use Illuminate\Support\Facades\Route;
 
 /* Initial Routing */
@@ -30,3 +31,14 @@ Route::controller(ReviewController::class)->group(function () {
 /* Error:  account NOT active */
 Route::view('/notactive', 'pages.notactive')->name('pages.notactive');
 Route::view('/test', 'test')->name('test');
+
+
+Route::get('/send-test-email', function () {
+    $data = [
+        'message' => 'This is a stil  another test email sent using Laravel.',
+    ];
+
+    Mail::to('sslarsen411@gmail.com')->send(new TestEmail($data));
+
+    return 'Image test email sent successfully!';
+});

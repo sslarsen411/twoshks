@@ -3,14 +3,15 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Address;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailables\Headers;
 use Illuminate\Queue\SerializesModels;
 
-class CustomerCare extends Mailable
-{
+class CustomerCare extends Mailable {
     use Queueable, SerializesModels;
 
     /**
@@ -27,7 +28,11 @@ class CustomerCare extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: $this->data['first_name'] . ', Your concerns have been forwarded to ' .$this->data['company'] .'\'s customer care',
+            replyTo: [
+                new Address('theguru@ravereviewguru.com', 'The Review Guru'),
+            ],
+            subject: $this->data['first_name'].', Your concerns have been forwarded to '.$this->data['company'].'\'s customer care',
+
         );
     }
 
@@ -43,14 +48,27 @@ class CustomerCare extends Mailable
                 'review' => $this->data['review'],
                 'company' => $this->data['company'],
             ]
-           // view: 'view.name',
+        );
+    }
+
+    /**
+     * @return Headers
+     */
+    public function headers(): Headers
+    {
+        return new Headers(
+            messageId: 'Cust-Care@ravereview.guru',
+            //  references: ['previous-message@example.com'],
+            text: [
+                'x-mailgun-native-send' => 'true',
+            ],
         );
     }
 
     /**
      * Get the attachments for the message.
      *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     * @return array<int, Attachment>
      */
     public function attachments(): array
     {
