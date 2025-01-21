@@ -24,5 +24,6 @@ yarn-error.log
 /app/Mail/TestEmail.php
 /public/test.php
 /resources/views/test.blade.php
-/resources/views/email/em-template.blade.php
 /app/Console/Commands/ClearOC.php
+/resources/views/email/test_email.blade.php
+/resources/views/email/em-templ.blade.php
