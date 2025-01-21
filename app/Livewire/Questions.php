@@ -3,14 +3,14 @@
 namespace App\Livewire;
 
 use App\Models\Review;
-use App\Traits\AIReview;
+use App\Traits\Assistant;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class Questions extends Component {
-    use AIReview;
+    use Assistant;
 
     public $question;
     public $answer = '';
