@@ -22,3 +22,7 @@ yarn-error.log
 /.vscode
 /.zed
 /app/Mail/TestEmail.php
+/public/test.php
+/resources/views/test.blade.php
+/resources/views/email/em-template.blade.php
+/app/Console/Commands/ClearOC.php
