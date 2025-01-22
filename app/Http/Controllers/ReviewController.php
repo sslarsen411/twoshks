@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Review;
-use App\Traits\AIReview;
+use App\Traits\Assistant;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
 class ReviewController extends Controller {
-    use AIReview;
+    use Assistant;
 
     public function composeReview()
     {
