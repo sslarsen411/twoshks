@@ -39,7 +39,6 @@ class AppController extends Controller {
                     }
                     session()->put('registered', false);
                     $threadID = $this->setThread();
-                    //ray($threadID);
                     if (!$threadID) {
                         throw new Exception("Failed to initialize thread ID.");
                     }
@@ -73,6 +72,7 @@ class AppController extends Controller {
                 ->join('subscriptions', 'locations.users_id', '=', 'subscriptions.user_id')
                 ->where('locations.id', '=', $inLoc)
                 ->get();
+            
             if (empty($loc[0])) {
                 return null;
             } else {
@@ -83,22 +83,6 @@ class AppController extends Controller {
             return view('pages.error', ['error' => $e->getMessage()]);
         }
     }
-
-//    function getDescription($inPID)
-//    {
-//        try {
-//            $response = Http::get("https://maps.googleapis.com/maps/api/place/details/json?place_id=$inPID&key=".config('maps.maps_api'));
-//            $arr = json_decode($response->body(), true);
-//            if (array_key_exists('editorial_summary', $arr['result'])) {
-//                return $arr['result']['editorial_summary']['overview'];
-//            } else {
-//                return null;
-//            }
-//        } catch (Exception $e) {
-//            Log::error('Description Retrieval Error: '.$e->getMessage());
-//            return null;
-//        }
-//    }
 
 //    public function getCustomerByEmail(Request $request, $inUser = '')
 //    {
@@ -124,7 +108,6 @@ class AppController extends Controller {
         } catch (Exception $e) {
             Log::error('Logout Error: '.$e->getMessage());
             return view('pages.error', ['error' => $e->getMessage()]);
-            //abort(500, 'An error occurred while logging out.');
         }
     }
 }
