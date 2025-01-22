@@ -20,9 +20,6 @@
             font-size: 18px;
         }
 
-        .signature {
-            font-style: italic;
-        }
 
         .red {
             color: red;
@@ -45,14 +42,13 @@
         </tr>
     </table>
     <p>
-        Your customer, {{ $first_name }} {{ $last_name }}, just left a review below your minimum positive review
+        Your customer, {{ $first_name }} {{ $last_name }}, just left a review <span class="red">below your minimum rating</span>
         threshold of {{ $min_rate }}.
-        Here&apos;s what they wrote:
     </p>
     <p>
-        The rating thay gave you was {{ $rating }}. Here&apos;s what they wrote:
+        The rating they gave you was {{ $rating }}. Here&apos;s what they wrote:
     </p>
-    <p style="width:90%; margin:auto 1rem;">
+    <p class="review" style="width:90%; margin:auto 1rem;">
         {{ $review }}
     </p>
     <h2>Contact Info</h2>

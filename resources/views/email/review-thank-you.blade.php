@@ -41,8 +41,8 @@
         </tr>
     </table>
     <p>{{$first_name }}, here&apos;s a copy of your review for {{ $company }}:</p>
-    <div class="review">
-        "width: 96%; margin-left: auto; margin-right:auto; marging-bottom:20px; padding:10px;
+    <div class="review"
+         style="width: 96%; margin-left: auto; margin-right:auto; margin-bottom:20px; padding:10px;
         background-color:#DEDEDE;">
         {{ $review }}
     </div>

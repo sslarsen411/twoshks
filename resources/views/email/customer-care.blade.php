@@ -16,13 +16,6 @@
             margin-bottom: 20px;
         }
 
-        .signature {
-            font-style: italic;
-        }
-
-        .red {
-            color: red;
-        }
     </style>
 </head>
 <body>
@@ -42,8 +35,8 @@
     </table>
     <p>{{$first_name }}, {{ $company }} has been notified about the concerns you expressed on the Two Shakes App.</p>
     <p>Below is a copy of what you wrote:</p>
-    <div class="review">
-        "width: 96%; margin-left: auto; margin-right:auto; marging-bottom:20px; padding:10px;
+    <div class="review"
+         style="width: 96%; margin-left: auto; margin-right:auto; margin-bottom:20px; padding:10px;
         background-color:#DEDEDE;">
         {{ $review }}
     </div>
