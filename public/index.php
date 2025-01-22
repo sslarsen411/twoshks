@@ -1,5 +1,5 @@
 <?php
-require_once('Helpers.php');
+
 use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
