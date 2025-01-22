@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\InactiveAccount;
 use App\Models\Location;
 use App\Models\Question;
-use App\Traits\Assistant;
+use App\Traits\AIReview;
 use App\Traits\GooglePlaces;
 use Exception;
 use Illuminate\Http\Request;
@@ -13,10 +13,8 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
-// use App\Traits\AIReview;
-
 class AppController extends Controller {
-    use Assistant, GooglePlaces;
+    use AIReview, GooglePlaces;
 
     public function initialize(Request $request)
     {

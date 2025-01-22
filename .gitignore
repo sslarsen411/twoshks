@@ -27,3 +27,4 @@ yarn-error.log
 /app/Console/Commands/ClearOC.php
 /resources/views/email/test_email.blade.php
 /resources/views/email/em-templ.blade.php
+/ray.php

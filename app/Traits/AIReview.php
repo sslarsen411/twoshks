@@ -12,7 +12,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
 use OpenAI\Laravel\Facades\OpenAI;
 
-trait Assistant {
+trait AIReview {
     use GooglePlaces;
 
     /**
@@ -21,7 +21,6 @@ trait Assistant {
      */
     public function setThread(array $parameters = []): string
     {
-        //    ray($parameters);
         $thread = OpenAI::threads()->create($parameters);
         return $thread->id;
     }

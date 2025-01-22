@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
-use App\Traits\Assistant;
+use App\Traits\AIReview;
 use Exception;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleSocialiteController extends Controller {
-    use Assistant;
+    use AIReview;
 
     public function redirectToGoogle()
     {
