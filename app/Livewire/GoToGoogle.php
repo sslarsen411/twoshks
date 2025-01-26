@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Mail\NewReviewThankYou;
 use App\Models\Review;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
@@ -18,7 +19,7 @@ class GoToGoogle extends Component {
         $this->url = 'https://search.google.com/local/writereview?placeid='.session('location.PID');
     }
 
-    public function udDB()
+    public function udDB(): ?RedirectResponse
     {
         $rev = Review::find(session('reviewID'));
         $rev->update(['status' => 'Posted']);
