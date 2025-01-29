@@ -68,7 +68,7 @@
             </div>
         </form>
         <div
-            class="h-[15vh] w-full mb-5 border rounded-lg bg-gradient-to-t from-slate-100 p-6 flex space-y-1.5 overflow-scroll flex-col-reverse">
+            class="h-[25vh] w-full mb-5 border rounded-lg bg-gradient-to-t from-slate-100 p-6 flex space-y-1.5 overflow-scroll flex-col-reverse">
             <div class="flex flex-col">
                 @foreach($aiMsg as $key => $msg)
                     @if ($msg['role'] === 'user')

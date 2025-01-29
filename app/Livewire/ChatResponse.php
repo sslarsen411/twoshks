@@ -12,7 +12,6 @@ class ChatResponse extends Component {
     public array $helpText;
     public string $threadId;
     public $questionNo;
-    //   public array $messages;
     public ?string $response = null;
 
     /**
