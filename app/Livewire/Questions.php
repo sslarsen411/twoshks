@@ -59,8 +59,8 @@ class Questions extends Component {
             $this->answer = '';
             $this->question = $questions[$this->dex];
         else:
-            Alert::success('Congratulations! You&apos;re finished with the questions.',
-                'Now we\'ll compose your review');
+            Alert::success('Congratulations! '.session('cust.first_name').' You\'ve completed the questions.',
+                'Now I\'ll compose your review');
             return $this->redirect('/review', navigate: true);
         endif;
         return null;
