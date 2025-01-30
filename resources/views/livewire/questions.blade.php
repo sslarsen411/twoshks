@@ -29,7 +29,7 @@
         </div>
     </div>
     <div>
-        <x-form action="/questions" class="w-full">
+        <x-form handle="handleFormSubmission" class="w-full">
             <div class="flex place-content-center flex-col p-4 border-2">
 
                 {{-- <textarea rows="4" class="textarea-lg"  wire:model.debounce.250ms="answer" id="answer" ></textarea> --}}
@@ -70,7 +70,7 @@
         <div
             class="h-[25vh] w-full mb-5 border rounded-lg bg-gradient-to-t from-slate-100 p-6 flex space-y-1.5 overflow-scroll flex-col-reverse">
             <div class="flex flex-col">
-                @foreach($aiMsg as $key => $msg)
+                @foreach($aiMessages as $key => $msg)
                     @if ($msg['role'] === 'user')
                         <div class="w-3/4 space-y-0.5 self-end">
                             <div class="text-xs text-right flex flex-row justify-end">
@@ -83,8 +83,8 @@
                         </div>
                     @endif
                     @if ($msg['role'] === 'assistant')
-                        <livewire:chat-response :key="$key" :questionNo="$question->id" :messages="$aiMsg"
-                                                :helpText="$aiMsg[$key - 1]"/>
+                        <livewire:chat-response :key="$key" :questionNo="$question->id" :messages="$aiMessages"
+                                                :helpText="$aiMessages[$key - 1]"/>
                     @endif
                 @endforeach
             </div>

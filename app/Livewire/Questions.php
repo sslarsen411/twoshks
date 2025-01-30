@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Question;
 use App\Models\Review;
 use App\Traits\AIReview;
 use Illuminate\Contracts\View\View;
@@ -11,13 +12,14 @@ use Livewire\Component;
 class Questions extends Component {
     use AIReview;
 
-    public $question;
-    public $answer = '';
-    public $dex = 0;
+    public Question $question;
+    public string $answer = '';
+    public int $currentIndex = 0; // Renamed from `$dex`
     public string $ask = '';
-    public array $aiMsg = [];
-    public $key = 1;
-    protected $messages = [
+    public array $aiMessages = []; // Renamed from `$aiMsg`
+    public int $key = 1;
+
+    protected array $messages = [
         'answer.required' => 'Please type something',
     ];
 
@@ -26,44 +28,75 @@ class Questions extends Component {
      */
     public function mount(): void
     {
-        $initMsg = $this->createInitialPrompt(session('location.PID'));
-        $this->createMessage($initMsg, true);
-        $questions = Cache::get('questions');
-        $this->question = $questions[$this->dex];
+        $this->initializeFirstQuestion();
     }
+
+    /**
+     * Initializes the first question and message prompt.
+     *
+     * @return void
+     */
+    private function initializeFirstQuestion(): void
+    {
+        $initialPrompt = $this->createInitialPrompt(session('location.PID'));
+        $this->createMessage($initialPrompt, true);
+        $cachedQuestions = Cache::get('questions');
+        $this->question = $cachedQuestions[$this->currentIndex];
+    }
+
 
     /**
      * @return void
      */
     public function handleHelp(): void
     {
-        $this->aiMsg[] = ['role' => 'user', 'content' => $this->ask];
-        $this->aiMsg[] = ['role' => 'assistant', 'content' => ''];
+        $this->aiMessages[] = ['role' => 'user', 'content' => $this->ask];
+        $this->aiMessages[] = ['role' => 'assistant', 'content' => ''];
         $this->ask = '';
     }
 
     /**
      * @return null | string
      */
-    public function submitForm(): null|string
+    public function handleFormSubmission(): null|string
     {
         $this->validate();
-        $questions = Cache::get('questions');
+        $cachedQuestions = Cache::get('questions');
         $review = Review::find(session('reviewID'));
-        $currAns = $this->updateAnswers($review->answers, $this->dex, strip_tags($this->answer));
-        $review->update(['answers' => $currAns]);
 
-        $this->dex++;
-        if (($this->dex) <= 5):
+        // Save updated answers
+        $updatedAnswers = $this->saveUpdatedAnswers($review->answers, $this->currentIndex, strip_tags($this->answer));
+        $review->update(['answers' => $updatedAnswers]);
+
+        $this->currentIndex++;
+        if ($this->currentIndex <= 5) {
             $this->answer = '';
-            $this->question = $questions[$this->dex];
-        else:
+            $this->question = $cachedQuestions[$this->currentIndex];
+        } else {
             $review->update(['status' => Review::COMPLETED]);
-            alert()->success('Congratulations! '.session('cust.first_name').' You\'ve completed the questions.',
-                'Now I\'ll compose your review');
+            alert()->success(
+                'Congratulations! '.session('cust.first_name').' You\'ve completed the questions.',
+                'Now I\'ll compose your review'
+            );
             return $this->redirect('/review', navigate: true);
-        endif;
+        }
         return null;
+    }
+
+    /**
+     * Saves the updated answers to the review object.
+     *
+     * @param  string|null  $savedAnswers
+     * @param  int|string  $index
+     * @param  string  $newAnswer
+     * @return string|null
+     */
+    private function saveUpdatedAnswers(string|null $savedAnswers, int|string $index, string $newAnswer): string|null
+    {
+        $answersArray = $savedAnswers ? unserialize($savedAnswers) : [];
+        $answersArray[$index] = $newAnswer;
+
+        return serialize($answersArray);
     }
 
     /**
@@ -72,16 +105,16 @@ class Questions extends Component {
      * @param  string  $newAns
      * @return null | string
      */
-    function updateAnswers(string|null $inAnsStr, string|int $dex, string $newAns): string|null
-    {
-        if ($inAnsStr) {
-            $ansArr = unserialize($inAnsStr);
-        } else {
-            $ansArr = [];
-        }
-        $ansArr[$dex] = $newAns;
-        return serialize($ansArr);
-    }
+//    function updateAnswers(string|null $inAnsStr, string|int $dex, string $newAns): string|null
+//    {
+//        if ($inAnsStr) {
+//            $ansArr = unserialize($inAnsStr);
+//        } else {
+//            $ansArr = [];
+//        }
+//        $ansArr[$dex] = $newAns;
+//        return serialize($ansArr);
+//    }
 
     /**
      * @return View
