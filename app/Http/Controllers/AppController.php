@@ -16,72 +16,98 @@ use Illuminate\Support\Facades\Mail;
 class AppController extends Controller {
     use AIReview, GooglePlaces;
 
+    private const string LOCATION_INACTIVE = 'inactive';
+    private const string STRIPE_ACTIVE = 'active';
+    private const string STRIPE_TRIALING = 'trialing';
+
     public function initialize(Request $request)
     {
         try {
-            if ($request->has('loc')):
-                session()->flush();
-                session()->put('locID', $request->query('loc'));
-                if (empty($location = $this->getLocation($request->query('loc')))) {
-                    throw new Exception('The location with ID '.$request->query('loc').' was not found in the database.');
-                }
-                if ($location->status === 'inactive') {
-                    return redirect('notactive')->with(['company' => $location->company]);
-                }
-                if ($location->stripe_status === 'active' || $location->stripe_status === 'trialing'):
-                    Cache::rememberForever('questions', function () {
-                        return Question::all();
-                    });
-                    session()->put('location', $location);
-                    session()->put('desc');
-                    if ($desc = $this->getDescription(session('location.PID'))) {
-                        session()->put('desc', $desc);
-                    }
-                    session()->put('registered', false);
-                    $threadID = $this->setThread();
-                    if (!$threadID) {
-                        throw new Exception("Failed to initialize thread ID.");
-                    }
-                    session()->put('threadID', $threadID);
-                    alert()->success('Thank you from '.$location->company, 'Your feedback is invaluable to us.');
-                    return redirect('/start');
-                else:
-                    // Handle inactive or non-trialing stripe status
-                    Mail::to($location->email)->send(new InactiveAccount([
-                        'name' => $location->name,
-                        'company' => $location->company,
-                        'status' => $location->stripe_status
-                    ]));
-                    return redirect('notactive')->with(['company' => $location->company]);
-                endif;
-            else:             // No location provided in the URL
+            // Early return when location is missing
+            if (!$request->has('loc')) {
                 return redirect('home');
-            endif;
+            }
+            $this->clearAndSetSessionLocation($request);
+
+            $location = $this->getLocation($request->query('loc'));
+            if (!$location) {
+                throw new Exception('The location with ID '.$request->query('loc').' was not found in the database.');
+            }
+            // Handle inactive locations
+            if ($location->status === self::LOCATION_INACTIVE) {
+                return $this->handleInactiveLocation($location);
+            }
+            // Handle active or trialing stripe status
+            if ($location->stripe_status === self::STRIPE_ACTIVE || $location->stripe_status === self::STRIPE_TRIALING) {
+                return $this->initializeActiveStatus($location);
+            }
+            // Handle all other cases (e.g., inactive stripe)
+            return $this->notifyInactiveStripe($location);
         } catch (Exception $e) {
             Log::error('Initialization Error: '.$e->getMessage());
             return view('pages.error', ['error' => $e->getMessage()]);
         }
     }
 
+    private function clearAndSetSessionLocation(Request $request): void
+    {
+        session()->flush();
+        session()->put('locID', $request->query('loc'));
+    }
+
+    /** @noinspection PhpMethodParametersCountMismatchInspection */
     public function getLocation($inLoc)
     {
         try {
-            $loc = Location::select('locations.users_id', 'users.name', 'company', 'email', 'loc_phone',
-                'support_email', 'locations.status', 'min_rate', 'stripe_status', 'CID', 'PID')
+            $location = Location::select('locations.users_id', /** @lang text */ 'users.name', 'company', 'email',
+                'loc_phone', 'support_email', 'locations.status', 'min_rate', 'stripe_status', 'CID', 'PID')
                 ->join('users', 'locations.users_id', '=', 'users.id')
                 ->join('subscriptions', 'locations.users_id', '=', 'subscriptions.user_id')
-                ->where('locations.id', '=', $inLoc)
-                ->get();
-            
-            if (empty($loc[0])) {
-                return null;
-            } else {
-                return $loc[0];
-            }
+                ->where('locations.id', $inLoc)
+                ->first();
+
+            return $location ?: null;
         } catch (Exception $e) {
             Log::debug('Location ERROR: '.$e);
             return view('pages.error', ['error' => $e->getMessage()]);
         }
+    }
+
+    private function handleInactiveLocation($location)
+    {
+        return redirect('notactive')->with(['company' => $location->company]);
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function initializeActiveStatus($location)
+    {
+        Cache::rememberForever('questions', function () {
+            return Question::all();
+        });
+
+        session()->put('location', $location);
+        session()->put('desc', $this->getDescription(session('location.PID')) ?? null);
+        session()->put('registered', false);
+
+        $threadID = $this->setThread();
+        if (!$threadID) {
+            throw new Exception("Failed to initialize thread ID.");
+        }
+        session()->put('threadID', $threadID);
+        alert()->success('Thank you from '.$location->company, 'Your feedback is invaluable to us.');
+        return redirect('/start');
+    }
+
+    private function notifyInactiveStripe($location)
+    {
+        Mail::to($location->email)->send(new InactiveAccount([
+            'name' => $location->name,
+            'company' => $location->company,
+            'status' => $location->stripe_status
+        ]));
+        return redirect('notactive')->with(['company' => $location->company]);
     }
 
 //    public function getCustomerByEmail(Request $request, $inUser = '')
@@ -102,7 +128,6 @@ class AppController extends Controller {
         try {
             $request->session()->flush();
             $request->session()->regenerateToken();
-
             alert()->info('Logged Out', 'You are now logged out');
             return redirect('/home');
         } catch (Exception $e) {
