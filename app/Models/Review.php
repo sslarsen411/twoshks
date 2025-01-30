@@ -40,6 +40,13 @@ use Illuminate\Support\Carbon;
  * @mixin Eloquent
  */
 class Review extends Model {
+
+    const string STARTED = 'Started';
+    const string COMPLETED = 'Completed';
+    const string POSTED = 'Posted';
+    const string VERIFIED = 'Verified';
+    const string NEGATIVE = 'Negative';
+
     public $table = 'reviews';
     protected $fillable = [
         'users_id',
@@ -65,4 +72,6 @@ class Review extends Model {
     {
         return $this->belongsTo(Customer::class, 'customer_id');
     }
+
 }
+

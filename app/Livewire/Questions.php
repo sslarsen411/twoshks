@@ -7,7 +7,6 @@ use App\Traits\AIReview;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
-use RealRashid\SweetAlert\Facades\Alert;
 
 class Questions extends Component {
     use AIReview;
@@ -59,7 +58,8 @@ class Questions extends Component {
             $this->answer = '';
             $this->question = $questions[$this->dex];
         else:
-            Alert::success('Congratulations! '.session('cust.first_name').' You\'ve completed the questions.',
+            $review->update(['status' => Review::COMPLETED]);
+            alert()->success('Congratulations! '.session('cust.first_name').' You\'ve completed the questions.',
                 'Now I\'ll compose your review');
             return $this->redirect('/review', navigate: true);
         endif;

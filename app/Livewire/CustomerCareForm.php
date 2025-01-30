@@ -35,7 +35,7 @@ use Livewire\Component;
         'phone.phone' => 'Enter a valid phone number',
     ];
 
-    public function mount()
+    public function mount(): void
     {
         $this->customer = Customer::find(session('cust.id'));
 
@@ -60,7 +60,7 @@ use Livewire\Component;
         }
 
         $this->review = Review::find(session('reviewID'));
-        $this->review->update(['review' => strip_tags($this->concerns), 'status' => 'Negative']);
+        $this->review->update(['review' => strip_tags($this->concerns), 'status' => Review::NEGATIVE]);
         Mail::to(session('cust.email'),
             session('cust.first_name').' '.session('cust.last_name'))->send(new CustomerCare([
             'first_name' => session('cust.first_name', '<>'),

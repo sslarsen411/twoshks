@@ -30,7 +30,7 @@ trait AIReview {
      * @param  string  $status
      * @return array|Review
      */
-    public function initReview(Customer $customer, string $status = 'Started'): array|Review
+    public function initReview(Customer $customer, string $status = Review::STARTED): array|Review
     {
         $newReview = [];
         try {
