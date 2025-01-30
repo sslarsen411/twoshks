@@ -9,6 +9,41 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 //use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $users_id
+ * @property int $location_id
+ * @property string $oauth_provider
+ * @property string|null $oauth_uid
+ * @property string|null $first_name
+ * @property string|null $last_name
+ * @property string|null $email
+ * @property string|null $phone
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read string $fullname
+ * @property-read \App\Models\Location|null $locations
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Review> $reviews
+ * @property-read int|null $reviews_count
+ * @property-read \App\Models\User|null $users
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customer newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customer newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customer query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customer whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customer whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customer whereFirstName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customer whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customer whereLastName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customer whereLocationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customer whereOauthProvider($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customer whereOauthUid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customer wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customer whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customer whereUsersId($value)
+ * @mixin \Eloquent
+ */
 class Customer extends Model {
 
     public $table = 'customers';
