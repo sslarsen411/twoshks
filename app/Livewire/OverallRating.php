@@ -12,17 +12,23 @@ use Livewire\Component;
 class OverallRating extends Component {
     use AIReview;
 
+    private const string CARE_URL = '/care';
+    private const string QUESTION_URL = '/question';
+
     public $rating = 0;
     #[Validate]
     public $first_name;
     public $last_name;
     public $email;
+
+    // UI Flags
     public $isDisabled = true;
     public $showInstr = true;
 
     /**
      * @param $propertyName
-     * @return void
+     * @return void'
+     * Called when a property is updated.
      */
     public function updated($propertyName): void
     {
@@ -38,23 +44,46 @@ class OverallRating extends Component {
     public function submitForm(): null
     {
         $this->validate();
-        /* Create new customer */
-        $newCustomer = Customer::firstOrCreate([
-            'users_id' => session('location.users_id'),
-            'location_id' => session('locID'),
-            'first_name' => strip_tags($this->first_name),
-            'last_name' => strip_tags($this->last_name),
-            'email' => strip_tags($this->email),
-        ]);
-        session()->put('cust', $newCustomer);
-        $newReview = $this->initReview($newCustomer);
-        session()->put('reviewID', $newReview->id);
+
+        $customer = $this->createCustomer();
+        session()->put('cust', $customer);
+
+        $review = $this->initReview($customer);
+        session()->put('reviewID', $review->id);
+
         if ($this->rating < session('location.min_rate')) {
             alert()->question('What happened?', 'Please tell us how we can improve your experience');
-            return $this->redirect('/care', navigate: true);
+            return $this->redirect(self::CARE_URL, navigate: true);
         }
         alert()->success($this->first_name.', You\'re ready to start', text: "Here's the first question");
-        return $this->redirect('/question', navigate: true);
+        return $this->redirect(self::QUESTION_URL, navigate: true);
+    }
+
+    /**
+     * Creates or retrieves an existing customer.
+     *
+     * @return Customer
+     */
+    private function createCustomer(): Customer
+    {
+        return Customer::firstOrCreate([
+            'users_id' => session('location.users_id'),
+            'location_id' => session('locID'),
+            'first_name' => $this->sanitizeInput($this->first_name),
+            'last_name' => $this->sanitizeInput($this->last_name),
+            'email' => $this->sanitizeInput($this->email),
+        ]);
+    }
+
+    /**
+     * Sanitizes input by stripping HTML tags.
+     *
+     * @param  string  $input
+     * @return string
+     */
+    private function sanitizeInput(string $input): string
+    {
+        return strip_tags($input);
     }
 
     /**
@@ -76,4 +105,5 @@ class OverallRating extends Component {
             'email' => 'required|email',
         ];
     }
+
 }
