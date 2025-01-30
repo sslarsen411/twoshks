@@ -1,6 +1,6 @@
 <?php
 /**
- * @author Scott Larsen <scott@scottlarsen.net>
+ * @author Scott Larsen <scott@scottlarsenai.com>
  */
 
 namespace App\Traits;
@@ -14,6 +14,13 @@ use OpenAI\Laravel\Facades\OpenAI;
 
 trait AIReview {
     use GooglePlaces;
+
+    private const string ROLE_USER = 'user';
+    private const string PROMPT_TYPE_FIRST = 'first';
+    private const string PROMPT_TYPE_FINAL = 'final';
+    private const int POLL_INTERVAL = 2;
+    private const int TIMEOUT = 30;
+
 
     /**
      * @param  array  $parameters
@@ -42,14 +49,10 @@ trait AIReview {
                 'status' => $status,
             ]);
             $prompt = $this->createInitialPrompt(session('location.PID'));
-            //           ray($prompt);
-            $msg = $this->createMessage($prompt, 'first');
-            if ($msg) {
-                LOG::info('Review:'.$newReview->id.' Initial instructions successfully sent');
-            } else {
-                Log::error('There was a problem sending the initial instructions');
-            }
-            //return $newReview;
+            $this->logMessageStatus(
+                $newReview->id,
+                $this->createMessage($prompt, self::PROMPT_TYPE_FIRST)
+            );
         } catch (QueryException  $e) {
             Log::error($e->errorInfo);
         }
@@ -57,51 +60,70 @@ trait AIReview {
     }
 
     /**
-     * @param $inPID
-     * @return string
+     * @property array place
+     * @property array reviews
      */
-    public function createInitialPrompt($inPID): string
+    public function createInitialPrompt(string $placeId): string
     {
-        $customer_fname = session('cust.first_name');
-        $customers_overall_rating = session('rating')[0];
-        $place = $this->getPlaces($inPID);
-        $desc = 'No description given';
-        if (session('desc')) {
-            $desc = session('desc');
-        }
-        $initPrompt = <<<PROMPT
+        $customerName = session('cust.first_name');
+        $customerRating = session('rating')[0];
+        $description = session('desc') ?? 'No description given';
+        $place = $this->getPlaces($placeId);
+        //  ray($place->reviews);
+        /** @noinspection PhpUndefinedFieldInspection */
+        $reviews = $this->formatReviews(reviews: $place->reviews);
+
+        //   ray($reviews);
+        $placeDetails = $this->formatPlaceDetails($place, $description);
+        return <<<PROMPT
         {
-        "context": "A customer wants to initialize a review for a business. A prompt to compose the review will follow later.",
-        "instructions":"Output this text: review initialized",
-        "customer": {
-            "name": "$customer_fname",
-            "overall_rating": $customers_overall_rating
-        },
-        "business": {
-            "name": "$place->name",
+            "context": "A customer wants to initialize a review for a business. A prompt to compose the review will follow later.",
+            "instructions": "Output this text: review initialized",
+            "customer": {
+                "name": "$customerName",
+                "overall_rating": $customerRating
+            },
+            "business": $placeDetails,
+            "reviews": $reviews
+        }
+        PROMPT;
+    }
+
+    private function formatReviews(?array $reviews): string
+    {
+        if (empty($reviews)) {
+            return json_encode(['No reviews']);
+        }
+        //   ray($reviews);
+        $formattedReviews = array_filter(
+            array_map(fn($review) => $review['text'] ?? '', $reviews),
+            fn($text) => strlen($text) > 0
+        );
+        //   ray($formattedReviews);
+        return json_encode(array_values($formattedReviews));
+    }
+
+    private function formatPlaceDetails(object $place, string $description): string
+    {
+        return <<<JSON
+        {
+            "BusinessName": "$place->name",
             "address": "$place->formatted_address",
             "type": "{$place->types[0]}",
             "average_rating": $place->rating,
-            "description": "$desc",
-            "total_reviews": $place->user_ratings_total,
-            "reviews": [
-    PROMPT;
-        if ($place->reviews) {
-            foreach ($place->reviews as $review) {
-                if (strlen($review['text']) > 0) {
-                    $initPrompt .= '"'.$review['text'].'",';
-                }
-            }
-            $initPrompt .= rtrim($initPrompt, ',');
+            "description": "$description",
+            "total_reviews": $place->user_ratings_total
+        }
+        JSON;
+    }
+
+    private function logMessageStatus(string $reviewId, string $messageStatus): void
+    {
+        if ($messageStatus === json_encode(['status' => 'success', 'message' => 'review initialized'])) {
+            Log::info("Review:$reviewId Initial instructions successfully sent");
         } else {
-            $initPrompt .= 'No reviews';
+            Log::error('There was a problem sending the initial instructions');
         }
-        $initPrompt .= <<<PROMPT
-                ]
-            }
-        }
-    PROMPT;
-        return $initPrompt;
     }
 
     /**
@@ -114,7 +136,7 @@ trait AIReview {
         try {
             //$response = OpenAI::threads()->messages()->create(session('threadID'), [
             OpenAI::threads()->messages()->create(session('threadID'), [
-                'role' => 'user',
+                'role' => self::ROLE_USER,
                 'content' => $inMessage,
             ]);
 
@@ -159,7 +181,7 @@ trait AIReview {
      * @param  int  $interval
      * @return string
      */
-    public function getThreadResult($runId, int $timeout = 30, int $interval = 2): string
+    public function getThreadResult($runId, int $timeout = self::TIMEOUT, int $interval = self::POLL_INTERVAL): string
     {
         $startTime = time();
         while (true) {
@@ -232,7 +254,6 @@ trait AIReview {
               While [Suggested Improvement] could be addressed, it didn't detract much from the overall experience. With their excellent service and
               [Business reviews 1], I highly recommend [Business Name] to anyone looking for [Business reviews 2].
               I'll definitely be returning soon!"
-
         PROMPT;
     }
 }

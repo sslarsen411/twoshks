@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\Subscription;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 
 trait SiteHelpers {
@@ -38,5 +39,10 @@ trait SiteHelpers {
     {
         preg_match('/\d?(\d{3})(\d{3})(\d{4})/', $inNumber, $matches);
         return '('.$matches[1].') '.$matches[2].'-'.$matches[3];
+    }
+
+    public function doRedirect($url): RedirectResponse
+    {
+        return redirect()->away($url);
     }
 }
