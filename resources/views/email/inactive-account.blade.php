@@ -1,5 +1,5 @@
 <!doctype html>
-<html >
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -7,28 +7,32 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <style>
-        div{margin-left: 2rem;}
+        div {
+            margin-left: 2rem;
+        }
+
         p {
             font-family: sans-serif;
             font-size: 14px;
         }
 
-        .signature {
-            font-style: italic;
+
+        .red {
+            color: red;
         }
-        .red{color:red;}
     </style>
+    <title>Review Guru</title>
 </head>
 <body>
 
-    <div>        
-        <p>Dear {{$name}}</p>
-        <p>
-            You just had a visitor to the TwoShakes.app who was unable to create a review 
-            for {{$company}} because your account is currently <span class="red">inactive</span>.
-        </p>
-        <p>(What to do)</p>
-    </div>
-    
+<div>
+    <p>Dear {{$name}}</p>
+    <p>
+        You just had a visitor to the TwoShakes.app who was unable to create a review
+        for {{$company}} because your account is currently <span class="red">inactive</span>.
+    </p>
+    <p>(What to do)</p>
+</div>
+
 </body>
 </html>

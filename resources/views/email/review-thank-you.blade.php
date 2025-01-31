@@ -171,6 +171,7 @@
         }
 
     </style>
+    <title>Review Guru</title>
 </head>
 <body>
 <table role="presentation" class="body">
@@ -195,8 +196,8 @@
                             <table>
                                 <tr>
                                     <td>The Review Guru</td>
-                                    <td><img src="https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.webp"
-                                             alt="Useful alt text" width="88" height="128"
+                                    <td><img src="https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png"
+                                             alt="Useful alt text" width="128" height="128"
                                              style="border:0; outline:none; text-decoration:none; display:block;"></td>
                                 </tr>
                             </table>

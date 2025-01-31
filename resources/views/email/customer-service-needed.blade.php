@@ -25,13 +25,14 @@
             color: red;
         }
     </style>
+    <title>Review Guru</title>
 </head>
 <body>
 <div>
     <table role="presentation">
         <tr>
             <td style=" vertical-align: center">
-                <img src="https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.webp" width="88" height="128"
+                <img src="https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png" width="128" height="128"
                      alt="The Rave Review Guru"
                      style="display: inline; outline: 0; line-height: 100%; width: 160px; height: auto; max-width: 100%; border: 0;"/>
             </td>
@@ -46,11 +47,13 @@
         threshold of {{ $min_rate }}.
     </p>
     <p>
-        The rating they gave you was {{ $rating }}. Here&apos;s what they wrote:
+        The rating they gave you was <span class="red">{{ $rating }}</span>. They wrote:
     </p>
-    <p class="review" style="width:90%; margin:auto 1rem;">
+    <div class="review"
+         style="width: 90%; margin-left: auto; margin-right:auto; margin-bottom:20px; padding:10px;
+        background-color:#DEDEDE;">
         {{ $review }}
-    </p>
+    </div>
     <h2>Contact Info</h2>
     <p style="margin-left:10px">
         Phone: {{ $phone }}

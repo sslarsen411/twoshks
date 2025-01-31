@@ -43,7 +43,7 @@ class GoToGoogle extends Component {
             'email' => $customerEmail,
             'status' => 'sent'
         ]);
-        $this->doRedirect($this->url);
+        $this->doRedirect($this->url, true);
         // Redirect away to specified URL
         // return redirect()->away($this->url);
     }

@@ -17,13 +17,14 @@
         }
 
     </style>
+    <title>Review Guru</title>
 </head>
 <body>
 <div>
     <table role="presentation">
         <tr>
             <td style=" vertical-align: center">
-                <img src="https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.webp" width="88" height="128"
+                <img src="https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png" width="128" height="128"
                      alt="The Rave Review Guru"
                      style="display: inline; outline: 0; line-height: 100%; width: 160px; height: auto; max-width: 100%; border: 0;"/>
             </td>
@@ -33,15 +34,23 @@
             </td>
         </tr>
     </table>
-    <p>{{$first_name }}, {{ $company }} has been notified about the concerns you expressed on the Two Shakes App.</p>
-    <p>Below is a copy of what you wrote:</p>
+    <p>Dear {{$first_name }} </p>
+    <p>
+        {{ $company }} has been notified about review you wrote using the Two Shakes Review App.
+    </p>
+    <p>
+        They have been directed to contact you regarding the concerns you expressed.
+    </p>
+    <p>
+        Below is a copy of what you wrote:
+    </p>
     <div class="review"
          style="width: 96%; margin-left: auto; margin-right:auto; margin-bottom:20px; padding:10px;
         background-color:#DEDEDE;">
         {{ $review }}
     </div>
     <p>
-        Thank you for using the Two Shakes App.
+        Thank you for using the Two Shakes Review App.
     </p>
     <p>
         The Review Guru
