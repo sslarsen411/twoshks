@@ -95,7 +95,7 @@
 
 @layer components {
     .guru-icon {
-        @apply h-16 w-auto inline-block;
+        @apply h-16 w-16 inline-block;
     }
 
 
