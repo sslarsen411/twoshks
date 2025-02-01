@@ -57,6 +57,8 @@ use Illuminate\Support\Carbon;
  * @mixin Eloquent
  */
 class Location extends Model {
+    const string STATUS_ACTIVE = 'active';
+    const string STATUS_INACTIVE = 'inactive';
 
     public $table = 'locations';
     protected $fillable = [
