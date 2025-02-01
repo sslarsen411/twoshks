@@ -49,7 +49,8 @@
         <div wire:transition>
             <h2>
                 How to choose a star
-                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png')}}" class="guru-icon"
+                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png')}}"
+                     class="guru-icon max-w-16"
                      alt="guru icon">
 
             </h2>
