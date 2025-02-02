@@ -41,9 +41,13 @@ class CustomerServiceNeeded extends Mailable {
      */
     public function content(): Content
     {
+        ray($this->data['loc_qty']);
         return new Content(
             view: 'email.customer-service-needed',
             with: [
+                'name' => $this->data['name'],
+                'address' => $this->data['address'],
+                'loc_qty' => $this->data['loc_qty'],
                 'first_name' => $this->data['first_name'],
                 'last_name' => $this->data['last_name'],
                 'email' => $this->data['email'],

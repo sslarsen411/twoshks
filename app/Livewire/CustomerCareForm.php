@@ -112,6 +112,9 @@ class CustomerCareForm extends Component {
         )
             ->cc(session('location.email'))
             ->send(new CustomerServiceNeeded([
+                'name' => session('location.name'),
+                'address' => session('location.addr'),
+                'loc_qty' => session('location.loc_qty'),
                 'first_name' => session('cust.first_name', '<>'),
                 'last_name' => session('cust.last_name', '<>'),
                 'email' => session('cust.email', '<>'),

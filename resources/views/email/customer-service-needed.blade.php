@@ -29,21 +29,13 @@
 </head>
 <body>
 <div>
-    <table role="presentation">
-        <tr>
-            <td style=" vertical-align: center">
-                <img src="https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png" width="128" height="128"
-                     alt="The Rave Review Guru"
-                     style="display: inline; outline: 0; line-height: 100%; width: 160px; height: auto; max-width: 100%; border: 0;"/>
-            </td>
-            <td style="vertical-align: center">
-                <span
-                    style="font-size:2rem; font-family: ' Roboto', Arial, Helvetica, sans-serif; ">The Review Guru</span>
-            </td>
-        </tr>
-    </table>
+    <p>Dear {{ $name  }}</p>
     <p>
-        Your customer, {{ $first_name }} {{ $last_name }}, just left a review <span class="red">below your minimum rating</span>
+        A customer, {{ $first_name }} {{ $last_name }}, just left a review
+        @if( $loc_qty > 1 )
+            for your business located at {{ $address }},
+        @endif
+        <span class="red">that was below your minimum rating</span>
         threshold of {{ $min_rate }}.
     </p>
     <p>

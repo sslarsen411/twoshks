@@ -60,12 +60,12 @@ class AppController extends Controller {
     {
         try {
             $location = Location::select('locations.users_id', /** @lang text */ 'users.name', 'company', 'email',
-                'loc_phone', 'support_email', 'locations.status', 'min_rate', 'stripe_status', 'CID', 'PID')
+                'loc_qty', 'loc_phone', 'support_email', 'locations.addr', 'locations.status', 'min_rate',
+                'stripe_status', 'CID', 'PID')
                 ->join('users', 'locations.users_id', '=', 'users.id')
                 ->join('subscriptions', 'locations.users_id', '=', 'subscriptions.user_id')
                 ->where('locations.id', $inLoc)
                 ->first();
-
             return $location ?: null;
         } catch (Exception $e) {
             Log::debug('Location ERROR: '.$e);
@@ -96,6 +96,7 @@ class AppController extends Controller {
             throw new Exception("Failed to initialize thread ID.");
         }
         session()->put('threadID', $threadID);
+        ray(session()->all());
         alert()->success('Thank you from '.$location->company, 'Your feedback is invaluable to us.');
         return redirect('/start');
     }

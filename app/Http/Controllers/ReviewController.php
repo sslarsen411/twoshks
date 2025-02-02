@@ -35,7 +35,7 @@ class ReviewController extends Controller {
             $this->updateReview($reviewCollection, $review);
             // Step 6: Clean up the review for the final display
             $finalReview = str_replace('"', '', $review);
-
+            ray($finalReview);
             // Step 7: Return the page view
             return view(self::FINISH_PAGE_VIEW, ['review' => $finalReview]);
         } catch (Exception $e) {
