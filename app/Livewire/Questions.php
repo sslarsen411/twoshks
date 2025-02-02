@@ -75,8 +75,8 @@ class Questions extends Component {
         } else {
             $review->update(['status' => Review::COMPLETED]);
             alert()->success(
-                'Congratulations! '.session('cust.first_name').' You\'ve completed the questions.',
-                'Now I\'ll compose your review'
+                'Done! '.session('cust.first_name').' You\'ve completed the questions.',
+                'Now we\'ll compose a review'
             );
             return $this->redirect('/review', navigate: true);
         }
