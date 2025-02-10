@@ -1,4 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+/*//@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');*/
+
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -35,7 +37,7 @@
     }
 
     html {
-        @apply font-josefin bg-zinc-200;
+        @apply font-next bg-zinc-200;
     }
 
     body {
@@ -46,10 +48,9 @@
         @apply p-2 md:px-8;
     }
 
-    h1, h2, h3, h4 {
-        @apply font-poppins;
-    }
-
+    /*h1, h2, h3, h4 {*/
+    /*    @apply font-poppins;*/
+    /*}*/
     h2 {
         @apply text-base md:text-lg lg:text-xl font-semibold;
     }
@@ -139,7 +140,7 @@ blockquote.bubble {
 }
 
 blockquote.bubble p {
-    @apply text-balance w-3/4 ml-6 leading-none sm:leading-tight;
+    @apply text-balance w-3/4 ml-6  leading-none sm:leading-tight md:leading-snug;
 }
 
 blockquote.bubble h2 {

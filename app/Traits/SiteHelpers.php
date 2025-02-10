@@ -4,6 +4,9 @@ namespace App\Traits;
 
 use App\Models\Subscription;
 use App\Models\User;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Collection;
 
 trait SiteHelpers {
@@ -40,7 +43,12 @@ trait SiteHelpers {
         return '('.$matches[1].') '.$matches[2].'-'.$matches[3];
     }
 
-    public function doRedirect($url, $isAway = false)
+    /**
+     * @param $url
+     * @param  bool  $isAway
+     * @return Application|RedirectResponse|Redirector
+     */
+    public function doRedirect($url, false $isAway = false)
     {
         if ($isAway) {
             return redirect()->away($url);

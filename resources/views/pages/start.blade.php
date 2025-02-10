@@ -9,8 +9,8 @@
         <div class="grid grid-cols-12 gap-0">
             <div class="col-span-7">
                 <blockquote class="speech bubble">
-                    <h2 class="">I&apos;m the Review Guru AI</h2>
-                    <p>
+                    <h2 class="text-base md:text-lg lg:text-xl">I&apos;m the Review Guru AI</h2>
+                    <p class="text-sm md:text-base lg:text-lg">
                         I&apos;ll turn your feedback into an polished review in
                         &ldquo;<strong>Two Shakes</strong> of a lamb&apos;s tail.&rdquo;
                     </p>
@@ -40,13 +40,13 @@
                         class="font-semibold">easy</span>!
                 </h3>
                 <ul class="mb-2 list-decimal list-inside">
-                    <li class="ml-2 indent-2">
-                        I&apos;ll ask you six questions about your experience at
+                    <p class="ml-2 indent-2">
+                        First, I&apos;ll ask you six questions about your experience at
                         <strong>{{ session('location.company') }}</strong>&hellip;
-                    </li>
-                    <li class="ml-2 indent-2">
+                    </p>
+                    <p class="ml-2 indent-2">
                         Then I&apos;ll turn your answers into a polished review you can post online.
-                    </li>
+                    </p>
                 </ul>
             </div>
             <div class="col-span-10 w-full">
@@ -67,7 +67,7 @@
             </div>
             <div class="col-span-10 w-full">
                 <h2>
-                    We&apos;ll Start with an Overall Rating&hellip;
+                    To Start&hellip;
                 </h2>
             </div>
         </div>

@@ -1,5 +1,3 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
-
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
@@ -12,16 +10,18 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-            poppins: ["Poppins", "sans-serif"],     
-            josefin: ["Josefin Sans", "sans-serif"],
-          },          
-          screens: {
-            xs: '200px',
-            sm: '480px',
-            md: '768px',
-            lg: '976px',
-            xl: '1440px',
-          },  
+                next: ["Atkinson Hyperlegible Next", "sans-serif"],
+                //   josefin: ["Josefin Sans", "sans-serif"],
+                // poppins: ["Poppins", "sans-serif"],
+            },
+
+            screens: {
+                xs: '200px',
+                sm: '480px',
+                md: '768px',
+                lg: '976px',
+                xl: '1440px',
+            },
         },
     },
     plugins: [],

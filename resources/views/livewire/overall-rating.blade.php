@@ -1,12 +1,12 @@
 <div>
     <div class="flex flex-col place-content-center border-2 p-4">
         @if ($rating)
-            <p>
-                Thanks! You gave us <strong>{{ $rating }}</strong> {{ Str::plural('star', $rating) }}
+            <p class="text-transparent text-center px-4">
+                Thanks!
             </p>
         @else
-            <p class="self-start px-4">
-                From &half; to 5 stars, rate your overall experience at {{ session('location.company') }}
+            <p class="text-center px-4">
+                Rate your experience at {{ session('location.company') }}
             </p>
         @endif
         <div class="rating rating-lg lg:rating-xl rating-half mx-auto" x-data="{ rating: false }">
@@ -35,6 +35,15 @@
             <input type="hidden" name="locID" value='{{session('locID')}}'>
             @error('rating') <span class="error">{{ $message }}</span> @enderror
         </div>
+        @if ($rating)
+            <p class="text-center mt-5">
+                You gave us <strong>{{ $rating }}</strong> {{ Str::plural('star', $rating) }}
+            </p>
+        @else
+            <p class="text-center mt-5">
+                Choose from 1 to 5 stars
+            </p>
+        @endif
     </div>
     <div id="navigation" class="items-end mt-4 mb-2">
         <div id="dynamic_content" class="w-full mx-auto">
