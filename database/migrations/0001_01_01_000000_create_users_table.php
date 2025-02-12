@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -14,11 +13,23 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('email', 45)->unique();
+            $table->string('company', 100)->nullable();
+            $table->string('phone', 20)->nullable();
+            $table->string('mobile', 20)->nullable();
+            $table->string('min_rate', 4)->default('3');
+            $table->tinyInteger('category')->default('1');
+            $table->boolean('multi_loc')->default(false);
+            $table->string('loc_qty', 4)->default('1');
+            $table->string('support_email', 45)->nullable()->unique();
+            $table->string('stripe_id')->nullable()->index();
+            $table->string('pm_type')->nullable();
+            $table->string('pm_last_four', 4)->nullable();
+            $table->timestamp('trial_ends_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrent()->useCurrentOnUpdate();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.3",
         "codeat3/blade-fluentui-system-icons": "^1.33",
+        "cviebrock/eloquent-sluggable": "^11.0",
         "digitaldream/googleplace": "^1.2",
         "laravel/framework": "^11.9",
         "laravel/socialite": "^5.16",

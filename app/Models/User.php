@@ -7,6 +7,7 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
@@ -68,7 +69,8 @@ use Illuminate\Support\Carbon;
  * @method static Builder<static>|User whereUpdatedAt($value)
  * @mixin Eloquent
  */
-class User extends Authenticatable {
+class User extends Authenticatable
+{
 
     use Notifiable;
 
@@ -85,6 +87,7 @@ class User extends Authenticatable {
         'phone',
         'mobile',
         'min_rate',
+        'category',
         'multi_loc',
         'loc_qty',
         'support_email',
@@ -100,6 +103,11 @@ class User extends Authenticatable {
         'password',
         'remember_token',
     ];
+
+    public function category(): HasOne
+    {
+        return $this->hasOne(BusinessCategory::class);
+    }
 
     public function locations(): hasMany
     {
