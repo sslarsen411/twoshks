@@ -9,8 +9,8 @@
         <div class="grid grid-cols-12 gap-0">
             <div class="col-span-7">
                 <blockquote class="speech bubble">
-                    <h2 class="text-base md:text-lg lg:text-xl">I&apos;m the Review Guru AI</h2>
-                    <p class="text-sm md:text-base lg:text-lg">
+                    <h2>I&apos;m the Review Guru AI</h2>
+                    <p>
                         I&apos;ll turn your feedback into an polished review in
                         &ldquo;<strong>Two Shakes</strong> of a lamb&apos;s tail.&rdquo;
                     </p>

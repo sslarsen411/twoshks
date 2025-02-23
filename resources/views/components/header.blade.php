@@ -4,8 +4,8 @@
              alt="logo">
     </div>
     <div class="flex-col items-start">
-        <h1 class="font-bold text-lg">Two Shakes App
-            <span class=" block italic text-base">Fast Feedback</span>
+        <h1 class="font-bold text-lg">Two Shakes Review App
+            <span class=" block italic text-base">Fast &amp; Easy Feedback</span>
         </h1>
     </div>
 </header>

@@ -1,17 +1,17 @@
 <div>
     <div class="progress__bar">
-        <progress class="progress progress-secondary w-56 mx-auto" value="{{$question->progress}}" max="100"></progress>
+        <progress class="progress progress-secondary w-56 mx-auto" value="{{$progress}}" max="100"></progress>
     </div>
     <div class="grid grid-cols-12 gap-0">
         <div class="col-span-7">
             <blockquote class="speech bubble">
-                <h2 class="">Question {{ $question->id }}</h2>
-                <h3 class="text-lg font-semibold self-start" :class="{{$question->id}} == 1 ? '' : 'hidden'">
-                    {{session('cust.first_name')}}, you gave
-                    {{ session('rating')[0] }} {{ Str::plural('star',session('rating')[0]) }}&hellip;
-                </h3>
+                <h2 class="">Question {{ $key }}</h2>
+                {{--                <h3 class="text-lg font-semibold self-start" :class="{{$question->id}} == 1 ? '' : 'hidden'">--}}
+                {{--                    {{session('cust.first_name')}}, you gave--}}
+                {{--                    {{ session('rating')[0] }} {{ Str::plural('star',session('rating')[0]) }}&hellip;--}}
+                {{--                </h3>--}}
                 <p>
-                    {{ $question->question }}
+                    {{ $question  }}
                 </p>
             </blockquote>
         </div>

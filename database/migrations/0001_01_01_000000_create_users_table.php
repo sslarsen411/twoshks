@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->tinyInteger('category')->default('1');
             $table->boolean('multi_loc')->default(false);
             $table->string('loc_qty', 4)->default('1');
-            $table->string('support_email', 45)->nullable()->unique();
+            $table->string('support_email', 45)->nullable();
             $table->string('stripe_id')->nullable()->index();
             $table->string('pm_type')->nullable();
             $table->string('pm_last_four', 4)->nullable();

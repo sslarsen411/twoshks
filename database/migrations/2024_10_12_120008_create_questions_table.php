@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,8 +12,8 @@ return new class extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->text('question')->nullable();
-            $table->string('progress', 8)->nullable();
+            $table->foreignId('category_id')->constrained()->onDelete('cascade'); // Links to categories table
+            $table->text('questions'); // Serialized array of six questions
             $table->timestamps();
         });
     }

@@ -4,16 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Mail\InactiveAccount;
 use App\Models\Location;
-use App\Models\Question;
 use App\Traits\AIReview;
 use App\Traits\GooglePlaces;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
-class AppController extends Controller {
+class AppController extends Controller
+{
     use AIReview, GooglePlaces;
 
     private const string LOCATION_INACTIVE = 'inactive';
@@ -31,7 +30,7 @@ class AppController extends Controller {
 
             $location = $this->getLocation($request->query('loc'));
             if (!$location) {
-                throw new Exception('The location with ID '.$request->query('loc').' was not found in the database.');
+                throw new Exception('The location with ID ' . $request->query('loc') . ' was not found in the database.');
             }
             // Handle inactive locations
             if ($location->status === self::LOCATION_INACTIVE) {
@@ -44,7 +43,7 @@ class AppController extends Controller {
             // Handle all other cases (e.g., inactive stripe)
             return $this->notifyInactiveStripe($location);
         } catch (Exception $e) {
-            Log::error('Initialization Error: '.$e->getMessage());
+            Log::error('Initialization Error: ' . $e->getMessage());
             return view('pages.error', ['error' => $e->getMessage()]);
         }
     }
@@ -60,7 +59,7 @@ class AppController extends Controller {
     {
         try {
             $location = Location::select('locations.users_id', /** @lang text */ 'users.name', 'company', 'email',
-                'loc_qty', 'loc_phone', 'support_email', 'locations.addr', 'locations.status', 'min_rate',
+                'category', 'loc_qty', 'loc_phone', 'support_email', 'locations.addr', 'locations.status', 'min_rate',
                 'stripe_status', 'CID', 'PID')
                 ->join('users', 'locations.users_id', '=', 'users.id')
                 ->join('subscriptions', 'locations.users_id', '=', 'subscriptions.user_id')
@@ -68,7 +67,7 @@ class AppController extends Controller {
                 ->first();
             return $location ?: null;
         } catch (Exception $e) {
-            Log::debug('Location ERROR: '.$e);
+            Log::debug('Location ERROR: ' . $e);
             return view('pages.error', ['error' => $e->getMessage()]);
         }
     }
@@ -83,9 +82,9 @@ class AppController extends Controller {
      */
     private function initializeActiveStatus($location)
     {
-        Cache::rememberForever('questions', function () {
-            return Question::all();
-        });
+//        Cache::rememberForever('questions', function () {
+//            return Question::all();
+//        });
 
         session()->put('location', $location);
         session()->put('desc', $this->getDescription(session('location.PID')) ?? null);
@@ -97,7 +96,7 @@ class AppController extends Controller {
         }
         session()->put('threadID', $threadID);
         ray(session()->all());
-        alert()->success('Thank you from '.$location->company, 'Your feedback is invaluable to us.');
+        alert()->info('Thank you from ' . $location->company, 'We value your feedback.');
         return redirect('/start');
     }
 
@@ -109,6 +108,19 @@ class AppController extends Controller {
             'status' => $location->stripe_status
         ]));
         return redirect('notactive')->with(['company' => $location->company]);
+    }
+
+    public function logout(Request $request)
+    {
+        try {
+            $request->session()->flush();
+            $request->session()->regenerateToken();
+            alert()->info('Logged Out', 'You are now logged out');
+            return redirect('/home');
+        } catch (Exception $e) {
+            Log::error('Logout Error: ' . $e->getMessage());
+            return view('pages.error', ['error' => $e->getMessage()]);
+        }
     }
 
 //    public function getCustomerByEmail(Request $request, $inUser = '')
@@ -124,16 +136,8 @@ class AppController extends Controller {
 //        }
 //    }
 
-    public function logout(Request $request)
+    private function getQuestions(): void
     {
-        try {
-            $request->session()->flush();
-            $request->session()->regenerateToken();
-            alert()->info('Logged Out', 'You are now logged out');
-            return redirect('/home');
-        } catch (Exception $e) {
-            Log::error('Logout Error: '.$e->getMessage());
-            return view('pages.error', ['error' => $e->getMessage()]);
-        }
+
     }
 }

@@ -106,7 +106,7 @@ class User extends Authenticatable
 
     public function category(): HasOne
     {
-        return $this->hasOne(BusinessCategory::class);
+        return $this->hasOne(Category::class);
     }
 
     public function locations(): hasMany

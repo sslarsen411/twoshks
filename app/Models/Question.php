@@ -5,6 +5,7 @@ namespace App\Models;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
@@ -25,9 +26,17 @@ use Illuminate\Support\Carbon;
  * @method static Builder<static>|Question whereUpdatedAt($value)
  * @mixin Eloquent
  */
-class Question extends Model {
+class Question extends Model
+{
 
     public $table = 'questions';
-    protected $primaryKey = 'id';
-    protected $fillable = ['question'.'progress'];
+    protected $fillable = [
+        'category_id',
+        'questions'
+    ];
+
+    public function categories(): belongsTo
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'id');
+    }
 }
