@@ -1,4 +1,5 @@
 <?php
+/* https://devdojo.com/tnylea/sharing-state-between-livewire-and-alpine */
 
 namespace App\Livewire;
 
