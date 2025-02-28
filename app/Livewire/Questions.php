@@ -46,11 +46,15 @@ class Questions extends Component
     {
         $initialPrompt = $this->createInitialPrompt(session('location.PID'));
         $this->createMessage($initialPrompt, true);
-        //$cachedQuestions = Cache::get('questions');
-        // $cachedQuestions = Question::all();
 
-        //  $this->question = $cachedQuestions[$this->currentIndex];
-        $this->question = $this->questions[$this->currentIndex];
+        if ($this->currentIndex === 0) {
+            $this->question = 'You gave us ' . session('rating')[0] . ' stars. ' . $this->questions[$this->currentIndex];
+
+        } else {
+            $this->question = $this->questions[$this->currentIndex];
+
+        }
+
         ray($this->question);
     }
 

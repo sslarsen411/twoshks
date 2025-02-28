@@ -136,8 +136,4 @@ class AppController extends Controller
 //        }
 //    }
 
-    private function getQuestions(): void
-    {
-
-    }
 }

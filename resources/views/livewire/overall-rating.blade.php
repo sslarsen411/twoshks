@@ -105,7 +105,7 @@
                         class="appearance-none block w-full  text-gray-700 border border-gray-200
                             @error('first_name')  error @enderror
                             rounded py-3 px-4  leading-tight focus:outline-none focus:bg-white"
-                        id="first_name" wire:model.live.debounce.500ms="first_name" type="text"
+                        id="first_name" wire:model="first_name" type="text"
                         value="{{ old('first_name') }}">
                     @error('first_name') <span class="error text-xs">{{ $message }}</span> @enderror
                 </div>
@@ -118,7 +118,7 @@
                         class="appearance-none block w-full  text-gray-700 border border-gray-200 rounded py-3
                             @error('last_name') error @enderror
                             px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 "
-                        id="last_name" wire:model.live.debounce.500ms="last_name" type="text"
+                        id="last_name" wire:model="last_name" type="text"
                         value="{{ old('last_name') }}">
                     @error('last_name') <span class="error text-xs">{{ $message }}</span> @enderror
                 </div>
@@ -133,7 +133,7 @@
                         class="appearance-none block w-full  text-gray-700 border border-gray-200 rounded py-3
                             @error('email') error  @enderror
                             px-4  leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                        id="email" wire:model.live.debounce.500ms="email" type="email">
+                        id="email" wire:model="email" type="email">
                     @error('email') <span class="text-xs error">{{ $message }}</span> @enderror
                 </div>
             </div>
