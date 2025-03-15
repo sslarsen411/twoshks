@@ -12,7 +12,8 @@ use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
 use OpenAI\Laravel\Facades\OpenAI;
 
-trait AIReview {
+trait AIReview
+{
     use GooglePlaces;
 
     private const string ROLE_USER = 'user';
@@ -21,9 +22,8 @@ trait AIReview {
     private const int POLL_INTERVAL = 2;
     private const int TIMEOUT = 30;
 
-
     /**
-     * @param  array  $parameters
+     * @param array $parameters
      * @return string
      */
     public function setThread(array $parameters = []): string
@@ -33,8 +33,8 @@ trait AIReview {
     }
 
     /**
-     * @param  Customer  $customer
-     * @param  string  $status
+     * @param Customer $customer
+     * @param string $status
      * @return array|Review
      */
     public function initReview(Customer $customer, string $status = Review::STARTED): array|Review
@@ -67,23 +67,35 @@ trait AIReview {
     {
         $customerName = session('cust.first_name');
         $customerRating = session('rating')[0];
-        $description = session('desc') ?? 'No description given';
+        $bizCategory = session('location.category');
+        /** @TODO add a description to the user table */
+        $description = 'None';
         $place = $this->getPlaces($placeId);
-        //  ray($place->reviews);
         /** @noinspection PhpUndefinedFieldInspection */
         $reviews = $this->formatReviews(reviews: $place->reviews);
-
-        //   ray($reviews);
         $placeDetails = $this->formatPlaceDetails($place, $description);
+        /** @var string $bizType */
         return <<<PROMPT
         {
-            "context": "A customer wants to initialize a review for a business. A prompt to compose the review will follow later.",
-            "instructions": "Output this text: review initialized",
+            "context": "A customer named $customerName is starting a review for a business. Your role is to assist them
+            in providing thoughtful, engaging answers to the review questions through chat.
+            The review question are the subset of  questions referenced by the category key.
+            You will help guide them, offer suggestions, and ensure they feel supported throughout the process.
+            A prompt to generate the final review will follow later. Below are key details:",
+
+            "instructions": "Acknowledge the customer by name and confirm that you're ready to assist. If they have
+            any questions or need suggestions, respond helpfully.",
+
             "customer": {
                 "name": "$customerName",
                 "overall_rating": $customerRating
             },
-            "business": $placeDetails,
+
+            "business": {
+                "category": "$bizCategory",
+                "details": $placeDetails
+            },
+
             "reviews": $reviews
         }
         PROMPT;
@@ -128,7 +140,7 @@ trait AIReview {
 
     /**
      * @param $inMessage
-     * @param  string  $reviewPromptType
+     * @param string $reviewPromptType
      * @return string
      */
     public function createMessage($inMessage, string $reviewPromptType = ''): string
@@ -142,7 +154,7 @@ trait AIReview {
 
             return $this->sendMessage($reviewPromptType);
         } catch (Exception $e) {
-            return "Error creating message: ".$e->getMessage();
+            return "Error creating message: " . $e->getMessage();
         }
     }
 
@@ -171,14 +183,14 @@ trait AIReview {
             }
             return $this->getThreadResult($runId);
         } catch (Exception $e) {
-            return "Error sending message: ".$e->getMessage();
+            return "Error sending message: " . $e->getMessage();
         }
     }
 
     /**
      * @param $runId
-     * @param  int  $timeout
-     * @param  int  $interval
+     * @param int $timeout
+     * @param int $interval
      * @return string
      */
     public function getThreadResult($runId, int $timeout = self::TIMEOUT, int $interval = self::POLL_INTERVAL): string
@@ -214,46 +226,27 @@ trait AIReview {
      */
     public function makeReviewPrompt($inAnswers): string
     {
+        // ray($inAnswers);
         return <<<PROMPT
-            You are an expert at crafting engaging, concise, and compelling reviews for Google Business Profiles. Use the provided business details,
-            overall customer rating, and customer feedback to create a cohesive review.
+            Now, use the following responses from the customer to craft a well-structured, natural-sounding review:
 
-              ### Customer Feedback:
+                - **Question 1 Response: "$inAnswers[0]"
+                - **Question 2 Response: "$inAnswers[1]"
+                - **Question 3 Response: ""$inAnswers[2]"
+                - **Question 4 Response: ""$inAnswers[3]"
+                - **Question 5 Response: ""$inAnswers[4]}"
+                - **Question 6 Response: ""$inAnswers[5]"
 
-              - Why they rated this way: "$inAnswers[0]"
-              - Staff experience: "$inAnswers[1]"
-              - Favorite aspect: "$inAnswers[2]"
-              - Suggested improvement: "$inAnswers[3]"
-              - Likelihood to recommend: "$inAnswers[4]"
-              - Additional comments: "$inAnswers[5]"
+             ### Instructions:
+            - **Use the provided customer responses and business details to create a detailed review.**
+            - **Make the review sound human and natural, NOT like a generic report.**
+            - **Incorporate the customer's favorite aspect and overall experience to emphasize what makes the business stand out.**
+            - **If the rating is lower than 4 stars, acknowledge concerns professionally.**
+            - **Match the tone of the customer based on their answers.**
+            - **Focus on clarity, keeping the review concise and impactful.**
+            - **Conclude with a strong closing statement that fits the customer's sentiment.**
 
-              ### Instructions:
-                1. Use the provided customer feedback and business details to create a detailed review.
-                2. Begin each review with a unique, engaging introduction that reflects the customer's sentiment. Examples:
-                  -  "My recent visit to [Business Name] was truly delightful!"
-                  -  "I decided to try out [Business Name] and was pleasantly surprised by the experience."
-                  -  "At [Business Name], I found much more than I expected!"
-                  -  "Here’s my latest experience at [Business Name]."
-                  -  "My review of [Business name]"
-                  - "I found [Business Name] to be [overall_rating] because"
-                3. Incorporate the customer's favorite aspect and overall experience to emphasize what makes the business stand out.
-                4. Acknowledge the suggested improvements constructively while maintaining a positive tone. Keep this section brief to focus on the strengths
-                5. End with an encouraging statement that aligns with the customer's likelihood to recommend. Use this opportunity to reaffirm the business's strengths and leave a lasting impression.
-                6. Maintain Tone and Style:
-                   - Friendly, conversational, and professional.
-                   - Match the tone of the customer based on their answers.
-                   -  Focus on clarity, keeping the review concise and impactful.
-                7. Output Requirements:
-                    - Generate the review in plain text.
-                    - Incorporate the provided answers seamlessly while ensuring the review flows naturally.
-
-              ### Example Review:
-              "My review of [Business Name]. Overall I had a great experience! The staff were incredibly knowledgeable and helpful,
-              answering all my questions and making my visit enjoyable. One of my favorite aspects was [Customer's Favorite Aspect], which truly stood out.
-
-              While [Suggested Improvement] could be addressed, it didn't detract much from the overall experience. With their excellent service and
-              [Business reviews 1], I highly recommend [Business Name] to anyone looking for [Business reviews 2].
-              I'll definitely be returning soon!"
+            Write the review in **plain text** below:
         PROMPT;
     }
 }

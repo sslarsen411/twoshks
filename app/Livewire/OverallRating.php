@@ -3,13 +3,16 @@
 namespace App\Livewire;
 
 use App\Models\Customer;
+use App\Models\Question;
 use App\Rules\NamePlus;
 use App\Traits\AIReview;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-class OverallRating extends Component {
+class OverallRating extends Component
+{
     use AIReview;
 
     private const string CARE_URL = '/care';
@@ -20,10 +23,10 @@ class OverallRating extends Component {
     public $first_name;
     public $last_name;
     public $email;
-
     // UI Flags
     public $isDisabled = true;
     public $showInstr = true;
+    protected int $seconds = 3600;
 
     /**
      * @param $propertyName
@@ -55,7 +58,12 @@ class OverallRating extends Component {
             alert()->question('What happened?', 'Please tell us how we can improve your experience');
             return $this->redirect(self::CARE_URL, navigate: true);
         }
-        alert()->success($this->first_name.', You\'re ready to start', text: "Here's the first question");
+        // Initialize question set for business category
+        $questions = Question::where('category_id', session("location.category"))->pluck('questions')->toArray();
+        Cache::add('questArr', unserialize($questions[0]), $this->seconds);
+        //ray(Cache::get('questArr'));
+        ray(session()->all());
+        alert()->success($this->first_name . ', You\'re ready to start', text: "Here's the first question");
         return $this->redirect(self::QUESTION_URL, navigate: true);
     }
 
@@ -78,7 +86,7 @@ class OverallRating extends Component {
     /**
      * Sanitizes input by stripping HTML tags.
      *
-     * @param  string  $input
+     * @param string $input
      * @return string
      */
     private function sanitizeInput(string $input): string

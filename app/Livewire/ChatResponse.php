@@ -6,12 +6,14 @@ use App\Traits\AIChat;
 use Illuminate\View\View;
 use Livewire\Component;
 
-class ChatResponse extends Component {
+class ChatResponse extends Component
+{
     use AIChat;
 
     public array $helpText;
     public string $threadId;
-    public $questionNo;
+    public $category;
+    public string $question;
     public ?string $response = null;
 
     /**
@@ -28,9 +30,11 @@ class ChatResponse extends Component {
      */
     public function getResponse(): static
     {
-        $fname = session('cust.first_name');
+        $this->category = session('category');
         $prompt = <<<PROMPT
-        This reviewer named $fname needs help with question number $this->questionNo
+        The reviewer needs help with question:
+        category: $this->category
+        question: $this->question
         Their request: {$this->helpText['content']}
 PROMPT;
         $this->createMessage($this->threadId, $prompt);

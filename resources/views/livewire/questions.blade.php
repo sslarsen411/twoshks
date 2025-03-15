@@ -70,7 +70,13 @@
         <div
             class="h-[25vh] w-full mb-5 border rounded-lg bg-gradient-to-t from-slate-100 p-6 flex space-y-1.5 overflow-scroll flex-col-reverse">
             <div class="flex flex-col">
-                @foreach($aiMessages as $key => $msg)
+                @php
+                    //  ray($aiMessages);
+                @endphp
+                @foreach($aiMessages as $index => $msg)
+                    @php
+                        ray($index);
+                    @endphp
                     @if ($msg['role'] === 'user')
                         <div class="w-3/4 space-y-0.5 self-end">
                             <div class="text-xs text-right flex flex-row justify-end">
@@ -83,7 +89,8 @@
                         </div>
                     @endif
                     @if ($msg['role'] === 'assistant')
-                        <livewire:chat-response :key="$key" :questionNo="$question->id" :messages="$aiMessages"
+                        <livewire:chat-response :key="$index" :questionNo="$key" :question="$question"
+                                                :messages="$aiMessages"
                                                 :helpText="$aiMessages[$key - 1]"/>
                     @endif
                 @endforeach

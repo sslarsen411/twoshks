@@ -2,10 +2,10 @@
 
 namespace App\Livewire;
 
-use App\Models\Question;
 use App\Models\Review;
 use App\Traits\AIReview;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 class Questions extends Component
@@ -20,7 +20,6 @@ class Questions extends Component
     public string $ask = '';
     public array $aiMessages = []; // Renamed from `$aiMsg`
     public int $key = 1;
-
     protected array $messages = [
         'answer.required' => 'Please type something',
     ];
@@ -30,10 +29,11 @@ class Questions extends Component
      */
     public function mount(): void
     {
-        $this->questions = Question::where('category_id', session("location.category"))->pluck('questions')->toArray();
+        //$this->questions = Question::where('category_id', session("location.category"))->pluck('questions')->toArray();
+        $this->questions = Cache::get('questArr');
         // ray($this->questions[0]);
-        $this->questions = unserialize($this->questions[0]);
-        ray($this->questions);
+        //  $this->questions = unserialize($this->questions[0]);
+        ray(session('rate', 'rating')[0]);
         $this->initializeFirstQuestion();
     }
 
@@ -45,11 +45,11 @@ class Questions extends Component
     private function initializeFirstQuestion(): void
     {
         $initialPrompt = $this->createInitialPrompt(session('location.PID'));
+        ray($initialPrompt);
         $this->createMessage($initialPrompt, true);
-
+        ray($this->currentIndex);
         if ($this->currentIndex === 0) {
             $this->question = 'You gave us ' . session('rating')[0] . ' stars. ' . $this->questions[$this->currentIndex];
-
         } else {
             $this->question = $this->questions[$this->currentIndex];
 

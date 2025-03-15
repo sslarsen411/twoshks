@@ -87,7 +87,7 @@ class AppController extends Controller
 //        });
 
         session()->put('location', $location);
-        session()->put('desc', $this->getDescription(session('location.PID')) ?? null);
+        //session()->put('desc', $this->getDescription(session('location.PID')) ?? null);
         session()->put('registered', false);
 
         $threadID = $this->setThread();
@@ -95,7 +95,7 @@ class AppController extends Controller
             throw new Exception("Failed to initialize thread ID.");
         }
         session()->put('threadID', $threadID);
-        ray(session()->all());
+        //ray(session()->all());
         alert()->info('Thank you from ' . $location->company, 'We value your feedback.');
         return redirect('/start');
     }

@@ -4,13 +4,15 @@ namespace App\Traits;
 
 use OpenAI\Laravel\Facades\OpenAI;
 
-trait AIChat {
+trait AIChat
+{
     public string $threadId;
     public ?string $response = null;
 
     public function createMessage($inThreadId, $inMessage): void
     {
         $this->threadId = $inThreadId;
+
         OpenAI::threads()->messages()->create($this->threadId, [
             'role' => 'user',
             'content' => $inMessage,
@@ -32,7 +34,7 @@ trait AIChat {
         foreach ($stream as $content) {
             if ($content->event == 'thread.message.delta') {
                 $this->stream(
-                    to: 'stream-'.$this->getId(),
+                    to: 'stream-' . $this->getId(),
                     content: $content->response->delta->content[0]->text->value,
                 );
                 $this->response .= $content->response->delta->content[0]->text->value;

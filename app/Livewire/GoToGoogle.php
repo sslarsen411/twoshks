@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 use Livewire\Component;
 
-class GoToGoogle extends Component {
+class GoToGoogle extends Component
+{
     use SiteHelpers;
 
     public string $url;
@@ -18,7 +19,7 @@ class GoToGoogle extends Component {
 
     public function mount(): void
     {
-        $this->url = 'https://search.google.com/local/writereview?placeid='.session('location.PID');
+        $this->url = 'https://search.google.com/local/writereview?placeid=' . session('location.PID');
     }
 
     public function updateAndNotifyReview(): void
@@ -44,18 +45,16 @@ class GoToGoogle extends Component {
             'status' => 'sent'
         ]);
         $this->doRedirect($this->url, true);
-        // Redirect away to specified URL
-        // return redirect()->away($this->url);
     }
 
 
     /**
      * Send notification email to the customer.
      *
-     * @param  string  $email
-     * @param  string  $customerFirstName
-     * @param  Review  $review
-     * @param  string  $company
+     * @param string $email
+     * @param string $customerFirstName
+     * @param Review $review
+     * @param string $company
      * @return void
      */
     protected function sendNotificationEmail(
@@ -63,7 +62,8 @@ class GoToGoogle extends Component {
         string $customerFirstName,
         Review $review,
         string $company
-    ): void {
+    ): void
+    {
         Mail::to($email)->send(new NewReviewThankYou([
             'first_name' => $customerFirstName,
             'review' => $review->review,
