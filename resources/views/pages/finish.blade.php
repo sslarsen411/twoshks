@@ -27,7 +27,6 @@
         </div>
         <div class="grid grid-cols-12 grid-rows-1 gap-0 px-4 place-items-center">
             <div class="col-span-10 w-full">
-
                 <p>
                     It&apos;s been copied to your clipboard, ready to paste online.
                 </p>
@@ -71,16 +70,8 @@
                     Thanks again from <strong>{{session('location.company')}}</strong>.
                 </p>
             </div>
-            {{--            <div class="col-span-2 ">--}}
-            {{--                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png')}}" class="guru-icon"--}}
-            {{--                     alt="Review Guru icon">--}}
-            {{--            </div>--}}
         </div>
         <div class="grid grid-cols-12 grid-rows-1 gap-0 px-4 place-items-center">
-            {{--            <div class="col-span-2 ">--}}
-            {{--                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png')}}" class="guru-icon"--}}
-            {{--                     alt="Review Guru icon">--}}
-            {{--            </div>--}}
             <div class="col-span-12 w-full">
                 <h2>
                     How to post your review on Google
@@ -132,7 +123,6 @@
 
             </div>
         </div>
-
         @push('scripts')
             <script>
                 window.addEventListener('copyTextToClipboard', event => {
