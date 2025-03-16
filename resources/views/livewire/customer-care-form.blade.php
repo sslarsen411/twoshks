@@ -9,7 +9,7 @@
             @error('concerns') <span class="error">{{ $message }}</span> @enderror
             <div class="self-start flex items-start my-4 w-full">
                 <input id="ckCallMe" wire:model.blur="ckCallMe" type="checkbox" value=""
-                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2">
+                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2">
                 <label for="ckCallMe" class="ms-2 text-xm md:text-sm font-medium text-gray-900 ">Would you
                     like {{ session('location.company') }} to call you?</label>
             </div>
@@ -17,7 +17,7 @@
                 <div class="relative z-0 w-3/4 mb-5 group">
                     <input type="tel" wire:model.live="phone" id="phone" x-mask="(999) 999-9999"
                            class="block py-2.5 px-0 rounded-lg w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 ring-zinc-200 border-gray-300 appearance-none
-                     focus:outline-none focus:ring-0 focus:border-blue-600 peer @error('phone') error  @enderror"/>
+                     focus:outline-hidden focus:ring-0 focus:border-blue-600 peer @error('phone') error  @enderror"/>
                     <div class="{{ $ckCallMe && $phone == null? '': 'hidden' }}"><span class="error text-xs">Enter a valid US phone number</span>
                     </div>
                     @error('phone') <span class="error text-xs">{{ $message }}</span> @enderror

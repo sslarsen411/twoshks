@@ -1,7 +1,4 @@
 <x-app-layout>
-    {{--    @push('styles')--}}
-    {{--        @vite([  'resources/css/spinner.css'])--}}
-    {{--    @endpush--}}
     <x-main-content class="border-2 bg-stone-100" x-data="{shiftPressed: false, spin: false}">
         <div class="flex flex-col items-center justify-center top-0 left-0 ">
             <div class="grid grid-cols-12 gap-0">
@@ -31,26 +28,18 @@
                 </div>
             </div>
             <div>
-                <button type="button" x-on:click="spin = ! spin, window.location.replace('/start')"
+                <button type="button" x-on:click="spin = ! spin, window.location.replace('/finish')"
                         class="px-5 py-4 rounded-xl text-base text-white  btn bg-slate-700 hover:bg-teal-500 mb-4 text-center float-right">
                     Generate Your Review
                 </button>
             </div>
         </div>
         <x-spinner/>
-        {{--        <div id="spinner" class="hidden place-content-center w-1/2 mx-auto my-4 bg-teal-700 px-8 py-4 rounded-lg  z-50"--}}
-        {{--             wire:loading>--}}
-        {{--            <div class="la-ball-beat la-1x">--}}
-        {{--                <div></div>--}}
-        {{--                <div></div>--}}
-        {{--                <div></div>--}}
-        {{--            </div>--}}
-        {{--        </div>--}}
         <div
             class="w-full divide-y divide-stone-300 overflow-hidden rounded-xl border border-slate-300 bg-stone-100/40 text-slate-700">
             <div x-data="{ isExpanded: false }" class="divide-y divide-slate-300 dark:divide-slate-700">
                 <button id="controlsAccordionItemOne" type="button" class="flex w-full items-center justify-between gap-4 bg-stone-100 p-4 text-left underline-offset-2
-              hover:bg-stone-200/75 focus-visible:bg-slate-100/75 focus-visible:underline focus-visible:outline-none"
+              hover:bg-stone-200/75 focus-visible:bg-slate-100/75 focus-visible:underline focus-visible:outline-hidden"
                         aria-controls="accordionItemOne"
                         @click="isExpanded = ! isExpanded"
                         :class="isExpanded ? 'text-onSurfaceStrong  font-bold'  : 'text-onSurface font-medium'"
@@ -77,12 +66,6 @@
         </div>
     </x-main-content>
     <script>
-        // function doSpinner() {
-        //     document.getElementById('spinner').classList.remove('hidden')
-        //     document.getElementById('spinner').classList.add('flex')
-        //     window.location.href = "/finish";
-        // }
-
         window.addEventListener('ansUpdated', event => {
             // console.log(event)
             Swal.fire({

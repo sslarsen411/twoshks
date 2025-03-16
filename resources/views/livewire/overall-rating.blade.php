@@ -93,7 +93,8 @@
         </div>
     @endif
     @if(! $showInstr)
-        <x-form class="w-[96%] max-w-lg mx-auto p-4 rounded-lg bg-stone-200" autocomplete="on" action="wire:submitForm"
+        <x-form autocomplete="on" action="wire:submitForm" x-data="{ spin: false }"
+                class="w-[96%] max-w-lg mx-auto p-4 rounded-lg bg-stone-200"
                 wire:transition.duration.900ms>
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -104,7 +105,7 @@
                     <input
                         class="appearance-none block w-full  text-gray-700 border border-gray-200
                             @error('first_name')  error @enderror
-                            rounded py-3 px-4  leading-tight focus:outline-none focus:bg-white"
+                            rounded py-3 px-4  leading-tight focus:outline-hidden focus:bg-white"
                         id="first_name" wire:model.change="first_name" type="text"
                         value="{{ old('first_name') }}">
                     @error('first_name') <span class="error text-xs">{{ $message }}</span> @enderror
@@ -117,7 +118,7 @@
                     <input
                         class="appearance-none block w-full  text-gray-700 border border-gray-200 rounded py-3
                             @error('last_name') error @enderror
-                            px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 "
+                            px-4 leading-tight focus:outline-hidden focus:bg-white focus:border-gray-500 "
                         id="last_name" wire:model.change="last_name" type="text"
                         value="{{ old('last_name') }}">
                     @error('last_name') <span class="error text-xs">{{ $message }}</span> @enderror
@@ -132,22 +133,24 @@
                     <input
                         class="appearance-none block w-full  text-gray-700 border border-gray-200 rounded py-3
                             @error('email') error  @enderror
-                            px-4  leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                            px-4  leading-tight focus:outline-hidden focus:bg-white focus:border-gray-500"
                         id="email" wire:model.change="email" type="email">
                     @error('email') <span class="text-xs error">{{ $message }}</span> @enderror
                 </div>
             </div>
             <div class="flex place-content-end">
-                <x-secondary-button type="submit" class="mt-5 float-right animate-bounce">
+                <x-secondary-button type="submit" x-on:click="spin = ! spin"
+                                    class="mt-5 float-right animate-bounce">
                     Sign In
                     <x-fluentui-arrow-enter-20-o class="w-6 h-6"/>
                 </x-secondary-button>
             </div>
+            <x-spinner/>
         </x-form>
         <p class="self-start mt-12 px-4">Or sign in with your Google account</p>
         <div class="flex flex-col place-center">
             <a type="button" href="{{ url('auth/google/') }}"
-               class="w-3/4 md:w-1/2 mx-auto mt-0 mb-4 ring-2 bg-gray-100 !text-blue-900 text-center text-sm md:text-xl rounded-lg hover:bg-zinc-100 hover:!text-teal-400">
+               class="w-3/4 md:w-1/2 mx-auto mt-0 mb-4 ring-2 bg-gray-100 text-blue-900! text-center text-sm md:text-xl rounded-lg hover:bg-zinc-100 hover:text-teal-400!">
                 <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/google-logo.svg')}}"
                      class="inline-block h-8 hover:animate-spin" alt="Google approved logo">Sign in with Google
             </a>

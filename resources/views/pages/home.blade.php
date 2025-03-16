@@ -23,7 +23,7 @@
                 </div>
             </div>
         </div>
-        <div class="grid grid-cols-12 grid-rows-1 gap-0 px-4 place-items-center" x-data="{ spin: false }">
+        <div class="grid grid-cols-12 grid-rows-1 gap-0 px-4 place-items-center">
             <div class="col-span-10 w-full">
                 <h3>
                     I make reviews <span class="font-semibold italic">fast</span> &amp; <span
@@ -47,14 +47,9 @@
                 <h3>
                     I&apos;m Here to Help
                 </h3>
-                <button type="button" x-on:click="spin = ! spin, window.location.replace('/start')"
-                        class="px-5 py-4 rounded-xl text-base text-white  btn bg-slate-700 hover:bg-teal-500 mb-4 text-center float-right">
-                    Generate Your Review
-                </button>
                 <p>
                     Want to know more about me? Go <a href="https://ravereview.guru" target="_blank">here</a>
                 </p>
-                <x-spinner/>
             </div>
         </div>
     </x-main-content>

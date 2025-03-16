@@ -2,7 +2,7 @@
     <div class="bg-twoshk_navy w-full">
         <div class="px-4 py-8 mx-auto">
             <x-main-content class="text-twoshk_tan">                
-                <div class="main__content flex-col items-center border-2 rounded text-gray-800 bg-zinc-50 ">         
+                <div class="main__content flex-col items-center border-2 rounded-sm text-gray-800 bg-zinc-50 ">         
                 <div class="grid grid-cols-5">
                     <div class="col-span-2">
                         <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/homer-doh.svg')}}" alt="The Review Guru">

@@ -1,4 +1,4 @@
-<div class="rounded-md shadow">
+<div class="rounded-md shadow-sm">
     <a
       href="{{ $href }}"
       type="{{$type}}"

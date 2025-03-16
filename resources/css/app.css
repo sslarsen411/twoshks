@@ -1,39 +1,104 @@
 /*//@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');*/
 
-@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&display=swap')
+layer(base);
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-#back, #next {
-    font-variant: small-caps;
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../**/*.blade.php';
+
+@theme {
+  --font-next: Atkinson Hyperlegible Next, sans-serif;
+
+  --breakpoint-xs: 200px;
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 976px;
+  --breakpoint-xl: 1440px;
 }
 
-@keyframes shake {
-    0%, 100% {
-        transform: translateX(0);
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+@utility guru-icon {
+  @apply h-auto w-auto inline-block;
+}
+
+@utility progress {
+  @apply relative w-full overflow-hidden h-2 appearance-none rounded-2xl bg-gray-300;
+
+  &::-webkit-progress-bar {
+    @apply rounded-2xl bg-transparent;
+  }
+}
+
+@utility progress-secondary {
+  &::-moz-progress-bar {
+    @apply rounded-2xl bg-red-500;
+  }
+
+  &::-webkit-progress-value {
+    @apply bg-red-500;
+  }
+}
+
+@utility progress__bar {
+  @apply flex flex-col justify-start p-2 lg:px-12;
+
+  @media (min-width: 976px) {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+@layer utilities {
+  #back,
+  #next {
+    font-variant: small-caps;
+  }
+
+  @keyframes shake {
+    0%,
+    100% {
+      transform: translateX(0);
     }
     25% {
-        transform: translateX(-5px);
+      transform: translateX(-5px);
     }
     50% {
-        transform: translateX(5px);
+      transform: translateX(5px);
     }
-}
+  }
 
-.error {
+  .error {
     @apply text-red-500 border-red-500 bg-pink-100;
     animation: shake 0.5s ease-in-out;
-}
+  }
 
-[x-cloak] {
+  [x-cloak] {
     display: none !important;
+  }
 }
 
 @layer base {
     *:focus-visible {
-        @apply outline-none;
+        @apply outline-hidden;
     }
 
     html {
@@ -95,41 +160,11 @@
 }
 
 @layer components {
-    .guru-icon {
-        @apply h-auto w-auto inline-block;
-    }
 
 
     /* Progress Bar*/
     progress {
         @apply align-baseline;
-    }
-
-    .progress {
-        @apply relative w-full overflow-hidden h-2 appearance-none rounded-2xl bg-gray-300;
-    }
-
-    .progress-secondary::-moz-progress-bar {
-        @apply rounded-2xl bg-red-500;
-    }
-
-    .progress::-webkit-progress-bar {
-        @apply rounded-2xl bg-transparent;
-    }
-
-    .progress-secondary::-webkit-progress-value {
-        @apply bg-red-500;
-    }
-
-    .progress__bar {
-        @apply flex flex-col justify-start p-2 lg:px-12;
-    }
-
-    @media (min-width: 976px) {
-        .progress__bar {
-            padding-left: 3rem;
-            padding-right: 3rem;
-        }
     }
 }
 

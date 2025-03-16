@@ -1,7 +1,4 @@
 <x-app-layout>
-    {{--    @push('styles')--}}
-    {{--        @vite(['resources/css/rateTW.css'])--}}
-    {{--    @endpush--}}
     <x-main-content>
         <div class="progress__bar">
             <progress class="progress progress-secondary w-56 mx-auto mb-5" value="5" max="100"></progress>
