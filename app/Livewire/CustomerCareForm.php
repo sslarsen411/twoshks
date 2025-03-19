@@ -10,22 +10,22 @@ use App\Models\Review;
 use App\Traits\SiteHelpers;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 #[AllowDynamicProperties]
-class CustomerCareForm extends Component {
+class CustomerCareForm extends Component
+{
     use SiteHelpers;
 
     //use LivewireAlert;
+    #[Validate('phone:US|min:9')]
+    public string $phone = '';
+    #[Validate('required|min:6')]
     public string $concerns = '';
     public bool $ckCallMe = false;
-    public string $phone = '';
     public Review $review;
     public Customer $customer;
-    protected $rules = [
-        'concerns' => 'required|min:6',
-        'phone' => 'phone:US|min:9',
-    ];
     protected $messages = [
         'concerns.required' => 'Please type something',
         'phone.phone' => 'Enter a valid phone number',
@@ -35,7 +35,6 @@ class CustomerCareForm extends Component {
     public function mount(): void
     {
         $this->customer = Customer::find(session('cust.id'));
-
     }
 
     public function updated($propertyName): void
@@ -43,41 +42,47 @@ class CustomerCareForm extends Component {
         $this->validateOnly($propertyName);
     }
 
-    public function submitForm(): void
+    public function submitForm()
     {
-        $this->handlePhoneCallRequirement();
+        $this->validate();
+        if ($this->ckCallMe) {
+            ray('calling handle phone');
+            $phoneOK = $this->handlePhoneCallRequirement();
+            if (!$phoneOK) {
+                $this->dispatch(
+                    'doAlert',
+                    title: 'Missing Phone Number!',
+                    text: 'Enter your phone number or uncheck the box',
+                    icon: "error"
+                );
+                return redirect()->back();
+            }
+        }
         $this->updateReviewWithConcerns();
         $this->sendCustomerEmails();
-        // $this->notifyUser();
         alert()
             ->html(
                 'We hear you',
-                '<h3 class="text-xl text-balance mb-5">'.
-                session('location.company').
-                ' has been notified about your concerns</h3><p class="text-balance">They will contact you shortly. A confirmation email has been sent to '.
-                session('cust.email').
+                '<h3 class="text-xl text-balance mb-5">' .
+                session('location.company') .
+                ' has been notified about your concerns</h3><p class="text-balance">They will contact you shortly. A confirmation email has been sent to ' .
+                session('cust.email') .
                 '.</p>',
                 'info'
-            )
-            ->showConfirmButton('OK', '#3085d6');
-        $this->doRedirect($this->url);
+            );
+        return redirect($this->url);
     }
 
-    private function handlePhoneCallRequirement(): void
+    private function handlePhoneCallRequirement(): bool
     {
-        if ($this->ckCallMe) {
-            if (empty($this->phone)) {
-                $this->dispatch(
-                    'phError',
-                    title: 'No phone number',
-                    text: 'Enter your phone number or uncheck the box'
-                );
-            } else {
-                $this->phone = $this->toE164($this->phone);
-                $this->customer->update(['phone' => $this->phone]);
-            }
-
-
+        ray($this);
+        if (empty($this->phone)) {
+            ray('no number');
+            return false;
+        } else {
+            $this->phone = $this->toE164($this->phone);
+            $this->customer->update(['phone' => $this->phone]);
+            return true;
         }
     }
 
@@ -92,7 +97,7 @@ class CustomerCareForm extends Component {
 
     private function sendCustomerEmails(): void
     {
-        $customerName = session('cust.first_name', '<>').' '.
+        $customerName = session('cust.first_name', '<>') . ' ' .
             session('cust.last_name', '<>');
 
         Mail::to(
@@ -103,7 +108,7 @@ class CustomerCareForm extends Component {
         ]));
 
         $phoneMessage = $this->phone
-            ? 'They have requested someone call them at '.$this->fromE164($this->phone)
+            ? 'They have requested someone call them at ' . $this->fromE164($this->phone)
             : 'no phone number given';
 
         Mail::to(
@@ -128,20 +133,5 @@ class CustomerCareForm extends Component {
     public function render(): View
     {
         return view('livewire.customer-care-form');
-    }
-
-    private function notifyUser(): void
-    {
-        alert()
-            ->html(
-                'We hear you',
-                '<h3 class="text-xl text-balance mb-5">'.
-                session('location.company').
-                ' has been notified about your concerns</h3><p class="text-balance">They will contact you shortly. A confirmation email has been sent to '.
-                session('cust.email').
-                '.</p>',
-                'info'
-            )
-            ->showConfirmButton('OK', '#3085d6');
     }
 }

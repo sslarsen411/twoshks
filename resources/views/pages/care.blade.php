@@ -5,14 +5,4 @@
         </p>
         <livewire:customer-care-form/>
     </x-main-content>
-
-    <script>
-        window.addEventListener('phError', event => {
-            Swal.fire({
-                title: event.detail.title,
-                text: event.detail.text,
-                icon: "error"
-            })
-        })
-    </script>
 </x-app-layout>

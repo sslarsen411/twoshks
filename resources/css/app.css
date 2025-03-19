@@ -1,7 +1,6 @@
 /*//@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');*/
 
-@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&display=swap')
-layer(base);
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&display=swap') layer(base);
 
 @import 'tailwindcss';
 
@@ -9,13 +8,13 @@ layer(base);
 @source '../**/*.blade.php';
 
 @theme {
-  --font-next: Atkinson Hyperlegible Next, sans-serif;
+    --font-next: Atkinson Hyperlegible Next, sans-serif;
 
-  --breakpoint-xs: 200px;
-  --breakpoint-sm: 480px;
-  --breakpoint-md: 768px;
-  --breakpoint-lg: 976px;
-  --breakpoint-xl: 1440px;
+    --breakpoint-xs: 200px;
+    --breakpoint-sm: 480px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 976px;
+    --breakpoint-xl: 1440px;
 }
 
 /*
@@ -27,73 +26,73 @@ layer(base);
   color utility to any element that depends on these defaults.
 */
 @layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
-  }
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
 }
 
 @utility guru-icon {
-  @apply h-auto w-auto inline-block;
+    @apply h-auto w-auto inline-block;
 }
 
 @utility progress {
-  @apply relative w-full overflow-hidden h-2 appearance-none rounded-2xl bg-gray-300;
+    @apply relative w-full overflow-hidden h-2 appearance-none rounded-2xl bg-gray-300;
 
-  &::-webkit-progress-bar {
-    @apply rounded-2xl bg-transparent;
-  }
+    &::-webkit-progress-bar {
+        @apply rounded-2xl bg-transparent;
+    }
 }
 
 @utility progress-secondary {
-  &::-moz-progress-bar {
-    @apply rounded-2xl bg-red-500;
-  }
+    &::-moz-progress-bar {
+        @apply rounded-2xl bg-red-500;
+    }
 
-  &::-webkit-progress-value {
-    @apply bg-red-500;
-  }
+    &::-webkit-progress-value {
+        @apply bg-red-500;
+    }
 }
 
 @utility progress__bar {
-  @apply flex flex-col justify-start p-2 lg:px-12;
+    @apply flex flex-col justify-start p-2 lg:px-12;
 
-  @media (min-width: 976px) {
-    padding-left: 3rem;
-    padding-right: 3rem;
-  }
+    @media (min-width: 976px) {
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }
 }
 
 @layer utilities {
-  #back,
-  #next {
-    font-variant: small-caps;
-  }
-
-  @keyframes shake {
-    0%,
-    100% {
-      transform: translateX(0);
+    #back,
+    #next {
+        font-variant: small-caps;
     }
-    25% {
-      transform: translateX(-5px);
-    }
-    50% {
-      transform: translateX(5px);
-    }
-  }
 
-  .error {
-    @apply text-red-500 border-red-500 bg-pink-100;
-    animation: shake 0.5s ease-in-out;
-  }
+    @keyframes shake {
+        0%,
+        100% {
+            transform: translateX(0);
+        }
+        25% {
+            transform: translateX(-5px);
+        }
+        50% {
+            transform: translateX(5px);
+        }
+    }
 
-  [x-cloak] {
-    display: none !important;
-  }
+    .error {
+        @apply text-red-500 border-red-500 bg-pink-100;
+        animation: shake 0.5s ease-in-out;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
 }
 
 @layer base {
@@ -117,7 +116,7 @@ layer(base);
     /*    @apply font-poppins;*/
     /*}*/
     h2 {
-        @apply text-base md:text-lg lg:text-xl font-semibold;
+        @apply text-slate-700 text-base md:text-lg lg:text-xl font-semibold;
     }
 
     h3 {
@@ -125,7 +124,7 @@ layer(base);
     }
 
     p {
-        @apply text-sm md:text-base lg:text-lg text-pretty mb-5
+        @apply text-sm md:text-base lg:text-lg text-pretty mb-2
     }
 
     li {
@@ -173,7 +172,7 @@ blockquote.bubble {
 }
 
 blockquote.bubble p {
-    @apply text-sm  md:text-base lg:text-xl text-balance w-3/4 ml-6  leading-none sm:leading-tight md:leading-snug;
+    @apply text-sm  md:text-base lg:text-xl text-pretty w-3/4 ml-6  leading-none sm:leading-tight md:leading-snug;
 }
 
 blockquote.bubble h2 {
