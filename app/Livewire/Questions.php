@@ -19,7 +19,7 @@ class Questions extends Component
     public int $currentIndex = 0; // Renamed from `$dex`
     public string $ask = '';
     public array $aiMessages = []; // Renamed from `$aiMsg`
-    public int $key = 1;
+    public int $questionNumber = 1;
     protected array $messages = [
         'answer.required' => 'Please type something',
     ];
@@ -29,12 +29,9 @@ class Questions extends Component
      */
     public function mount(): void
     {
-        //$this->questions = Question::where('category_id', session("location.category"))->pluck('questions')->toArray();
         $this->questions = Cache::get('questArr');
-        // ray($this->questions[0]);
-        //  $this->questions = unserialize($this->questions[0]);
-        ray(session('rate', 'rating')[0]);
         $this->initializeFirstQuestion();
+        ray(session()->all());
     }
 
     /**
@@ -45,17 +42,13 @@ class Questions extends Component
     private function initializeFirstQuestion(): void
     {
         $initialPrompt = $this->createInitialPrompt(session('location.PID'));
-        ray($initialPrompt);
         $this->createMessage($initialPrompt, true);
-        ray($this->currentIndex);
         if ($this->currentIndex === 0) {
             $this->question = 'You gave us ' . session('rating')[0] . ' stars. ' . $this->questions[$this->currentIndex];
         } else {
             $this->question = $this->questions[$this->currentIndex];
 
         }
-
-        ray($this->question);
     }
 
     /**
@@ -74,14 +67,12 @@ class Questions extends Component
     public function handleFormSubmission(): null|string
     {
         $this->validate();
-        // $cachedQuestions = Cache::get('questions');
         $review = Review::find(session('reviewID'));
-
         // Save updated answers
         $updatedAnswers = $this->saveUpdatedAnswers($review->answers, $this->currentIndex, strip_tags($this->answer));
         $review->update(['answers' => $updatedAnswers]);
         $this->progress += 15;
-        $this->key++;
+        $this->questionNumber++;
         $this->currentIndex++;
         if ($this->currentIndex <= 5) {
             $this->answer = '';
@@ -109,7 +100,6 @@ class Questions extends Component
     {
         $answersArray = $savedAnswers ? unserialize($savedAnswers) : [];
         $answersArray[$index] = $newAnswer;
-
         return serialize($answersArray);
     }
 

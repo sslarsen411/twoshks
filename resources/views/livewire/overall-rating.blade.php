@@ -6,7 +6,7 @@
             </p>
         @else
             <p class="text-center px-4">
-                Rate your experience at {{ session('location.company') }}
+                Rate your overall experience at {{ session('location.company') }}
             </p>
         @endif
         <div class="rating rating-lg lg:rating-xl rating-half mx-auto" x-data="{ rating: false }">
@@ -41,7 +41,7 @@
             </p>
         @else
             <p class="text-center mt-5">
-                Choose from 1 to 5 stars
+                Choose from &half; to 5 stars
             </p>
         @endif
     </div>
@@ -57,10 +57,10 @@
     @if($showInstr)
         <div wire:transition>
             <h2>
-                How to choose a star
                 <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png')}}"
-                     class="guru-icon max-w-16"
+                     class="guru-icon max-w-12"
                      alt="guru icon">
+                How to choose a star
 
             </h2>
             <p class="text-base md:text-lg indent-2 mb-0">You can select <strong>full</strong> or <strong>half</strong>

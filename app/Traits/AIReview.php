@@ -35,9 +35,9 @@ trait AIReview
     /**
      * @param Customer $customer
      * @param string $status
-     * @return array|Review
+     * @return array|Review|null
      */
-    public function initReview(Customer $customer, string $status = Review::STARTED): array|Review
+    public function initReview(Customer $customer, string $status = Review::STARTED): array|Review|null
     {
         $newReview = [];
         try {
@@ -48,11 +48,13 @@ trait AIReview
                 'rate' => session('rating')[0],
                 'status' => $status,
             ]);
-            $prompt = $this->createInitialPrompt(session('location.PID'));
-            $this->logMessageStatus(
-                $newReview->id,
-                $this->createMessage($prompt, self::PROMPT_TYPE_FIRST)
-            );
+            if ($this->rating > session('location.min_rate')) {
+                $prompt = $this->createInitialPrompt(session('location.PID'));
+                $this->logMessageStatus(
+                    $newReview->id,
+                    $this->createMessage($prompt, self::PROMPT_TYPE_FIRST)
+                );
+            }
         } catch (QueryException  $e) {
             Log::error($e->errorInfo);
         }
@@ -79,12 +81,12 @@ trait AIReview
         {
             "context": "A customer named $customerName is starting a review for a business. Your role is to assist them
             in providing thoughtful, engaging answers to the review questions through chat.
-            The review question are the subset of  questions referenced by the category key.
+            The review question are the subset of questions referenced by the category key.
             You will help guide them, offer suggestions, and ensure they feel supported throughout the process.
             A prompt to generate the final review will follow later. Below are key details:",
 
             "instructions": "Acknowledge the customer by name and confirm that you're ready to assist. If they have
-            any questions or need suggestions, respond helpfully.",
+            any questions or need help, respond as instructed above.",
 
             "customer": {
                 "name": "$customerName",

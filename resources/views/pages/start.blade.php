@@ -7,10 +7,23 @@
             <div class="col-span-7">
                 <blockquote class="speech bubble">
                     <h2>I&apos;m the Review Guru AI</h2>
-                    <p>
-                        I&apos;ll turn your feedback into an polished review in
-                        &ldquo;<strong>Two Shakes</strong> of a lamb&apos;s tail.&rdquo;
+                    <p class="text-xl text-pretty">
+                        I make writing a review
+                        <span class="font-semibold italic">fast</span>, <span
+                            class="font-bold text-emerald-800">easy</span>
+                        and <span class="font-semibold underline">fun</span>!
                     </p>
+                    <div class="grid grid-cols-6">
+                        <div class="flex place-items-center justify-end">
+                            <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/tslamb-128.webp')}}"
+                                 class="h-8 lg:h-16 w-auto hidden sm:inline" alt="logo">
+                        </div>
+                        <div class="col-span-5">
+                            <p class="mb-5">
+                                You&apos;ll be done in &ldquo;<strong>Two Shakes</strong> of a lamb&apos;s tail,&rdquo;
+                            </p>
+                        </div>
+                    </div>
                 </blockquote>
             </div>
             <div class="col-span-5">
@@ -26,45 +39,44 @@
                 </div>
             </div>
         </div>
+        <h2 class="ml-4">
+            How it works
+        </h2>
         <div class="grid grid-cols-12 grid-rows-1 gap-0 px-4 place-items-center">
             <div class="col-span-2 ">
                 <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png')}}" class="guru-icon"
                      alt="Review Guru icon">
             </div>
             <div class="col-span-10 w-full">
-                <h3>
-                    I make reviews <span class="font-semibold italic">fast</span> &amp; <span
-                        class="font-semibold">easy</span>!
-                </h3>
                 <ul class="mb-2 list-decimal list-inside">
-                    <p class="ml-2 indent-2">
-                        First, I&apos;ll ask you six questions about your experience at
-                        <strong>{{ session('location.company') }}</strong>&hellip;
+                    <p class="">
+                        First, I&apos;ll ask you <strong>six questions</strong> about your experience at
+                        <strong>{{ session('location.company') }}</strong>.
                     </p>
-                    <p class="ml-2 indent-2">
-                        Then I&apos;ll turn your answers into a polished review you can post online.
+                    <p class="">
+                        Then, I&apos;ll turn your feedback into an <strong>polished review</strong>.
+                    </p>
+                    <p>
+                        Lastly, I&apos;ll show you exactly how to <strong>post your</strong> newly minted review
+                        <strong>online</strong>.
                     </p>
                 </ul>
             </div>
             <div class="col-span-10 w-full">
-                <h3>
-                    I&apos;m Here to Help
-                </h3>
+                <h2>
+                    I&apos;ve got your back
+                </h2>
                 <p>
-                    At a loss? Not sure what to say? You can chat with me for help, suggestions, and examples.
+                    Need help? Not sure what to say? You can chat with me for help, suggestions, and examples.
                 </p>
             </div>
             <div class="col-span-2 ">
                 <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png')}}" class="guru-icon"
                      alt="Review Guru icon">
             </div>
-            <div class="col-span-2 ">
-                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png')}}" class="guru-icon"
-                     alt="Review Guru icon">
-            </div>
             <div class="col-span-10 w-full">
-                <h2>
-                    To Start&hellip;
+                <h2 class="text-3xl">
+                    Start
                 </h2>
             </div>
         </div>

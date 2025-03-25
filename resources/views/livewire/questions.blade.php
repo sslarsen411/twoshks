@@ -5,11 +5,7 @@
     <div class="grid grid-cols-12 gap-0">
         <div class="col-span-7">
             <blockquote class="speech bubble">
-                <h2 class="">Question {{ $key }}</h2>
-                {{--                <h3 class="text-lg font-semibold self-start" :class="{{$question->id}} == 1 ? '' : 'hidden'">--}}
-                {{--                    {{session('cust.first_name')}}, you gave--}}
-                {{--                    {{ session('rating')[0] }} {{ Str::plural('star',session('rating')[0]) }}&hellip;--}}
-                {{--                </h3>--}}
+                <h2 class="">Question {{ $questionNumber }}</h2>
                 <p>
                     {{ $question  }}
                 </p>
@@ -70,13 +66,7 @@
         <div
             class="h-[25vh] w-full mb-5 border rounded-lg bg-linear-to-t from-slate-100 p-6 flex space-y-1.5 overflow-scroll flex-col-reverse">
             <div class="flex flex-col">
-                @php
-                    //  ray($aiMessages);
-                @endphp
                 @foreach($aiMessages as $index => $msg)
-                    @php
-                        ray($index);
-                    @endphp
                     @if ($msg['role'] === 'user')
                         <div class="w-3/4 space-y-0.5 self-end">
                             <div class="text-xs text-right flex flex-row justify-end">
@@ -89,9 +79,8 @@
                         </div>
                     @endif
                     @if ($msg['role'] === 'assistant')
-                        <livewire:chat-response :key="$index" :questionNo="$key" :question="$question"
-                                                :messages="$aiMessages"
-                                                :helpText="$aiMessages[$key - 1]"/>
+                        <livewire:chat-response :key="$index" :question="$question"
+                                                :helpText="$aiMessages[$index - 1]"/>
                     @endif
                 @endforeach
             </div>

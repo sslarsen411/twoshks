@@ -14,6 +14,7 @@ class ChatResponse extends Component
     public string $threadId;
     public $category;
     public string $question;
+    public string $questionNumber;
     public ?string $response = null;
 
     /**
@@ -30,13 +31,16 @@ class ChatResponse extends Component
      */
     public function getResponse(): static
     {
-        $this->category = session('category');
+        ray($this);
+        $this->category = session('location.category');
         $prompt = <<<PROMPT
-        The reviewer needs help with question:
-        category: $this->category
-        question: $this->question
-        Their request: {$this->helpText['content']}
+        This reviewer needs help with this question: $this->question.
+
+        What they asked "{$this->helpText['content']}"
+
+       Help them answer the question.
 PROMPT;
+        ray($prompt);
         $this->createMessage($this->threadId, $prompt);
         return $this;
     }
