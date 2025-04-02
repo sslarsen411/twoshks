@@ -2,7 +2,8 @@
     <x-form wire:submit.prevent="submit" class="w-full mb-5">
         <div class="p-4 flex-col border-2">
             <p class="self-start mb-3">
-                Please share your thoughts and concerns.
+                Please share your thoughts and concerns below so we can discuss this further and improve your
+                experience.
             </p>
             <textarea rows="4" wire:model.blur="concerns" x-data="{ name: '{{$concerns}}' }"
                       id="concerns">{{ $concerns }}</textarea>
@@ -10,8 +11,8 @@
             <div class="self-start flex items-start my-4 w-full">
                 <input id="ckCallMe" wire:model.blur="ckCallMe" type="checkbox" value=""
                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2">
-                <label for="ckCallMe" class="ms-2 text-xm md:text-sm font-medium text-gray-900 ">Would you
-                    like {{ session('location.company') }} to call you?</label>
+                <label for="ckCallMe" class="ms-2 text-xs md:text-sm font-medium text-gray-900 ">
+                    Would you like someone from {{ session('location.company') }} to call you as well?</label>
             </div>
             <div id="ph_area" class="w-full self-start {{$ckCallMe?'':'hidden'}}">
                 <div class="relative z-0 w-3/4 mb-5 group">

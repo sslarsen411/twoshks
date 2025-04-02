@@ -65,7 +65,8 @@ class CustomerCareForm extends Component
                 'We hear you',
                 '<h3 class="text-xl text-balance mb-5">' .
                 session('location.company') .
-                ' has been notified about your concerns</h3><p class="text-balance">They will contact you shortly. A confirmation email has been sent to ' .
+                ' has been notified about your concerns</h3><p class="text-balance">They will contact you shortly.
+                   You&apos;ll receive an acknowledgement email at ' .
                 session('cust.email') .
                 '.</p>',
                 'info'
@@ -100,10 +101,14 @@ class CustomerCareForm extends Component
         $customerName = session('cust.first_name', '<>') . ' ' .
             session('cust.last_name', '<>');
 
+        $phone = $this->phone
+            ? $this->fromE164($this->phone)
+            : false;
         Mail::to(
             session('cust.email'), $customerName)->send(new CustomerCare([
             'first_name' => $customerName,
             'review' => $this->review->review,
+            'phone' => $phone,
             'company' => session('location.company'),
         ]));
 

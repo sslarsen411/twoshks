@@ -11,7 +11,8 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Mail\Mailables\Headers;
 use Illuminate\Queue\SerializesModels;
 
-class CustomerCare extends Mailable {
+class CustomerCare extends Mailable
+{
     use Queueable, SerializesModels;
 
     /**
@@ -29,9 +30,9 @@ class CustomerCare extends Mailable {
     {
         return new Envelope(
             replyTo: [
-                new Address('theguru@ravereviewguru.com', 'The Review Guru'),
+                new Address(session('location.support_email'), session('location.company')),
             ],
-            subject: $this->data['first_name'].', Your concerns have been forwarded to '.$this->data['company'].'\'s customer care',
+            subject: $this->data['first_name'] . ', We are aware of your concerns',
 
         );
     }
@@ -46,6 +47,7 @@ class CustomerCare extends Mailable {
             with: [
                 'first_name' => $this->data['first_name'],
                 'review' => $this->data['review'],
+                'phone' => $this->data['phone'],
                 'company' => $this->data['company'],
             ]
         );

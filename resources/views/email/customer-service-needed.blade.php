@@ -57,7 +57,7 @@
             Admin Portal</a> under either the <strong>Customers</strong> or <strong>Reviews</strong> pages.
     </p>
     <p>
-        I have sent them an acknowledgment email with a copy of their review.
+        I have sent them an acknowledgment email on your behalf with a copy of their review.
     </p>
     <p>
         I urge you to contact them as soon as possible before they post anything online to keep this a private matter.

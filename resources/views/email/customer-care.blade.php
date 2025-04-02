@@ -21,26 +21,32 @@
 </head>
 <body>
 <div>
-    <table role="presentation">
-        <tr>
-            <td style=" vertical-align: center">
-                <img src="https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png" width="128" height="128"
-                     alt="The Rave Review Guru"
-                     style="display: inline; outline: 0; line-height: 100%; width: 160px; height: auto; max-width: 100%; border: 0;"/>
-            </td>
-            <td style="vertical-align: center">
-                <span
-                    style="font-size:2rem; font-family: ' Roboto', Arial, Helvetica, sans-serif; ">The Review Guru</span>
-            </td>
-        </tr>
-    </table>
+    {{--    <table role="presentation">--}}
+    {{--        <tr>--}}
+    {{--            <td style=" vertical-align: center">--}}
+    {{--                <img src="https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png" width="128" height="128"--}}
+    {{--                     alt="The Rave Review Guru"--}}
+    {{--                     style="display: inline; outline: 0; line-height: 100%; width: 160px; height: auto; max-width: 100%; border: 0;"/>--}}
+    {{--            </td>--}}
+    {{--            <td style="vertical-align: center">--}}
+    {{--                <span--}}
+    {{--                    style="font-size:2rem; font-family: ' Roboto', Arial, Helvetica, sans-serif; ">The Review Guru</span>--}}
+    {{--            </td>--}}
+    {{--        </tr>--}}
+    {{--    </table>--}}
     <p>Dear {{$first_name }} </p>
     <p>
-        {{ $company }} has been notified about review you wrote using the Two Shakes Review App.
+        We&apos;re sorry to hear you had a negative experience. This is not the level of service {{ $company }}
+        strives for, and we want to make it right.
     </p>
     <p>
-        They have been directed to contact you regarding the concerns you expressed.
+        {{ $company }} customer service will reach out to you shortly regarding the concerns you expressed.
     </p>
+    @if($phone)
+        <p>
+            They will call you at {{ $phone  }} as well as contact you by email.
+        </p>
+    @endif
     <p>
         Below is a copy of what you wrote:
     </p>
@@ -53,7 +59,7 @@
         Thank you for using the Two Shakes Review App.
     </p>
     <p>
-        The Review Guru
+        The Review Guru on behalf of {{ $company }}.
     </p>
 </div>
 </body>
