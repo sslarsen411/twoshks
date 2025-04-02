@@ -57,10 +57,10 @@
     @if($showInstr)
         <div wire:transition>
             <h2>
-                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png')}}"
+                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-full.webp')}}"
                      class="guru-icon max-w-12"
                      alt="guru icon">
-                How to choose a star
+                How to choose your rating
 
             </h2>
             <p class="text-base md:text-lg indent-2 mb-0">You can select <strong>full</strong> or <strong>half</strong>

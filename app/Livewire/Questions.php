@@ -12,17 +12,19 @@ class Questions extends Component
 {
     use AIReview;
 
+    public $random;
     public string $question;
     public array $questions = [];
     public string $answer = '';
     public int $progress = 15;
-    public int $currentIndex = 0; // Renamed from `$dex`
-    public string $ask = '';
-    public array $aiMessages = []; // Renamed from `$aiMsg`
-    public int $questionNumber = 1;
+    public int $currentIndex = 0;
+    public string $ask = ''; // Renamed from `$dex`
+    public array $aiMessages = [];
+    public int $questionNumber = 1; // Renamed from `$aiMsg`
     protected array $messages = [
         'answer.required' => 'Please type something',
     ];
+    private $banner = array('lp', 'full', 'rp');
 
     /**
      * @return void
@@ -31,7 +33,7 @@ class Questions extends Component
     {
         $this->questions = Cache::get('questArr');
         $this->initializeFirstQuestion();
-        ray(session()->all());
+        $this->random = $this->banner[array_rand($this->banner)];
     }
 
     /**
@@ -47,7 +49,6 @@ class Questions extends Component
             $this->question = 'You gave us ' . session('rating')[0] . ' stars. ' . $this->questions[$this->currentIndex];
         } else {
             $this->question = $this->questions[$this->currentIndex];
-
         }
     }
 
@@ -75,6 +76,7 @@ class Questions extends Component
         $this->questionNumber++;
         $this->currentIndex++;
         if ($this->currentIndex <= 5) {
+            $this->random = $this->banner[array_rand($this->banner)];
             $this->answer = '';
             $this->question = $this->questions[$this->currentIndex];
         } else {

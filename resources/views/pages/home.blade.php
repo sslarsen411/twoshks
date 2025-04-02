@@ -14,10 +14,10 @@
                 <div class="flex">
                     <picture class="inline-block align-top my-0">
                         <source media="(max-width: 766px)"
-                                srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-xs.png')}}">
-                        <source media="(min-width: 768px)"
-                                srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-sm.png')}}">
-                        <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-sm.png')}}"
+                                srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-speak-full.webp')}}">
+                        {{--                        <source media="(min-width: 768px)"--}}
+                        {{--                                srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-sm.png')}}">--}}
+                        <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-speak-full.webp')}}"
                              alt="The Rave Review Guru" class="sm:w-auto">
                     </picture>
                 </div>
@@ -36,11 +36,11 @@
                 </p>
             </div>
             <div class="col-span-2 ">
-                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png')}}" class="guru-icon"
+                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-lp.webp' ) }}" class="guru-icon"
                      alt="Review Guru icon">
             </div>
-            <div class="col-span-2 ">
-                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png')}}" class="guru-icon"
+            <div class="col-span-2 mr-4">
+                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-rp.webp' ) }}" class="guru-icon"
                      alt="Review Guru icon">
             </div>
             <div class="col-span-10 w-full">

@@ -30,10 +30,8 @@
                 <div class="flex">
                     <picture class="inline-block align-top my-0">
                         <source media="(max-width: 766px)"
-                                srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-xs.png')}}">
-                        <source media="(min-width: 768px)"
-                                srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-sm.png')}}">
-                        <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-sm.png')}}"
+                                srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-speak-lp.webp')}}">
+                        <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-speak-lp.webp')}}"
                              alt="The Rave Review Guru" class="sm:w-auto">
                     </picture>
                 </div>
@@ -43,8 +41,8 @@
             How it works
         </h2>
         <div class="grid grid-cols-12 grid-rows-1 gap-0 px-4 place-items-center">
-            <div class="col-span-2 ">
-                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png')}}" class="guru-icon"
+            <div class="col-span-2 mr-4 ">
+                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-rp.webp')}}" class="guru-icon"
                      alt="Review Guru icon">
             </div>
             <div class="col-span-10 w-full">
@@ -71,12 +69,12 @@
                 </p>
             </div>
             <div class="col-span-2 ">
-                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png')}}" class="guru-icon"
+                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-full.webp')}}" class="guru-icon"
                      alt="Review Guru icon">
             </div>
             <div class="col-span-10 w-full">
                 <h2 class="text-3xl">
-                    Start
+                    Let&apos;s Get Started&hellip;
                 </h2>
             </div>
         </div>

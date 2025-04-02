@@ -1,3 +1,9 @@
+@php
+
+
+    //   $img = "https://cdn.mojoimpact.com/twoshakes/guru-speak-$random.webp";
+     //  echo '<img src="' . $random . '"/>';
+@endphp
 <div>
     <div class="progress__bar">
         <progress class="progress progress-secondary w-56 mx-auto" value="{{$progress}}" max="100"></progress>
@@ -15,10 +21,8 @@
             <div class="flex">
                 <picture class="inline-block align-top my-0">
                     <source media="(max-width: 766px)"
-                            srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-xs.png')}}">
-                    <source media="(min-width: 768px)"
-                            srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-sm.png')}}">
-                    <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-sm.png')}}"
+                            srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-speak-' . $random . '.webp') }}">
+                    <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-speak-' . $random . '.webp')}}"
                          alt="The Rave Review Guru" class="sm:w-auto">
                 </picture>
             </div>
@@ -46,8 +50,8 @@
     </div>
     <div>
         <h2 class="self-start">
-            <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png')}}"
-                 class="guru-icon"
+            <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-rp.webp')}}"
+                 class="guru-icon h-12 w-auto"
                  alt="guru icon">
             Need help? Ask the Review Guru
         </h2>
