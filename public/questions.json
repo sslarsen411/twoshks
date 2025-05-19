@@ -1,0 +1,55 @@
+{
+    "general": [
+        {
+            "id": "1",
+            "question": "Thanks for the [X] stars! Can you tell us what stood out in your experience?"
+        },
+        {
+            "id": "2",
+            "question": "How was the helpfulness and knowledge of our staff?"
+        },
+        {
+            "id": "3",
+            "question": "Is there anything we could do to improve your experience?"
+        },
+        {
+            "id": "4",
+            "question": "Would you recommend us to your friends and family?"
+        },
+        {
+            "id": "5",
+            "question": "Do you have any other thoughts or feedback you'd like to share?"
+        }
+    ],
+    "categories": {
+        "retail": {
+            "questions": [
+                "How satisfied were you with the variety and availability of products?",
+                "Was the store layout and organization easy to navigate?",
+                "How did you find the checkout process? Was it smooth and efficient?",
+                "Do you plan to shop with us again? Why or why not?",
+                "Were prices and promotions clear and fair?"
+            ]
+        },
+        "service": {
+            "ongoing": {
+                "questions": [
+                    "How consistent and reliable has our service been over time?",
+                    "Do you feel the service meets your expectations on a regular basis?",
+                    "How responsive have we been to your questions or concerns?",
+                    "Are there any improvements you’d like us to make for your ongoing service?",
+                    "How likely are you to continue using our services regularly?"
+                ]
+            },
+            "one_time": {
+                "questions": [
+                    "How satisfied were you with the timeliness of the service?",
+                    "Was the service completed to your expectations and standards?",
+                    "How well did our team communicate with you throughout the process?",
+                    "Were there any issues during or after the service that you’d like to mention?",
+                    "Would you consider hiring us again for future one-time projects?"
+                ]
+            }
+        }
+    }
+}

@@ -36,8 +36,9 @@
         <div
             class="w-full divide-y divide-stone-300 overflow-hidden rounded-xl border border-slate-300 bg-stone-100/40 text-slate-700">
             <div x-data="{ isExpanded: false }" class="divide-y divide-slate-300 dark:divide-slate-700">
-                <button id="controlsAccordionItemOne" type="button" class="flex w-full items-center justify-between gap-4 bg-stone-100 p-4 text-left underline-offset-2
-              hover:bg-stone-200/75 focus-visible:bg-slate-100/75 focus-visible:underline focus-visible:outline-hidden"
+                <button id="controlsAccordionItemOne" type="button" class="flex w-full items-center justify-between gap-4
+                        bg-stone-100 p-4 text-left underline-offset-2 hover:bg-stone-200/75 focus-visible:bg-slate-100/75
+                        focus-visible:underline focus-visible:outline-hidden"
                         aria-controls="accordionItemOne"
                         @click="isExpanded = ! isExpanded"
                         :class="isExpanded ? 'text-onSurfaceStrong  font-bold'  : 'text-onSurface font-medium'"
@@ -63,13 +64,13 @@
             </div>
         </div>
     </x-main-content>
-    <script>
-        window.addEventListener('ansUpdated', event => {
-            // console.log(event)
-            Swal.fire({
-                title: event.detail.title,
-                icon: "success"
-            })
-        })
-    </script>
+    {{--    <script>--}}
+    {{--        window.addEventListener('ansUpdated', event => {--}}
+    {{--            // console.log(event)--}}
+    {{--            Swal.fire({--}}
+    {{--                title: event.detail.title,--}}
+    {{--                icon: "success"--}}
+    {{--            })--}}
+    {{--        })--}}
+    {{--    </script>--}}
 </x-app-layout>

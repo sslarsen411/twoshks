@@ -15,10 +15,8 @@
                     <div class="flex">
                         <picture class="inline-block align-top my-0">
                             <source media="(max-width: 766px)"
-                                    srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-xs.png')}}">
-                            <source media="(min-width: 768px)"
-                                    srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-sm.png')}}">
-                            <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-sm.png')}}"
+                                    srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-speak-full.webp')}}">
+                            <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-speak-full.webp')}}"
                                  alt="The Rave Review Guru" class="sm:w-auto">
                         </picture>
                     </div>
@@ -26,21 +24,21 @@
             </div>
         </div>
         <div class="grid grid-cols-12 grid-rows-1 gap-0 px-4 place-items-center">
-            <div class="col-span-10 w-full">
-                <p>
-                    It&apos;s been copied to your clipboard, ready to paste online.
-                </p>
-                <p class=" ">
-                    {{session('cust.first_name')}}, feel free to personalize it &mdash; any changes you make are
-                    saved and copied automatically
-                </p>
-            </div>
+            {{--            <div class="col-span-10 w-full">--}}
+            {{--                <p>--}}
+            {{--                    It&apos;s been copied to your clipboard, ready to paste online.--}}
+            {{--                </p>--}}
+            {{--                <p class=" ">--}}
+            {{--                    {{session('cust.first_name')}}, feel free to personalize it &mdash; any changes you make are--}}
+            {{--                    saved and copied automatically--}}
+            {{--                </p>--}}
+            {{--            </div>--}}
+            {{--            <div class="col-span-2 ">--}}
+            {{--                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-lp.webp')}}" class="guru-icon h-24 mr-4"--}}
+            {{--                     alt="Review Guru icon">--}}
+            {{--            </div>--}}
             <div class="col-span-2 ">
-                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png')}}" class="guru-icon"
-                     alt="Review Guru icon">
-            </div>
-            <div class="col-span-2 ">
-                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png')}}" class="guru-icon"
+                <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-rp.webp')}}" class="guru-icon h-24 mr-4"
                      alt="Review Guru icon">
             </div>
             <div class="col-span-10 w-full">
@@ -50,6 +48,11 @@
                 <p>
                     It&apos;s been copied to your clipboard, ready to paste online.
                 </p>
+                <p>
+                    {{session('cust.first_name')}}, feel free to personalize it &mdash; any changes you make are
+                    saved and copied automatically
+                </p>
+
             </div>
         </div>
         <livewire:edit-review :review="$review"/>
@@ -65,7 +68,7 @@
                     Tap
                     @enddesktop the button below to go directly to Google&apos;s review application to post your review:
                 </p>
-                <livewire:go-to-google/>
+                <livewire:go-to-google :review="$review" :reply="$reply"/>
                 <p>
                     Thanks again from <strong>{{session('location.company')}}</strong>.
                 </p>
@@ -107,10 +110,10 @@
                              alt="Picture of a phone showing how to paste the review on Google">
                     </div>
                 </div>
-                <livewire:go-to-google/>
+                {{--                <livewire:go-to-google/>--}}
                 <div class="grid grid-cols-12 grid-rows-1 gap-0 px-4 place-items-center">
                     <div class="col-span-2 ">
-                        <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png')}}"
+                        <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-rp-full.webp')}}"
                              class="guru-icon"
                              alt="Review Guru icon">
                     </div>

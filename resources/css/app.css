@@ -1,15 +1,15 @@
 /*//@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');*/
 
-@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&display=swap') layer(base);
-
+/*@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&display=swap') layer(base);*/
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&family=Faster+One&display=swap');
 @import 'tailwindcss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../**/*.blade.php';
 
 @theme {
-    --font-next: Atkinson Hyperlegible Next, sans-serif;
-
+    --font-next: "Atkinson Hyperlegible Next", C;
+    --font-fast: "Faster One", system-ui;
     --breakpoint-xs: 200px;
     --breakpoint-sm: 480px;
     --breakpoint-md: 768px;
@@ -160,6 +160,9 @@
 
 @layer components {
 
+    .fast {
+        @apply font-fast;
+    }
 
     /* Progress Bar*/
     progress {
@@ -172,7 +175,7 @@ blockquote.bubble {
 }
 
 blockquote.bubble p {
-    @apply text-sm  md:text-base lg:text-xl text-pretty w-3/4 ml-6  leading-none sm:leading-tight md:leading-snug;
+    @apply text-sm  md:text-base lg:text-xl text-pretty ml-6  leading-none sm:leading-tight md:leading-snug;
 }
 
 blockquote.bubble h2 {

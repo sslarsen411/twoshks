@@ -1,5 +1,5 @@
 <div x-cloak x-show="spin" x-transition
-    class="grid h-screen w-full bg-black/60 absolute top-0 left-0 place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
+     class="grid h-screen w-full bg-black/60 absolute top-0 left-0 place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
     <svg class="w-32 h-32 animate-spin text-teal-400/50" viewBox="0 0 64 64" fill="none"
          xmlns="http://www.w3.org/2000/svg" width="24" height="24">
         <path
@@ -11,6 +11,6 @@
         </path>
     </svg>
     <p class="text-zinc-50 text-6xl animate-bounce -mt-224">
-        Thinking&hellip;
+        Working&hellip;
     </p>
 </div>

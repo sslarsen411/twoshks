@@ -39,7 +39,8 @@ use Illuminate\Support\Carbon;
  * @method static Builder<static>|Review whereUsersId($value)
  * @mixin Eloquent
  */
-class Review extends Model {
+class Review extends Model
+{
 
     const string STARTED = 'Started';
     const string COMPLETED = 'Completed';
@@ -53,6 +54,7 @@ class Review extends Model {
         'customer_id',
         'location_id',
         'rate',
+        'reply',
         'answers',
         'review',
         'status'

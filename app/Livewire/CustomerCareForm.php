@@ -9,13 +9,12 @@ use App\Models\Customer;
 use App\Models\Review;
 use App\Traits\SiteHelpers;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\View\View;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 #[AllowDynamicProperties]
-class CustomerCareForm extends Component
-{
+class CustomerCareForm extends Component {
     use SiteHelpers;
 
     //use LivewireAlert;
@@ -26,7 +25,7 @@ class CustomerCareForm extends Component
     public bool $ckCallMe = false;
     public Review $review;
     public Customer $customer;
-    protected $messages = [
+    protected array $messages = [
         'concerns.required' => 'Please type something',
         'phone.phone' => 'Enter a valid phone number',
     ];
@@ -37,12 +36,15 @@ class CustomerCareForm extends Component
         $this->customer = Customer::find(session('cust.id'));
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function updated($propertyName): void
     {
         $this->validateOnly($propertyName);
     }
 
-    public function submitForm()
+    public function submitForm(): object
     {
         $this->validate();
         if ($this->ckCallMe) {
@@ -63,11 +65,11 @@ class CustomerCareForm extends Component
         alert()
             ->html(
                 'We hear you',
-                '<h3 class="text-xl text-balance mb-5">' .
-                session('location.company') .
+                '<h3 class="text-xl text-balance mb-5">'.
+                session('location.company').
                 ' has been notified about your concerns</h3><p class="text-balance">They will contact you shortly.
-                   You&apos;ll receive an acknowledgement email at ' .
-                session('cust.email') .
+                   You&apos;ll receive an acknowledgement email at '.
+                session('cust.email').
                 '.</p>',
                 'info'
             );
@@ -78,7 +80,7 @@ class CustomerCareForm extends Component
     {
         ray($this);
         if (empty($this->phone)) {
-            ray('no number');
+            //         ray('no number');
             return false;
         } else {
             $this->phone = $this->toE164($this->phone);
@@ -98,7 +100,7 @@ class CustomerCareForm extends Component
 
     private function sendCustomerEmails(): void
     {
-        $customerName = session('cust.first_name', '<>') . ' ' .
+        $customerName = session('cust.first_name', '<>').' '.
             session('cust.last_name', '<>');
 
         $phone = $this->phone
@@ -113,7 +115,7 @@ class CustomerCareForm extends Component
         ]));
 
         $phoneMessage = $this->phone
-            ? 'They have requested someone call them at ' . $this->fromE164($this->phone)
+            ? 'They have requested someone call them at '.$this->fromE164($this->phone)
             : 'no phone number given';
 
         Mail::to(
@@ -135,7 +137,7 @@ class CustomerCareForm extends Component
             ]));
     }
 
-    public function render(): View
+    public function render(): object
     {
         return view('livewire.customer-care-form');
     }

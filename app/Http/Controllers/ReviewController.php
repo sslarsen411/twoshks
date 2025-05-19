@@ -20,12 +20,13 @@ class ReviewController extends Controller
         try {
             // Step 1: Retrieve the review record
             $reviewCollection = $this->retrieveReview(session('reviewID'));
-            ray($reviewCollection);
+            // ray($reviewCollection);
             // Step 2: Deserialize the answers
             $answers = $this->deserializeAnswers($reviewCollection->answers, session('reviewID'));
-            ray($answers);
+            // ray($answers);
             // Step 3: Generate the review prompt
             $msg = $this->makeReviewPrompt($answers);
+            // ray($msg);
             if (empty($msg)) {
                 throw new Exception("Failed to generate review prompt for review ID: " . session('reviewID'));
             }
@@ -34,13 +35,33 @@ class ReviewController extends Controller
             if (!$review) {
                 throw new Exception("Failed to generate the review from the assistant.");
             }
+            ray($review);
+
+            $parsed = json_decode($review, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new Exception("Assistant response is not valid JSON: " . json_last_error_msg());
+            }
+
+            $customerReview = $parsed['review'] ?? null;
+            $businessReply = $parsed['reply'] ?? null;
+            ray('review: ', $customerReview);
+
+            ray('reply: ', $businessReply);
+            if (!$customerReview || !$businessReply) {
+                throw new Exception("Missing review or reply in assistant response.");
+            }
+
             // Step 5: Update review record in the database
-            $this->updateReview($reviewCollection, $review);
+
+            // $this->updateReview($reviewCollection, $review);
+            $this->updateReview($reviewCollection, $customerReview, $businessReply);
+
             // Step 6: Clean up the review for the final display
-            $finalReview = str_replace('"', '', $review);
-            ray($finalReview);
+            //   $finalReview = str_replace('"', '', $review);
+            //   ray($finalReview);
             // Step 7: Return the page view
-            return view(self::FINISH_PAGE_VIEW, ['review' => $finalReview]);
+            //   return view(self::FINISH_PAGE_VIEW, ['review' => $finalReview]);
+            return view(self::FINISH_PAGE_VIEW, ['review' => $customerReview, 'reply' => $businessReply]);
         } catch (Exception $e) {
             // Log the error for debugging purposes
             Log::error('Error composing review: ' . $e->getMessage());
@@ -76,9 +97,9 @@ class ReviewController extends Controller
     /**
      * @throws Exception
      */
-    private function updateReview(Review $reviewCollection, string $review): void
+    private function updateReview(Review $reviewCollection, string $inReview, string $inReply): void
     {
-        $updateSuccess = $reviewCollection->update(['review' => $review, 'status' => Review::COMPLETED]);
+        $updateSuccess = $reviewCollection->update(['review' => $inReview, 'reply' => $inReply, 'status' => Review::COMPLETED]);
         if (!$updateSuccess) {
             throw new Exception("Failed to update the review record in the database.");
         }

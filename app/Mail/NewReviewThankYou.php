@@ -10,7 +10,8 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Mail\Mailables\Headers;
 use Illuminate\Queue\SerializesModels;
 
-class NewReviewThankYou extends Mailable {
+class NewReviewThankYou extends Mailable
+{
     use Queueable, SerializesModels;
 
     public function __construct(public $data)
@@ -22,9 +23,9 @@ class NewReviewThankYou extends Mailable {
     {
         return new Envelope(
             replyTo: [
-                new Address('theguru@ravereviewguru.com', 'The Review Guru'),
+                new Address($this->data['replyTo'], $this->data['company']),
             ],
-            subject: $this->data['first_name'].', here\'s the review you wrote for '.$this->data['company'],
+            subject: $this->data['first_name'] . ', thank you for your review',
         );
     }
 
@@ -35,6 +36,7 @@ class NewReviewThankYou extends Mailable {
             with: [
                 'first_name' => $this->data['first_name'],
                 'review' => $this->data['review'],
+                'reply' => $this->data['reply'],
                 'company' => $this->data['company'],
             ]
         );

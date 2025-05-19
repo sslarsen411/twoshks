@@ -8,11 +8,10 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
-class Questions extends Component
-{
+class Questions extends Component {
     use AIReview;
 
-    public $random;
+    public string $random;
     public string $question;
     public array $questions = [];
     public string $answer = '';
@@ -24,7 +23,7 @@ class Questions extends Component
     protected array $messages = [
         'answer.required' => 'Please type something',
     ];
-    private $banner = array('lp', 'full', 'rp');
+    private array $banner = array('lp', 'full', 'rp');
 
     /**
      * @return void
@@ -46,7 +45,7 @@ class Questions extends Component
         $initialPrompt = $this->createInitialPrompt(session('location.PID'));
         $this->createMessage($initialPrompt, true);
         if ($this->currentIndex === 0) {
-            $this->question = 'You gave us ' . session('rating')[0] . ' stars. ' . $this->questions[$this->currentIndex];
+            $this->question = 'You gave us '.session('rating')[0].' stars. '.$this->questions[$this->currentIndex];
         } else {
             $this->question = $this->questions[$this->currentIndex];
         }
@@ -82,7 +81,7 @@ class Questions extends Component
         } else {
             $review->update(['status' => Review::COMPLETED]);
             alert()->success(
-                'Done! ' . session('cust.first_name') . ' You\'ve completed the questions.',
+                'Done! '.session('cust.first_name').' You\'ve completed the questions.',
                 'Now we\'ll compose a review'
             );
             return $this->redirect('/review', navigate: true);
@@ -93,9 +92,9 @@ class Questions extends Component
     /**
      * Saves the updated answers to the review object.
      *
-     * @param string|null $savedAnswers
-     * @param int|string $index
-     * @param string $newAnswer
+     * @param  string|null  $savedAnswers
+     * @param  int|string  $index
+     * @param  string  $newAnswer
      * @return string|null
      */
     private function saveUpdatedAnswers(string|null $savedAnswers, int|string $index, string $newAnswer): string|null
@@ -114,9 +113,9 @@ class Questions extends Component
     }
 
     /**
-     * @param string|null $inAnsStr
-     * @param string|int $dex
-     * @param string $newAns
+     * @param  string|null  $inAnsStr
+     * @param  string|int  $dex
+     * @param  string  $newAns
      * @return null | string
      */
     function updateAnswers(string|null $inAnsStr, string|int $dex, string $newAns): string|null

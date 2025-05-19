@@ -3,14 +3,12 @@
 
 namespace App\Livewire;
 
-use Illuminate\View\View;
 use Livewire\Component;
 
-class Footer extends Component
-{
+class Footer extends Component {
 
-    public $componentName = 'lgl-cookie';
-    public $isOpen = false;
+    public string $componentName = 'lgl-cookie';
+    public bool $isOpen = false;
 
     public function openModal($inVal): void
     {
@@ -18,7 +16,7 @@ class Footer extends Component
         $this->isOpen = true;
     }
 
-    public function render(): view
+    public function render(): object
     {
         return view('livewire.footer');
     }

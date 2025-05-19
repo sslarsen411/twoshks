@@ -12,8 +12,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
 use OpenAI\Laravel\Facades\OpenAI;
 
-trait AIReview
-{
+trait AIReview {
     use GooglePlaces;
 
     private const string ROLE_USER = 'user';
@@ -23,7 +22,7 @@ trait AIReview
     private const int TIMEOUT = 30;
 
     /**
-     * @param array $parameters
+     * @param  array  $parameters
      * @return string
      */
     public function setThread(array $parameters = []): string
@@ -33,8 +32,8 @@ trait AIReview
     }
 
     /**
-     * @param Customer $customer
-     * @param string $status
+     * @param  Customer  $customer
+     * @param  string  $status
      * @return array|Review|null
      */
     public function initReview(Customer $customer, string $status = Review::STARTED): array|Review|null
@@ -142,7 +141,7 @@ trait AIReview
 
     /**
      * @param $inMessage
-     * @param string $reviewPromptType
+     * @param  string  $reviewPromptType
      * @return string
      */
     public function createMessage($inMessage, string $reviewPromptType = ''): string
@@ -156,7 +155,7 @@ trait AIReview
 
             return $this->sendMessage($reviewPromptType);
         } catch (Exception $e) {
-            return "Error creating message: " . $e->getMessage();
+            return "Error creating message: ".$e->getMessage();
         }
     }
 
@@ -185,14 +184,14 @@ trait AIReview
             }
             return $this->getThreadResult($runId);
         } catch (Exception $e) {
-            return "Error sending message: " . $e->getMessage();
+            return "Error sending message: ".$e->getMessage();
         }
     }
 
     /**
      * @param $runId
-     * @param int $timeout
-     * @param int $interval
+     * @param  int  $timeout
+     * @param  int  $interval
      * @return string
      */
     public function getThreadResult($runId, int $timeout = self::TIMEOUT, int $interval = self::POLL_INTERVAL): string
@@ -228,18 +227,34 @@ trait AIReview
      */
     public function makeReviewPrompt($inAnswers): string
     {
+        if (session('rating')[0] >= 4.5) {
+            $replyInstructions = <<<INSTRUCTIONS
+            - Goal: Express sincere appreciation, reinforce key strengths, and encourage repeat business.
+            - Highlight positive aspects the customer mentioned.
+            - Reinforce your commitment to excellence.
+            - Invite them back warmly and encourage ongoing engagement.
+INSTRUCTIONS;
+        } else {
+            $replyInstructions = <<<INSTRUCTIONS
+            - Goal: Show appreciation while professionally addressing any concerns.
+            - Acknowledge what they liked.
+            - Address any issues they raised and offer a solution or improvement where applicable.
+            - Keep the tone positive and forward-looking.
+INSTRUCTIONS;
+        }
+
         // ray($inAnswers);
         return <<<PROMPT
             Now, use the following responses from the customer to craft a well-structured, natural-sounding review:
-
-                - **Question 1 Response: "$inAnswers[0]"
+            and a business reply using the following information:
+                — **Question 1 Response: "$inAnswers[0]"
                 - **Question 2 Response: "$inAnswers[1]"
                 - **Question 3 Response: ""$inAnswers[2]"
                 - **Question 4 Response: ""$inAnswers[3]"
                 - **Question 5 Response: ""$inAnswers[4]}"
                 - **Question 6 Response: ""$inAnswers[5]"
 
-             ### Instructions:
+             ### Review Instructions:
             - **Use the provided customer responses and business details to create a detailed review.**
             - **Make the review sound human and natural, NOT like a generic report.**
             - **Incorporate the customer's favorite aspect and overall experience to emphasize what makes the business stand out.**
@@ -248,7 +263,25 @@ trait AIReview
             - **Focus on clarity, keeping the review concise and impactful.**
             - **Conclude with a strong closing statement that fits the customer's sentiment.**
 
-            Write the review in **plain text** below:
+            - Then write a thoughtful business reply thanking them for that review.
+
+            ### Business Reply Instructions:
+            - Always thank the reviewer by name.
+            - Reference specific positives they mentioned to show appreciation.
+            $replyInstructions
+
+          ### Output Instructions:
+            - Return both the customer review and the business reply in a valid JSON object using this format:
+
+            {
+              "review": "...",
+              "reply": "..."
+            }
+
+            Formatting Rules:
+            - The "review" field must be plain text with no HTML or markdown.
+            - The "reply" field must use clean, basic HTML such as <p>, <strong>, and <br> for formatting. Do not include styling, scripts, or external links.
+
         PROMPT;
     }
 }

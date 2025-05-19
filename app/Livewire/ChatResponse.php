@@ -3,18 +3,16 @@
 namespace App\Livewire;
 
 use App\Traits\AIChat;
-use Illuminate\View\View;
 use Livewire\Component;
 
-class ChatResponse extends Component
-{
+class ChatResponse extends Component {
     use AIChat;
 
     public array $helpText;
     public string $threadId;
-    public $category;
+    public string $category;
     public string $question;
-    public string $questionNumber;
+    // public string $questionNumber;
     public ?string $response = null;
 
     /**
@@ -46,9 +44,9 @@ PROMPT;
     }
 
     /**
-     * @return View
+     * @return object
      */
-    public function render(): View
+    public function render(): object
     {
         return view('livewire.chat-response');
     }

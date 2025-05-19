@@ -97,11 +97,15 @@
         TYPOGRAPHY
     ------------------------------------- */
 
-        p {
+        p, h2 {
             font-family: Helvetica, sans-serif;
             font-size: 16px;
             font-weight: normal;
             margin: 0 0 16px;
+        }
+
+        h2 {
+            font-size: 24px;
         }
 
         a {
@@ -183,24 +187,22 @@
                     <!-- START MAIN CONTENT AREA -->
                     <tr>
                         <td class="wrapper">
-                            <p>{{$first_name }}, here&apos;s a copy of your review for {{ $company }}:</p>
+                            {{--                            <p>Dear {{$first_name }} </p>--}}
+                            <div
+                                style="margin-left: auto; margin-right:auto; margin-bottom:20px; padding:10px;">
+                                {!!  $reply !!}
+                            </div>
+                            <h2>You wrote:</h2>
                             <div class="review"
-                                 style="width: 96%; margin-left: auto; margin-right:auto; margin-bottom:20px; padding:10px;
+                                 style="width: 90%; margin-left: auto; margin-right:auto; margin-bottom:20px; padding:10px;
         background-color:#DEDEDE;">
                                 {{ $review }}
                             </div>
+                            <h2>P.S.</h2>
                             <p>
                                 Thank you for using the Two Shakes App.
                             </p>
-                            <p>Best Regards</p>
-                            <table>
-                                <tr>
-                                    <td>The Review Guru</td>
-                                    <td><img src="https://cdn.mojoimpact.com/twoshakes/reviewguru-xs.png"
-                                             alt="Useful alt text" width="128" height="128"
-                                             style="border:0; outline:none; text-decoration:none; display:block;"></td>
-                                </tr>
-                            </table>
+                            <p>{{ $company }} and the Review Guru</p>
                         </td>
                     </tr>
                     <!-- END MAIN CONTENT AREA -->

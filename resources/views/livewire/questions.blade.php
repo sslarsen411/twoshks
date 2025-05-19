@@ -1,11 +1,6 @@
-@php
-
-
-    //   $img = "https://cdn.mojoimpact.com/twoshakes/guru-speak-$random.webp";
-     //  echo '<img src="' . $random . '"/>';
-@endphp
 <div>
     <div class="progress__bar">
+        <p class="text-center mb-0">{{$progress}}% Complete</p>
         <progress class="progress progress-secondary w-56 mx-auto" value="{{$progress}}" max="100"></progress>
     </div>
     <div class="grid grid-cols-12 gap-0">
@@ -60,7 +55,6 @@
                 class="bg-white rounded-full grow relative flex items-center h-10 focus-within:ring-2 ring-inset ring-blue-500">
                 <input wire:model="ask" class="bg-transparent rounded-full grow px-4 py-2 text-sm h-10 focus:outline-0"
                        placeholder="I'm not sure what to say..."/>
-                {{-- <input type="hidden" wire:model="questionNo" value="{{$question->q}}"> --}}
                 <button
                     class="bg-slate-800 text-slate-50 rounded-3xl text-sm font-medium size-10 flex items-center justify-center">
                     <x-fluentui-send-20-o class="w-6 h-6"/>

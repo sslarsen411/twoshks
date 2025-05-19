@@ -7,67 +7,79 @@ use App\Models\Review;
 use App\Traits\SiteHelpers;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\View\View;
 use Livewire\Component;
 
-class GoToGoogle extends Component
-{
+class GoToGoogle extends Component {
     use SiteHelpers;
 
     public string $url;
     public string $answer;
+    public string $review;
+    public string $reply;
 
     public function mount(): void
     {
-        $this->url = 'https://search.google.com/local/writereview?placeid=' . session('location.PID');
+        $this->url = 'https://search.google.com/local/writereview?placeid='.session('location.PID');
     }
 
     public function updateAndNotifyReview(): void
     {
         // Fetch needed session variables
-        $reviewId = session('reviewID');
+        //  $reviewId = session('reviewID');
         $customerEmail = session('cust.email');
 //        $customerName = session('cust.first_name').' '.session('cust.last_name');
         $companyName = session('location.company');
+        $companyEmail = session('location.support_email');
         $customerFirstName = session('cust.first_name');
 
         // Retrieve the review and update its status
-        $review = Review::find($reviewId);
-        $review->update(['status' => Review::POSTED]);
+        $reviewCollection = Review::find(session('reviewID'));
+        $reviewCollection->update(['status' => Review::POSTED]);
 
-        // Send notification email to client
-        $this->sendNotificationEmail($customerEmail, $customerFirstName, $review, $companyName);
+        // Send a notification email to the client
+        $this->sendNotificationEmail($customerEmail, $customerFirstName, $this->review, $this->reply, $companyName,
+            $companyEmail);
 
         // Log the email notification
         Log::info('Review notification sent', [
-            'review_id' => $review->id,
+            'review_id' => session('reviewID'),
             'email' => $customerEmail,
             'status' => 'sent'
         ]);
         $this->doRedirect($this->url, true);
     }
 
-
     /**
-     * Send notification email to the customer.
+     * Send a notification email to the customer.
      *
-     * @param string $email
-     * @param string $customerFirstName
-     * @param Review $review
-     * @param string $company
+     * @param  string  $email
+     * @param  string  $customerFirstName
+     * @param  string  $review
+     * @param  string  $reply
+     * @param  string  $company
+     * @param  string  $replyTo
      * @return void
+     * @oaram string $reply,
      */
     protected function sendNotificationEmail(
         string $email,
         string $customerFirstName,
-        Review $review,
-        string $company
-    ): void
-    {
+        string $review,
+        string $reply,
+        string $company,
+        string $replyTo
+    ): void {
+        // $review = unserialize($inReview);
+
+        //    ray($review->review);
+        //    ray($review->reply);
+
         Mail::to($email)->send(new NewReviewThankYou([
             'first_name' => $customerFirstName,
-            'review' => $review->review,
+            'review' => $review,
+            'reply' => $reply,
             'company' => $company,
+            'replyTo' => $replyTo
         ]));
     }
 
@@ -88,7 +100,7 @@ class GoToGoogle extends Component
 //        return redirect()->away($this->url);
 //    }
 
-    public function render(): View
+    public function render(): object
     {
         return view('livewire.go-to-google');
     }

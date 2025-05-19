@@ -6,11 +6,11 @@
             </p>
         @else
             <p class="text-center px-4">
-                Rate your overall experience at {{ session('location.company') }}
+                To begin, rate your <strong>overall experience</strong> at {{ session('location.company') }}
             </p>
         @endif
         <div class="rating rating-lg lg:rating-xl rating-half mx-auto" x-data="{ rating: false }">
-            <input type="radio" wire:model.live="rating" value="0" class="rating-hidden" checked star x-model="rating"/>
+            <input type="radio" wire:model.live="rating" value="0" class="rating-hidden" checked x-model="rating"/>
             <input type="radio" wire:model.live="rating" value="0.5" class="mask mask-star-2 mask-half-1 star"
                    x-model="rating"/>
             <input type="radio" wire:model.live="rating" value="1" class="mask mask-star-2 mask-half-2 star"
@@ -49,7 +49,7 @@
         <div id="dynamic_content" class="w-full mx-auto">
             @if ($rating)
                 <p class="px-4" wire:transition.in.duration.900ms>
-                    <strong>Now</strong>, sign in with your name and email and we&apos;ll move on to the questions&hellip;
+                    <strong>Now</strong>, enter your name and email and we&apos;ll move on to the six questions&hellip;
                 </p>
             @endif
         </div>
@@ -63,15 +63,19 @@
                 How to choose your rating
 
             </h2>
-            <p class="text-base md:text-lg indent-2 mb-0">You can select <strong>full</strong> or <strong>half</strong>
-                (<strong>&frac12;</strong>) stars:</p>
-            <p class="text-balance indent-4">
+            <p class="text-base md:text-lg indent-2 mb-0">
+                You can select <strong>full</strong> or <strong>half</strong> (<strong>&frac12;</strong>) stars:</p>
+            <p class="text-pretty indent-4">
                 @desktop
                 Click
                 @elsedesktop
-                < Tap
+                Tap
                 @enddesktop
-                on the <strong>left side</strong> of a star for a <span class="italic underline">half</span> star,
+                on the <strong>left side</strong> for a <span class="italic underline">half</span> star,
+                and on the <strong>right side</strong> for a full star
+
+            </p>
+            <div class="flex flex-row justify-center gap-8">
                 <picture class="inline-block align-top my-0">
                     <source media="(max-width: 766px)"
                             srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/star-half-sm.webp')}}">
@@ -80,7 +84,6 @@
                     <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/star-half-sm.webp')}}"
                          alt="Mouse pointer on the left half of a star icon" class="sm:w-auto">
                 </picture>
-                <span class="ml-2">and</span> on the <strong>right side</strong> for a full star
                 <picture class="inline-block align-top my-0">
                     <source media="(max-width: 766px)"
                             srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/star-full-sm.webp')}}">
@@ -89,7 +92,7 @@
                     <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/star-full-sm.webp')}}"
                          alt="Mouse pointer on the right half of a star icon" class="sm:w-auto">
                 </picture>
-            </p>
+            </div>
         </div>
     @endif
     @if(! $showInstr)
@@ -102,12 +105,12 @@
                            for="grid-first-name">
                         First Name
                     </label>
-                    <input
-                        class="appearance-none block w-full  text-gray-700 border border-gray-200
+                    <input wire:model.change="first_name"
+                           class="appearance-none block w-full  text-gray-700 border border-gray-200
                             @error('first_name')  error @enderror
                             rounded py-3 px-4  leading-tight focus:outline-hidden focus:bg-white"
-                        id="first_name" wire:model.change="first_name" type="text"
-                        value="{{ old('first_name') }}">
+                           id="first_name" type="text"
+                           value="{{ old('first_name') }}">
                     @error('first_name') <span class="error text-xs">{{ $message }}</span> @enderror
                 </div>
                 <div class="w-full md:w-1/2 px-3">

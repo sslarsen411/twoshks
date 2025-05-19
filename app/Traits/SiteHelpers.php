@@ -4,13 +4,13 @@ namespace App\Traits;
 
 use App\Models\Subscription;
 use App\Models\User;
-use Illuminate\Foundation\Application;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Routing\Redirector;
 use Illuminate\Support\Collection;
 
-trait SiteHelpers
-{
+// use Illuminate\Foundation\Application;
+// use Illuminate\Http\RedirectResponse;
+// use Illuminate\Routing\Redirector;
+
+trait SiteHelpers {
     function getStatus($inID): string
     {
         //ray(session('stripe.status'));
@@ -24,32 +24,32 @@ trait SiteHelpers
 
     /**
      * Convert a phone input to E164
-     * @param string $inPh
-     * @param string|int $inCC DEFAULT 1
+     * @param  string  $inPh
+     * @param  string|int  $inCC  DEFAULT 1
      * @return string
      */
     function toE164(string $inPh, string|int $inCC = '1'): string
     {
-        return "+$inCC" . preg_replace('/\D+/', '', $inPh);
+        return "+$inCC".preg_replace('/\D+/', '', $inPh);
     }
 
     /**
      * Format an E164 phone number to (NNN) NNN-NNNN
-     * @param string|int $inNumber
+     * @param  string|int  $inNumber
      * @return string
      */
     function fromE164(string|int $inNumber): string
     {
         preg_match('/\d?(\d{3})(\d{3})(\d{4})/', $inNumber, $matches);
-        return '(' . $matches[1] . ') ' . $matches[2] . '-' . $matches[3];
+        return '('.$matches[1].') '.$matches[2].'-'.$matches[3];
     }
 
     /**
      * @param $url
-     * @param bool $isAway
-     * @return Application|RedirectResponse|Redirector
+     * @param  bool  $isAway
+     * @return object
      */
-    public function doRedirect($url, bool $isAway = false)
+    public function doRedirect($url, bool $isAway = false): object
     {
         if ($isAway) {
             return redirect()->away($url);

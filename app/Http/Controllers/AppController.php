@@ -8,11 +8,11 @@ use App\Traits\AIReview;
 use App\Traits\GooglePlaces;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
-class AppController extends Controller
-{
+class AppController extends Controller {
     use AIReview, GooglePlaces;
 
     private const string LOCATION_INACTIVE = 'inactive';
@@ -30,7 +30,7 @@ class AppController extends Controller
 
             $location = $this->getLocation($request->query('loc'));
             if (!$location) {
-                throw new Exception('The location with ID ' . $request->query('loc') . ' was not found in the database.');
+                throw new Exception('The location with ID '.$request->query('loc').' was not found in the database.');
             }
             // Handle inactive locations
             if ($location->status === self::LOCATION_INACTIVE) {
@@ -43,7 +43,7 @@ class AppController extends Controller
             // Handle all other cases (e.g., inactive stripe)
             return $this->notifyInactiveStripe($location);
         } catch (Exception $e) {
-            Log::error('Initialization Error: ' . $e->getMessage());
+            Log::error('Initialization Error: '.$e->getMessage());
             return view('pages.error', ['error' => $e->getMessage()]);
         }
     }
@@ -67,12 +67,12 @@ class AppController extends Controller
                 ->first();
             return $location ?: null;
         } catch (Exception $e) {
-            Log::debug('Location ERROR: ' . $e);
+            Log::debug('Location ERROR: '.$e);
             return view('pages.error', ['error' => $e->getMessage()]);
         }
     }
 
-    private function handleInactiveLocation($location)
+    private function handleInactiveLocation($location): object
     {
         return redirect('notactive')->with(['company' => $location->company]);
     }
@@ -80,11 +80,14 @@ class AppController extends Controller
     /**
      * @throws Exception
      */
-    private function initializeActiveStatus($location)
+    private function initializeActiveStatus($location): object
     {
-//        Cache::rememberForever('questions', function () {
-//            return Question::all();
-//        });
+        Cache::rememberForever('questions', function () {
+            ray(public_path());
+            $json = file_get_contents(public_path('questions.json'));
+            ray(json_decode($json, true));
+            return (json_decode($json, true));
+        });
 
         session()->put('location', $location);
         //session()->put('desc', $this->getDescription(session('location.PID')) ?? null);
@@ -96,11 +99,11 @@ class AppController extends Controller
         }
         session()->put('threadID', $threadID);
         //ray(session()->all());
-        alert()->info('Thank you from ' . $location->company, 'We value your feedback.');
+        alert()->info('Thank you', $location->company.' appreciates your feedback.');
         return redirect('/start');
     }
 
-    private function notifyInactiveStripe($location)
+    private function notifyInactiveStripe($location): object
     {
         Mail::to($location->email)->send(new InactiveAccount([
             'name' => $location->name,
@@ -110,7 +113,7 @@ class AppController extends Controller
         return redirect('notactive')->with(['company' => $location->company]);
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request): object
     {
         try {
             $request->session()->flush();
@@ -118,7 +121,7 @@ class AppController extends Controller
             alert()->info('Logged Out', 'You are now logged out');
             return redirect('/home');
         } catch (Exception $e) {
-            Log::error('Logout Error: ' . $e->getMessage());
+            Log::error('Logout Error: '.$e->getMessage());
             return view('pages.error', ['error' => $e->getMessage()]);
         }
     }

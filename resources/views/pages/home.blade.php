@@ -15,8 +15,6 @@
                     <picture class="inline-block align-top my-0">
                         <source media="(max-width: 766px)"
                                 srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-speak-full.webp')}}">
-                        {{--                        <source media="(min-width: 768px)"--}}
-                        {{--                                srcset="{{ asset('https://cdn.mojoimpact.com/twoshakes/review-guru-speak-sm.png')}}">--}}
                         <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-speak-full.webp')}}"
                              alt="The Rave Review Guru" class="sm:w-auto">
                     </picture>
