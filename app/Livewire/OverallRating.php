@@ -15,7 +15,7 @@ class OverallRating extends Component {
     private const string CARE_URL = '/care';
     private const string QUESTION_URL = '/question';
 
-    public int $rating = 0;
+    public float $rating = 0;
     #[Validate]
     public string $first_name;
     public string $last_name;

@@ -47,7 +47,9 @@ trait AIReview {
                 'rate' => session('rating')[0],
                 'status' => $status,
             ]);
-            if ($this->rating > session('location.min_rate')) {
+
+
+            if (session('rating')[0] > session('location.min_rate')) {
                 $prompt = $this->createInitialPrompt(session('location.PID'));
                 $this->logMessageStatus(
                     $newReview->id,
@@ -57,6 +59,7 @@ trait AIReview {
         } catch (QueryException  $e) {
             Log::error($e->errorInfo);
         }
+        ray($newReview);
         return $newReview;
     }
 
