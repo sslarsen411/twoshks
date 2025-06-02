@@ -5,7 +5,6 @@ namespace App\Livewire;
 use App\Models\Review;
 use App\Traits\AIReview;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 class Questions extends Component {
@@ -31,9 +30,6 @@ class Questions extends Component {
      */
     public function mount(): void
     {
-        // $this->questions = Cache::get('questArr');
-        //  $this->questions = Cache::get('questions');
-        //  ray($this->questions);
         $this->initializeFirstQuestion();
         $this->random = $this->banner[array_rand($this->banner)];
     }
@@ -45,26 +41,13 @@ class Questions extends Component {
      */
     private function initializeFirstQuestion(): void
     {
-        $this->type = session('location.type');
-        $freq = session('location.engagement_frequency');
         $rate = session('rating')[0];
-        $questArr = Cache::get('questions');
-        $specific = match ($this->type) {
-            'retail' => $questArr[$this->type],
-            'service' => $questArr[$this->type][$freq],
-        };
-        ray($specific);
-        //   $initialPrompt = $this->createInitialPrompt(session('location.PID'));
-        //   $this->createMessage($initialPrompt, true);
-        ray($this->questions);
-        // ray($this->questions['service']['ongoing']);
-        $this->questions = array_merge($questArr['initial'], $specific,
-            $questArr['general']);
-        // $string = $this->questions['general'];
+        $questArr = session('questions');
+        // Customize the questions
         $search = array("NUM_STAR", "COMPANY");
         $replace = array($rate, session('location.company'));
-        $this->questions = str_replace($search, $replace, $this->questions);
-        ray($this->questions);
+        $this->questions = str_replace($search, $replace, $questArr);
+        //    ray($this->questions);
         $this->question = $this->questions[$this->currentIndex];
 
     }
@@ -92,7 +75,7 @@ class Questions extends Component {
         $this->progress += 12;
         $this->questionNumber++;
         $this->currentIndex++;
-        if ($this->currentIndex < count($this->questions)) {
+        if ($this->currentIndex < session('question_num')) {
             $this->random = $this->banner[array_rand($this->banner)];
             $this->answer = '';
             $this->question = $this->questions[$this->currentIndex];

@@ -28,9 +28,8 @@
                         class="font-semibold">easy</span>!
                 </h3>
                 <p>
-                    I ask six questions about someone&apos;s experience at a business and then I transform the answers
-                    into a
-                    review that can be posted online.
+                    I ask a few easy questions about someone&apos;s experience at a business and then I transform the
+                    answers into a review that can be posted online.
                 </p>
             </div>
             <div class="col-span-2 ">

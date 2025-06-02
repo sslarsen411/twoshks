@@ -1,5 +1,9 @@
 <x-app-layout>
     <x-main-content class="border-2 bg-stone-100" x-data="{shiftPressed: false, spin: false}">
+        <div class="progress__bar">
+            <p class="text-center mb-0">99% Complete</p>
+            <progress class="progress progress-secondary w-56 mx-auto" value="99" max="100"></progress>
+        </div>
         <div class="flex flex-col items-center justify-center top-0 left-0 ">
             <div class="grid grid-cols-12 gap-0">
                 <div class="col-span-7">

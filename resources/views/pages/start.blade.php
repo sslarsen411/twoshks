@@ -37,7 +37,8 @@
             <div class="col-span-10 w-full">
                 <ul class="mb-2 list-none list-inside">
                     <li>
-                        First, I&apos;ll ask you <strong>six</strong> quick <strong>questions</strong> about your
+                        First, I&apos;ll ask you <strong>{{ session('question_num_txt')  }}</strong> quick
+                        <strong>questions</strong> about your
                         experience at <strong>{{ session('location.company') }}</strong>.
                     </li>
                     <li>

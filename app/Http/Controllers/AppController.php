@@ -8,9 +8,11 @@ use App\Traits\AIReview;
 use App\Traits\GooglePlaces;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use InvalidArgumentException;
+use NumberFormatter;
+use RuntimeException;
 
 class AppController extends Controller {
     use AIReview, GooglePlaces;
@@ -32,7 +34,7 @@ class AppController extends Controller {
             if (!$location) {
                 throw new Exception('The location with ID '.$request->query('loc').' was not found in the database.');
             }
-            ray($location);
+
             // Handle inactive locations
             if ($location->status === self::LOCATION_INACTIVE) {
                 return $this->handleInactiveLocation($location);
@@ -84,12 +86,14 @@ class AppController extends Controller {
      */
     private function initializeActiveStatus($location): object
     {
-        Cache::rememberForever('questions', function () {
-            $json = file_get_contents(public_path('quest.json'));
-            return (json_decode($json, true));
-        });
+//        Cache::rememberForever('questions', function () {
+//            $json = file_get_contents(public_path('questions.json'));
+//            return (json_decode($json, true));
+//        });
 
         session()->put('location', $location);
+        ray($location);
+        $this->prepQuestions();
         //session()->put('desc', $this->getDescription(session('location.PID')) ?? null);
         session()->put('registered', false);
 
@@ -101,6 +105,60 @@ class AppController extends Controller {
         ray(session()->all());
         alert()->info('Thank you', $location->company.' appreciates your feedback.');
         return redirect('/start');
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function prepQuestions(): void
+    {
+        try {
+            $jsonPath = public_path('questions.json');
+            if (!file_exists($jsonPath)) {
+                throw new RuntimeException('Questions file not found');
+            }
+
+            $json = file_get_contents($jsonPath);
+            if ($json === false) {
+                throw new RuntimeException('Failed to read questions file');
+            }
+
+            $questArr = json_decode($json, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new RuntimeException('Invalid JSON format: '.json_last_error_msg());
+            }
+
+            $type = session('location.type');
+            $freq = session('location.customer_frequency');
+
+            if (!in_array($type, ['retail', 'service'])) {
+                throw new InvalidArgumentException('Invalid location type');
+            }
+
+            if ($type === 'service' && !$freq) {
+                throw new InvalidArgumentException('Customer frequency required for service type');
+            }
+
+            $specific = match ($type) {
+                'retail' => $questArr[$type] ?? [],
+                default => $questArr[$type][$freq] ?? [],
+            };
+            ray($specific);
+            if (!isset($questArr['initial'], $questArr['general'])) {
+                throw new RuntimeException('Missing required question sections');
+            }
+
+            $questions = array_merge($questArr['initial'], $specific, $questArr['general']);
+            session()->put('questions', $questions);
+            $n = new NumberFormatter("en", NumberFormatter::SPELLOUT);
+            session()->put('question_num', count($questions));
+            session()->put('question_num_txt', $n->format(count($questions)));
+
+        } catch (Exception $e) {
+            Log::error('Error preparing questions: '.$e->getMessage());
+            throw $e;
+        }
+
     }
 
     private function notifyInactiveStripe($location): object
