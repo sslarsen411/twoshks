@@ -2,15 +2,15 @@
     "general": [
         {
             "id": "1",
-            "question": "Thanks for the [X] stars! Can you tell us what stood out in your experience?"
+            "question": "What stood out in your experience?"
         },
         {
             "id": "2",
-            "question": "How was the helpfulness and knowledge of our staff?"
+            "question": "How helpful and knowledgeable was everyone?"
         },
         {
             "id": "3",
-            "question": "Is there anything we could do to improve your experience?"
+            "question": "Is there anything that would improve your experience?"
         },
         {
             "id": "4",
@@ -18,7 +18,7 @@
         },
         {
             "id": "5",
-            "question": "Do you have any other thoughts or feedback you'd like to share?"
+            "question": "Is there any other thoughts or feedback you'd like to share?"
         }
     ],
     "categories": {

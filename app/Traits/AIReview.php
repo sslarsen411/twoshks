@@ -59,7 +59,6 @@ trait AIReview {
         } catch (QueryException  $e) {
             Log::error($e->errorInfo);
         }
-        ray($newReview);
         return $newReview;
     }
 

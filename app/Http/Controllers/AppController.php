@@ -32,6 +32,7 @@ class AppController extends Controller {
             if (!$location) {
                 throw new Exception('The location with ID '.$request->query('loc').' was not found in the database.');
             }
+            ray($location);
             // Handle inactive locations
             if ($location->status === self::LOCATION_INACTIVE) {
                 return $this->handleInactiveLocation($location);
@@ -59,7 +60,8 @@ class AppController extends Controller {
     {
         try {
             $location = Location::select('locations.users_id', /** @lang text */ 'users.name', 'company', 'email',
-                'category', 'loc_qty', 'loc_phone', 'support_email', 'locations.addr', 'locations.status', 'min_rate',
+                'users.type', 'engagement_frequency', 'loc_qty', 'loc_phone', 'support_email', 'locations.addr',
+                'locations.status', 'min_rate',
                 'stripe_status', 'CID', 'PID')
                 ->join('users', 'locations.users_id', '=', 'users.id')
                 ->join('subscriptions', 'locations.users_id', '=', 'subscriptions.user_id')
@@ -83,9 +85,7 @@ class AppController extends Controller {
     private function initializeActiveStatus($location): object
     {
         Cache::rememberForever('questions', function () {
-            ray(public_path());
-            $json = file_get_contents(public_path('questions.json'));
-            ray(json_decode($json, true));
+            $json = file_get_contents(public_path('quest.json'));
             return (json_decode($json, true));
         });
 
@@ -98,7 +98,7 @@ class AppController extends Controller {
             throw new Exception("Failed to initialize thread ID.");
         }
         session()->put('threadID', $threadID);
-        //ray(session()->all());
+        ray(session()->all());
         alert()->info('Thank you', $location->company.' appreciates your feedback.');
         return redirect('/start');
     }
