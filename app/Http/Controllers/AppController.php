@@ -138,7 +138,7 @@ class AppController extends Controller {
             if ($type === 'service' && !$freq) {
                 throw new InvalidArgumentException('Customer frequency required for service type');
             }
-
+            /** @var string $type $freq */
             $specific = match ($type) {
                 'retail' => $questArr[$type] ?? [],
                 default => $questArr[$type][$freq] ?? [],
