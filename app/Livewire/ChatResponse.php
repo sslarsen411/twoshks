@@ -10,7 +10,7 @@ class ChatResponse extends Component {
 
     public array $helpText;
     public string $threadId;
-    public string $category;
+    //  public string $category;
     public string $question;
     // public string $questionNumber;
     public ?string $response = null;
@@ -29,8 +29,8 @@ class ChatResponse extends Component {
      */
     public function getResponse(): static
     {
-        ray($this);
-        $this->category = session('location.category');
+        //   ray($this);
+        // $this->category = session('location.category');
         $prompt = <<<PROMPT
         This reviewer needs help with this question: $this->question.
 
@@ -38,7 +38,7 @@ class ChatResponse extends Component {
 
        Help them answer the question.
 PROMPT;
-        ray($prompt);
+        //   ray($prompt);
         $this->createMessage($this->threadId, $prompt);
         return $this;
     }

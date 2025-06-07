@@ -7,6 +7,7 @@
     </div>
     <div class="bg-stone-200 text-slate-800 rounded-xl rounded-tl-none px-3 py-1.5 text-sm">
         <div wire:stream="stream-{{ $this->getId()  }}">
+            
             {!! $response !!}
         </div>
     </div>
