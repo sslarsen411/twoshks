@@ -10,7 +10,7 @@ trait AIChat {
     public string $threadId;
     public ?string $response = null;
 
-    public function createMessage($inThreadId, $inMessage): void
+    public function createStreamingMessage($inThreadId, $inMessage): void
     {
         $this->threadId = $inThreadId;
 

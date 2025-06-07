@@ -3,12 +3,14 @@
 namespace App\Livewire;
 
 use App\Models\Review;
+use App\Traits\AIChat;
 use App\Traits\AIReview;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
 class Questions extends Component {
     use AIReview;
+    use AIChat;
 
     public string $random;
     public string $question;
@@ -68,6 +70,7 @@ class Questions extends Component {
     public function handleFormSubmission(): null|string
     {
         $this->validate();
+
         $review = Review::find(session('reviewID'));
         // Save updated answers
         $updatedAnswers = $this->saveUpdatedAnswers($review->answers, $this->currentIndex, strip_tags($this->answer));
@@ -138,5 +141,36 @@ class Questions extends Component {
         return [
             'answer' => 'required|string|min:6',
         ];
+    }
+
+    private function checkAnswer($question, $answer): void
+    {
+        $this->aiMessages = [
+            [
+                'role' => 'system',
+                'content' => 'You are a helpful assistant who checks if a review answer is clear, complete, and
+                specific enough to be turned into a good review. Respond only with a JSON object: {"status": "okay"}
+                or {"status": "not_okay", "message": "prompt for more detail"}'
+            ],
+            [
+                'role' => 'user',
+                'content' => "Question: $question\nAnswer: $answer"
+            ]
+        ];
+
+        $response = $this->sendOpenAiRequest($this->aiMessages);
+
+        $json = json_decode($response, true);
+
+        if (isset($json['status']) && $json['status'] === 'okay') {
+            $this->validationPassed = true;
+            $this->validationMessage = '';
+        } elseif (isset($json['status']) && $json['status'] === 'not_okay') {
+            $this->validationPassed = false;
+            $this->validationMessage = $json['message'];
+        } else {
+            $this->validationPassed = false;
+            $this->validationMessage = "Something went wrong while checking your answer. Try again.";
+        }
     }
 }
