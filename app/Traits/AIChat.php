@@ -13,7 +13,6 @@ trait AIChat {
     public function createStreamingMessage($inThreadId, $inMessage): void
     {
         $this->threadId = $inThreadId;
-
         OpenAI::threads()->messages()->create($this->threadId, [
             'role' => 'user',
             'content' => $inMessage,
@@ -22,7 +21,6 @@ trait AIChat {
         if (ob_get_level()) {
             ob_end_clean();
         }
-
         $this->streamAiResponse();
     }
 

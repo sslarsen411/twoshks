@@ -10,8 +10,6 @@ use Livewire\Component;
 class Questions extends Component {
     use AIReview;
 
-    //  use AIChat;
-
     public string $random;
     public string $question;
     public array $questions = [];
@@ -51,7 +49,6 @@ class Questions extends Component {
         $search = array("NUM_STAR", "COMPANY");
         $replace = array($rate, session('location.company'));
         $this->questions = str_replace($search, $replace, $questArr);
-        //    ray($this->questions);
         $this->question = $this->questions[$this->currentIndex];
 
     }
@@ -71,10 +68,10 @@ class Questions extends Component {
      */
     public function handleFormSubmission(): null|string
     {
-        //$this->validate();
+        //AI Assistant validates the answer
         $this->checkAnswer($this->question, $this->answer);
+        ray($this->validationPassed);
         if (!$this->validationPassed && $this->validationMessage) {
-            ray($this->validationMessage);
             return back()->withErrors($this->validationMessage);
         }
         $review = Review::find(session('reviewID'));
@@ -120,7 +117,8 @@ class Questions extends Component {
               "message": "A short, friendly prompt encouraging the customer to expand their answer, tailored to the question"
             }
 
-            Make your message sound natural and supportive. Offer gentle suggestions or ask for examples to help them elaborate. Do not use the phrase “vague” or “incomplete” in the message. Keep the tone positive and conversational.
+            Make your message sound natural and supportive. Offer gentle suggestions or ask for examples to help them
+            elaborate. Do not use the phrase “vague” or “incomplete” in the message. Keep the tone positive and conversational.
 
             **Important:** Respond ONLY with a valid JSON object. No extra explanation.
 PROMPT;
@@ -135,11 +133,11 @@ PROMPT;
                 'content' => "Question: $question\nAnswer: $answer"
             ]
         ];
-        ray($ValidationMessages);
+        //ray($ValidationMessages);
         $response = $this->sendOpenAiRequest($ValidationMessages);
 
         $json = json_decode($response, true);
-        ray($json);
+        // ray($json);
 
         if (isset($json['status']) && $json['status'] === 'okay') {
             $this->validationPassed = true;
@@ -184,24 +182,24 @@ PROMPT;
      * @param  string  $newAns
      * @return null | string
      */
-    function updateAnswers(string|null $inAnsStr, string|int $dex, string $newAns): string|null
-    {
-        if ($inAnsStr) {
-            $ansArr = unserialize($inAnsStr);
-        } else {
-            $ansArr = [];
-        }
-        $ansArr[$dex] = $newAns;
-        return serialize($ansArr);
-    }
+//    function updateAnswers(string|null $inAnsStr, string|int $dex, string $newAns): string|null
+//    {
+//        if ($inAnsStr) {
+//            $ansArr = unserialize($inAnsStr);
+//        } else {
+//            $ansArr = [];
+//        }
+//        $ansArr[$dex] = $newAns;
+//        return serialize($ansArr);
+//    }
 
     /**
      * @return string[]
      */
-    protected function rules(): array
-    {
-        return [
-            'answer' => 'required|string|min:6',
-        ];
-    }
+//    protected function rules(): array
+//    {
+//        return [
+//            'answer' => 'required|string|min:6',
+//        ];
+//    }
 }

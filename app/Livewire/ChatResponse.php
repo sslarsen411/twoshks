@@ -10,9 +10,7 @@ class ChatResponse extends Component {
 
     public array $helpText;
     public string $threadId;
-    //  public string $category;
     public string $question;
-    // public string $questionNumber;
     public ?string $response = null;
 
     /**
@@ -29,16 +27,13 @@ class ChatResponse extends Component {
      */
     public function getResponse(): static
     {
-        //   ray($this);
-        // $this->category = session('location.category');
         $prompt = <<<PROMPT
         This reviewer needs help with this question: $this->question.
 
         What they asked "{$this->helpText['content']}"
 
        Help them answer the question.
-PROMPT;
-        //   ray($prompt);
+    PROMPT;
         $this->createStreamingMessage($this->threadId, $prompt);
         return $this;
     }

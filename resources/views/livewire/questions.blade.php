@@ -26,16 +26,16 @@
     <div>
         <x-form handle="handleFormSubmission" class="w-full">
             <div class="flex place-content-center flex-col p-4 border-2">
-
-                {{-- <textarea rows="4" class="textarea-lg"  wire:model.debounce.250ms="answer" id="answer" ></textarea> --}}
                 <textarea rows="4" wire:model="answer" id="answer"
                           onfocus="this.placeholder = ''"
                           onblur="this.placeholder = 'Type your answer here'"
                           placeholder="Type your answer here."
                 ></textarea>
-                {{--                @error('answer') <span class="error">{{ $message }}</span> @enderror--}}
                 @if (!$validationPassed && $validationMessage)
                     <div class="text-yellow-700 bg-yellow-100 p-2 rounded shadow mt-2">
+                        <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-full.webp')}}"
+                             class="guru-icon w-4 h-auto"
+                             alt="guru icon">
                         {{ $validationMessage }}
                     </div>
                 @endif

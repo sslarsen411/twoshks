@@ -86,13 +86,8 @@ class AppController extends Controller {
      */
     private function initializeActiveStatus($location): object
     {
-//        Cache::rememberForever('questions', function () {
-//            $json = file_get_contents(public_path('questions.json'));
-//            return (json_decode($json, true));
-//        });
 
         session()->put('location', $location);
-        ray($location);
         $this->prepQuestions();
         //session()->put('desc', $this->getDescription(session('location.PID')) ?? null);
         session()->put('registered', false);
@@ -102,7 +97,6 @@ class AppController extends Controller {
             throw new Exception("Failed to initialize thread ID.");
         }
         session()->put('threadID', $threadID);
-        ray(session()->all());
         alert()->info('Thank you', $location->company.' appreciates your feedback.');
         return redirect('/start');
     }
@@ -143,7 +137,7 @@ class AppController extends Controller {
                 'retail' => $questArr[$type] ?? [],
                 default => $questArr[$type][$freq] ?? [],
             };
-            ray($specific);
+
             if (!isset($questArr['initial'], $questArr['general'])) {
                 throw new RuntimeException('Missing required question sections');
             }
@@ -158,7 +152,6 @@ class AppController extends Controller {
             Log::error('Error preparing questions: '.$e->getMessage());
             throw $e;
         }
-
     }
 
     private function notifyInactiveStripe($location): object

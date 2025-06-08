@@ -296,8 +296,8 @@ INSTRUCTIONS;
     public function sendToAssistantSync(array $messages): string
     {
         try {
-            //$client = OpenAI::client(config('services.openai.key'));
 
+            // $result =  OpenAI::threads()->messages()->create(session('threadID'),[
             $result = OpenAI::chat()->create([
                 'model' => 'gpt-4o',
                 'messages' => $messages,
