@@ -35,7 +35,7 @@ class AppController extends Controller {
             if ($location->status === self::LOCATION_INACTIVE) {
                 return $this->handleInactiveLocation($location);
             }
-            // Handle active or trialing stripe status
+            // If company has active or trialing stripe status initialize the questions and start review process
             if ($location->stripe_status === self::STRIPE_ACTIVE || $location->stripe_status === self::STRIPE_TRIALING) {
                 if (!$this->prepQuestions($location->type, $location->customer_frequency)) {
                     throw new Exception('Question initialization failed for location: '.$request->query('loc'));
