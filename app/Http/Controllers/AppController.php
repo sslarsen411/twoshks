@@ -102,7 +102,12 @@ class AppController extends Controller {
     }
 
     /**
+     * Reads a JSON file containing questions and prepares them for display.
+     *
+     * @return void
+     *
      * @throws Exception
+     *
      */
     private function prepQuestions(): void
     {
