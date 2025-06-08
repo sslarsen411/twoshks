@@ -29,6 +29,7 @@ class Questions extends Component {
     private array $banner = array('lp', 'full', 'rp');
 
     /**
+     * Prepare the questions
      * @return void
      */
     public function mount(): void

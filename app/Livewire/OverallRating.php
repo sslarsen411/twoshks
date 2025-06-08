@@ -56,9 +56,7 @@ class OverallRating extends Component {
             alert()->question('What happened?', 'Please tell us how we can improve your experience');
             return $this->redirect(self::CARE_URL, navigate: true);
         }
-        // Initialize question set for business category
-        // $questions = Question::where('category_id', session("location.category"))->pluck('questions')->toArray();
-        //    Cache::add('questArr', unserialize($questions[0]), $this->seconds);
+
         alert()->success($this->first_name.', You\'re ready to start', text: "Here's the first question");
         return $this->redirect(self::QUESTION_URL, navigate: true);
     }
