@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
 use OpenAI\Laravel\Facades\OpenAI;
+use Throwable;
 
 trait AIReview {
     use GooglePlaces;
@@ -285,5 +286,28 @@ INSTRUCTIONS;
             - The "reply" field must use clean, basic HTML such as <p>, <strong>, and <br> for formatting. Do not include styling, scripts, or external links.
 
         PROMPT;
+    }
+
+    public function sendOpenAiRequest(array $messages): string
+    {
+        return $this->sendToAssistantSync($messages);
+    }
+
+    public function sendToAssistantSync(array $messages): string
+    {
+        try {
+            //$client = OpenAI::client(config('services.openai.key'));
+
+            $result = OpenAI::chat()->create([
+                'model' => 'gpt-4o',
+                'messages' => $messages,
+                'temperature' => 0.3,
+            ]);
+
+            return $result->choices[0]->message->content ?? '';
+        } catch (Throwable $e) {
+            logger()->error('OpenAI sync request failed: '.$e->getMessage());
+            return '';
+        }
     }
 }

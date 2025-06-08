@@ -33,7 +33,13 @@
                           onblur="this.placeholder = 'Type your answer here'"
                           placeholder="Type your answer here."
                 ></textarea>
-                @error('answer') <span class="error">{{ $message }}</span> @enderror
+                {{--                @error('answer') <span class="error">{{ $message }}</span> @enderror--}}
+                @if (!$validationPassed && $validationMessage)
+                    <div class="text-yellow-700 bg-yellow-100 p-2 rounded shadow mt-2">
+                        {{ $validationMessage }}
+                    </div>
+                @endif
+
             </div>
             <div id="navigation" class="flex justify-end mr-2 my-4">
                 <x-secondary-button type="submit">

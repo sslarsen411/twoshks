@@ -3,14 +3,14 @@
 namespace App\Livewire;
 
 use App\Models\Review;
-use App\Traits\AIChat;
 use App\Traits\AIReview;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
 class Questions extends Component {
     use AIReview;
-    use AIChat;
+
+    //  use AIChat;
 
     public string $random;
     public string $question;
@@ -22,6 +22,8 @@ class Questions extends Component {
     public array $aiMessages = [];
     public int $questionNumber = 1; // Renamed from `$aiMsg`
     public string $type;
+    public bool $validationPassed = false;
+    public string $validationMessage;
     protected array $messages = [
         'answer.required' => 'Please type something',
     ];
@@ -69,8 +71,12 @@ class Questions extends Component {
      */
     public function handleFormSubmission(): null|string
     {
-        $this->validate();
-
+        //$this->validate();
+        $this->checkAnswer($this->question, $this->answer);
+        if (!$this->validationPassed && $this->validationMessage) {
+            ray($this->validationMessage);
+            return back()->withErrors($this->validationMessage);
+        }
         $review = Review::find(session('reviewID'));
         // Save updated answers
         $updatedAnswers = $this->saveUpdatedAnswers($review->answers, $this->currentIndex, strip_tags($this->answer));
@@ -91,6 +97,62 @@ class Questions extends Component {
             return $this->redirect('/review', navigate: true);
         }
         return null;
+    }
+
+    private function checkAnswer($question, $answer): void
+    {
+        $prompt = <<<PROMPT
+            You are a helpful assistant evaluating customer responses to review questions. Your job is to decide if the answer is
+            clear and specific enough to be turned into a helpful review.
+
+            You will be given:
+            - The review question the customer is responding to
+            - The customer’s answer
+
+            If the answer is meaningful and specific, return:
+            {
+              "status": "okay"
+            }
+
+            If the answer is vague, too short, or unclear, return:
+            {
+              "status": "not_okay",
+              "message": "A short, friendly prompt encouraging the customer to expand their answer, tailored to the question"
+            }
+
+            Make your message sound natural and supportive. Offer gentle suggestions or ask for examples to help them elaborate. Do not use the phrase “vague” or “incomplete” in the message. Keep the tone positive and conversational.
+
+            **Important:** Respond ONLY with a valid JSON object. No extra explanation.
+PROMPT;
+
+        $ValidationMessages = [
+            [
+                'role' => 'system',
+                'content' => $prompt
+            ],
+            [
+                'role' => 'user',
+                'content' => "Question: $question\nAnswer: $answer"
+            ]
+        ];
+        ray($ValidationMessages);
+        $response = $this->sendOpenAiRequest($ValidationMessages);
+
+        $json = json_decode($response, true);
+        ray($json);
+
+        if (isset($json['status']) && $json['status'] === 'okay') {
+            $this->validationPassed = true;
+            $this->validationMessage = '';
+        } elseif (isset($json['status']) && $json['status'] === 'not_okay') {
+            $this->validationPassed = false;
+            $this->validationMessage = $json['message'].' If you need help, you can chat with me below.';
+
+        } else {
+            $this->validationPassed = false;
+            $this->validationMessage = "You're off to a good start! Try adding a few details about what stood out
+            or made the experience what it was — that helps others get the full picture.";
+        }
     }
 
     /**
@@ -141,36 +203,5 @@ class Questions extends Component {
         return [
             'answer' => 'required|string|min:6',
         ];
-    }
-
-    private function checkAnswer($question, $answer): void
-    {
-        $this->aiMessages = [
-            [
-                'role' => 'system',
-                'content' => 'You are a helpful assistant who checks if a review answer is clear, complete, and
-                specific enough to be turned into a good review. Respond only with a JSON object: {"status": "okay"}
-                or {"status": "not_okay", "message": "prompt for more detail"}'
-            ],
-            [
-                'role' => 'user',
-                'content' => "Question: $question\nAnswer: $answer"
-            ]
-        ];
-
-        $response = $this->sendOpenAiRequest($this->aiMessages);
-
-        $json = json_decode($response, true);
-
-        if (isset($json['status']) && $json['status'] === 'okay') {
-            $this->validationPassed = true;
-            $this->validationMessage = '';
-        } elseif (isset($json['status']) && $json['status'] === 'not_okay') {
-            $this->validationPassed = false;
-            $this->validationMessage = $json['message'];
-        } else {
-            $this->validationPassed = false;
-            $this->validationMessage = "Something went wrong while checking your answer. Try again.";
-        }
     }
 }
