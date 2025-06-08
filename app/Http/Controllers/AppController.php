@@ -27,18 +27,19 @@ class AppController extends Controller {
                 return redirect('home');
             }
             $this->clearAndSetSessionLocation($request);
-
             $location = $this->getLocation($request->query('loc'));
             if (!$location) {
                 throw new Exception('The location with ID '.$request->query('loc').' was not found in the database.');
             }
-
             // Handle inactive locations
             if ($location->status === self::LOCATION_INACTIVE) {
                 return $this->handleInactiveLocation($location);
             }
             // Handle active or trialing stripe status
             if ($location->stripe_status === self::STRIPE_ACTIVE || $location->stripe_status === self::STRIPE_TRIALING) {
+                if (!$this->prepQuestions($location->type, $location->customer_frequency)) {
+                    throw new Exception('Question initialization failed for location: '.$request->query('loc'));
+                }
                 return $this->initializeActiveStatus($location);
             }
             // Handle all other cases (e.g., inactive stripe)
@@ -84,9 +85,7 @@ class AppController extends Controller {
      */
     private function initializeActiveStatus($location): object
     {
-
         session()->put('location', $location);
-        $this->prepQuestions();
 
         //session()->put('desc', $this->getDescription(session('location.PID')) ?? null);
         session()->put('registered', false);
