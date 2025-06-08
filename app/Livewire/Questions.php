@@ -4,15 +4,16 @@ namespace App\Livewire;
 
 use App\Models\Review;
 use App\Traits\AIReview;
+use App\Traits\ReviewQuestionSet;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
 class Questions extends Component {
-    use AIReview;
+    use ReviewQuestionSet, AIReview;
 
     public string $random;
     public string $question;
-    public array $questions = [];
+    public array $questionArray = [];
     public string $answer = '';
     public int $progress = 15;
     public int $currentIndex = 0;
@@ -32,25 +33,10 @@ class Questions extends Component {
      */
     public function mount(): void
     {
-        $this->initializeFirstQuestion();
+        $this->questionArray = $this->initializeFirstQuestion(inRate: session('rating')[0],
+            inBiz: session('location.company'));
+        $this->question = $this->questionArray[$this->currentIndex];
         $this->random = $this->banner[array_rand($this->banner)];
-    }
-
-    /**
-     * Initializes the first question and message prompt.
-     *
-     * @return void
-     */
-    private function initializeFirstQuestion(): void
-    {
-        $rate = session('rating')[0];
-        $questArr = session('questions');
-        // Customize the questions
-        $search = array("NUM_STAR", "COMPANY");
-        $replace = array($rate, session('location.company'));
-        $this->questions = str_replace($search, $replace, $questArr);
-        $this->question = $this->questions[$this->currentIndex];
-
     }
 
     /**
@@ -84,7 +70,7 @@ class Questions extends Component {
         if ($this->currentIndex < session('question_num')) {
             $this->random = $this->banner[array_rand($this->banner)];
             $this->answer = '';
-            $this->question = $this->questions[$this->currentIndex];
+            $this->question = $this->questionArray[$this->currentIndex];
         } else {
             $review->update(['status' => Review::COMPLETED]);
             alert()->success(
