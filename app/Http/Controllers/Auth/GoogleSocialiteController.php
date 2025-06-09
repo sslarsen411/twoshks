@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Traits\AIReview;
+use App\Traits\ReviewInitializer;
 use Exception;
 use Laravel\Socialite\Facades\Socialite;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class GoogleSocialiteController extends Controller {
-    use AIReview;
+    use AIReview, ReviewInitializer;
 
     // public float $rating;
 

@@ -12,12 +12,12 @@ trait ReviewQuestionSet {
     /**
      * Reads a JSON file containing questions and prepares them for display.
      *
-     * @return void
-     *
-     * @throws Exception
+     * @param $inType
+     * @param $inFreq
+     * @return bool
      *
      */
-    public function prepQuestions(): void
+    public function prepQuestions($inType, $inFreq): bool
     {
         try {
             $jsonPath = public_path('questions.json');
@@ -35,20 +35,20 @@ trait ReviewQuestionSet {
                 throw new RuntimeException('Invalid JSON format: '.json_last_error_msg());
             }
 
-            $type = session('location.type');
-            $freq = session('location.customer_frequency');
+            //    $type = session('location.type');
+            //    $freq = session('location.customer_frequency');
 
-            if (!in_array($type, ['retail', 'service'])) {
+            if (!in_array($inType, ['retail', 'service'])) {
                 throw new InvalidArgumentException('Invalid location type');
             }
 
-            if ($type === 'service' && !$freq) {
+            if ($inType === 'service' && !$inFreq) {
                 throw new InvalidArgumentException('Customer frequency required for service type');
             }
-            /** @var string $type $freq */
-            $specific = match ($type) {
-                'retail' => $questArr[$type] ?? [],
-                default => $questArr[$type][$freq] ?? [],
+            /** @var string $inType $InFreq */
+            $specific = match ($inType) {
+                'retail' => $questArr[$inType] ?? [],
+                default => $questArr[$inType][$inFreq] ?? [],
             };
 
             if (!isset($questArr['initial'], $questArr['general'])) {
@@ -60,10 +60,11 @@ trait ReviewQuestionSet {
             $n = new NumberFormatter("en", NumberFormatter::SPELLOUT);
             session()->put('question_num', count($questions));
             session()->put('question_num_txt', $n->format(count($questions)));
-
+            return true;
         } catch (Exception $e) {
             Log::error('Error preparing questions: '.$e->getMessage());
-            throw $e;
+            //throw $e;
+            return false;
         }
     }
 

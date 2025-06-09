@@ -32,7 +32,7 @@
                           placeholder="Type your answer here."
                 ></textarea>
                 @if (!$validationPassed && $validationMessage)
-                    <div class="text-yellow-700 bg-yellow-100 p-2 rounded shadow mt-2">
+                    <div class="text-yellow-700 bg-yellow-100 p-2 rounded shadow mt-2" wire:transition>
                         <img src="{{ asset('https://cdn.mojoimpact.com/twoshakes/guru-full.webp')}}"
                              class="guru-icon w-4 h-auto"
                              alt="guru icon">

@@ -55,11 +55,14 @@ class Questions extends Component {
      */
     public function handleFormSubmission(): null|string
     {
+        //  ray(session()->all());
         //AI Assistant validates the answer
-        $this->checkAnswer($this->question, $this->answer);
-        ray($this->validationPassed);
-        if (!$this->validationPassed && $this->validationMessage) {
-            return back()->withErrors($this->validationMessage);
+        if ($this->currentIndex < session('question_num')) {
+            $this->checkAnswer($this->question, $this->answer);
+            //     ray($this->validationPassed);
+            if (!$this->validationPassed && $this->validationMessage) {
+                return back()->withErrors($this->validationMessage);
+            }
         }
         $review = Review::find(session('reviewID'));
         // Save updated answers

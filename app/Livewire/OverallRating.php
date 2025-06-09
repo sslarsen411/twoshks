@@ -5,12 +5,13 @@ namespace App\Livewire;
 use App\Models\Customer;
 use App\Rules\NamePlus;
 use App\Traits\AIReview;
+use App\Traits\ReviewInitializer;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class OverallRating extends Component {
-    use AIReview;
+    use AIReview, ReviewInitializer;
 
     private const string CARE_URL = '/care';
     private const string QUESTION_URL = '/question';
@@ -51,7 +52,7 @@ class OverallRating extends Component {
 
         $review = $this->initReview($customer);
         session()->put('reviewID', $review->id);
-
+        ray(session()->all());
         if ($this->rating < session('location.min_rate')) {
             alert()->question('What happened?', 'Please tell us how we can improve your experience');
             return $this->redirect(self::CARE_URL, navigate: true);
