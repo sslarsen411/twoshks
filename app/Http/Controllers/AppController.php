@@ -95,7 +95,7 @@ class AppController extends Controller {
             throw new Exception("Failed to initialize thread ID.");
         }
         session()->put('threadID', $threadID);
-        ray(session()->all());
+        //    ray(session()->all());
         alert()->info('Thank you', $location->company.' appreciates your feedback.');
         return redirect('/start');
     }

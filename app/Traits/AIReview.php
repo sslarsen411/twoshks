@@ -11,7 +11,7 @@ use OpenAI\Laravel\Facades\OpenAI;
 use Throwable;
 
 trait AIReview {
-    use ReviewPromptHandler;
+    use ReviewPromptHandler, AILog;
 
     private const string ROLE_USER = 'user';
     private const string PROMPT_TYPE_FIRST = 'first';
@@ -34,7 +34,7 @@ trait AIReview {
      * @param  string  $reviewPromptType
      * @return string
      */
-    public function createMessage($inMessage, string $reviewPromptType = ''): string
+    public function createUserMessage($inMessage, string $reviewPromptType = ''): string
     { // 'first' or 'final'
         try {
             //$response = OpenAI::threads()->messages()->create(session('threadID'), [
@@ -43,8 +43,9 @@ trait AIReview {
                 'content' => $inMessage,
             ]);
 
-            return $this->sendMessage($reviewPromptType);
+            return $this->runAssistant($reviewPromptType);
         } catch (Exception $e) {
+            $this->logAssistantError("AIReview:createUserMessageAndRun", $e);
             return "Error creating message: ".$e->getMessage();
         }
     }
@@ -53,7 +54,7 @@ trait AIReview {
      * @param $inPromptType
      * @return string
      */
-    public function sendMessage($inPromptType): string
+    public function runAssistant($inPromptType): string
     {
         try {
             $response = OpenAI::threads()->runs()->create(
@@ -74,42 +75,81 @@ trait AIReview {
             }
             return $this->getThreadResult($runId);
         } catch (Exception $e) {
+            $this->logAssistantError("AIReview:runAssistant", $e);
             return "Error sending message: ".$e->getMessage();
         }
     }
 
     /**
      * @param $runId
-     * @param  int  $timeout
-     * @param  int  $interval
-     * @return string
+     * @return string|null
      */
-    public function getThreadResult($runId, int $timeout = self::TIMEOUT, int $interval = self::POLL_INTERVAL): string
+    public function getThreadResult($runId): ?string
     {
-        $startTime = time();
-        while (true) {
-            // Query the thread for status
-            $response = OpenAI::threads()->runs()->retrieve(
-                threadId: session('threadID'),
-                runId: $runId,
-            );
-            // Check if the thread status is completed
-            if ($response['status'] === 'completed') {
-                $list = OpenAI::threads()->messages()->list(session('threadID'), [
-                    'limit' => 10,
-                ]);
-                $rev = OpenAI::threads()->messages()->retrieve(threadId: session('threadID'),
-                    messageId: $list->firstId);
-                return $rev['content'][0]['text']['value'] ?? "No text found in the response.";
+        try {
+            $threadId = session('threadID');
+            if (!$threadId) {
+                throw new Exception("Thread ID not found in session.");
             }
-            // Check if the timeout has been reached
-            if ((time() - $startTime) >= $timeout) {
-                return "Error: Timed out while waiting for the thread to complete.";
+
+            // $status = 'queued';
+            $startTime = time();
+
+            do {
+                sleep(self::POLL_INTERVAL);
+                $run = OpenAI::threads()->runs()->retrieve($threadId, $runId);
+                $status = $run->status;
+            } while (!in_array($status, ['completed', 'failed', 'cancelled']) && (time() - $startTime < 15));
+
+            if ($status !== 'completed') {
+                return json_encode(['status' => 'error', 'message' => 'Timed out waiting for assistant response']);
             }
-            // Wait before polling again
-            sleep($interval);
+            $messages = OpenAI::threads()->messages()->list($threadId);
+            $allMessages = $messages->data;
+            $assistantReply = collect($allMessages)
+                ->firstWhere('role', 'assistant');
+
+            $content = $assistantReply->content[0]->text->value ?? '';
+            $this->logAssistantMessage("AIReview:getThreadResult", $threadId, $runId, $content);
+            return $content;
+        } catch (Exception $e) {
+            //  Log::error("[AIReview:getThreadResult] Error: {$e->getMessage()}");
+            $this->logAssistantError("AIReview:getThreadResult", $e);
+            return null;
         }
     }
+//    /**
+//     * @param $runId
+//     * @param  int  $timeout
+//     * @param  int  $interval
+//     * @return string
+//     */
+//    public function getThreadResult($runId, int $timeout = self::TIMEOUT, int $interval = self::POLL_INTERVAL): string
+//    {
+//        $startTime = time();
+//        while (true) {
+//            // Query the thread for status
+//            $response = OpenAI::threads()->runs()->retrieve(
+//                threadId: session('threadID'),
+//                runId: $runId,
+//            );
+//            // Check if the thread status is completed
+//            if ($response['status'] === 'completed') {
+//                $list = OpenAI::threads()->messages()->list(session('threadID'), [
+//                    'limit' => 10,
+//                ]);
+//                $rev = OpenAI::threads()->messages()->retrieve(threadId: session('threadID'),
+//                    messageId: $list->firstId);
+//                return $rev['content'][0]['text']['value'] ?? "No text found in the response.";
+//            }
+//            // Check if the timeout has been reached
+//            if ((time() - $startTime) >= $timeout) {
+//                return "Error: Timed out while waiting for the thread to complete.";
+//            }
+//            // Wait before polling again
+//            sleep($interval);
+//        }
+//    }
 
     public function sendOpenAiRequest(array $messages): string
     {
@@ -137,9 +177,12 @@ trait AIReview {
     private function logMessageStatus(string $reviewId, string $messageStatus): void
     {
         if ($messageStatus === json_encode(['status' => 'success', 'message' => 'review initialized'])) {
-            Log::info("Review:$reviewId Initial instructions successfully sent");
+            //   Log::info("Review:$reviewId Initial instructions successfully sent");
+            $this->logAssistantMessage('AIReview:runAssistant', session('threadID'), 'none',
+                "Review:$reviewId Initial instructions successfully sent");
         } else {
             Log::error('There was a problem sending the initial instructions');
+            $this->logAssistantError('AIReview:runAssistant', 'There was a problem sending the initial instructions');
         }
     }
 }

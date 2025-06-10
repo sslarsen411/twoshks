@@ -27,12 +27,12 @@ trait ReviewInitializer {
                 'status' => $status,
             ]);
 
-
             if (session('rating')[0] > session('location.min_rate')) {
                 $prompt = $this->createInitialPrompt(session('location.PID'));
+                ray($prompt);
                 $this->logMessageStatus(
                     $newReview->id,
-                    $this->createMessage($prompt, self::PROMPT_TYPE_FIRST)
+                    $this->createUserMessage($prompt, self::PROMPT_TYPE_FIRST)
                 );
             }
         } catch (QueryException  $e) {

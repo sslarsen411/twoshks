@@ -57,7 +57,8 @@ class Questions extends Component {
     {
         //  ray(session()->all());
         //AI Assistant validates the answer
-        if ($this->currentIndex < session('question_num')) {
+        if ($this->currentIndex < 2) {
+            // if ($this->currentIndex < session('question_num')) {
             $this->checkAnswer($this->question, $this->answer);
             //     ray($this->validationPassed);
             if (!$this->validationPassed && $this->validationMessage) {

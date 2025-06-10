@@ -7,21 +7,23 @@ use Log;
 use OpenAI\Laravel\Facades\OpenAI;
 
 trait AIChat {
+    use AILog;
+
     public string $threadId;
     public ?string $response = null;
 
-    public function createStreamingMessage($inThreadId, $inMessage): void
+    public function sendStreamingMessageToAssistant($threadId, $question): void
     {
-        $this->threadId = $inThreadId;
+        $this->threadId = $threadId;
         OpenAI::threads()->messages()->create($this->threadId, [
             'role' => 'user',
-            'content' => $inMessage,
+            'content' => $question,
         ]);
         // Ensure no output before streaming
         if (ob_get_level()) {
             ob_end_clean();
         }
-        $this->streamAiResponse();
+        $this->streamAssistantReply();
     }
 
     /**
@@ -30,45 +32,48 @@ trait AIChat {
      * https://github.com/laravel/framework/issues/55894
      * Started happening after internal symfony components updated to 7.3.0.
      *
-     * For now, quick solution is you can lock symfony/http-foundation version in composer.json until symfony team fix this issue.
+     * For now, a quick solution is you can lock the symfony/http-foundation version in composer.json
+     * until the symfony team fixes this issue.
      *
-
      */
-    public function streamAiResponse(): void
+    public function streamAssistantReply(): void
     {
         try {
-            ob_start();
-
             $stream = OpenAI::threads()->runs()->createStreamed(
                 threadId: $this->threadId,
                 parameters: [
                     'assistant_id' => config('openai.assistant'),
                 ]);
 
+            ob_start();
             foreach ($stream as $content) {
                 if ($content->event == 'thread.message.delta') {
                     // Clean any existing output
                     if (ob_get_length()) {
                         ob_clean();
                     }
-
                     try {
                         $this->stream(
                             to: 'stream-'.$this->getId(),
                             content: $content->response->delta->content[0]->text->value,
                         );
                         $this->response .= $content->response->delta->content[0]->text->value;
+                        ob_flush();
+                        flush();
                     } catch (Exception $e) {
                         // Log the streaming error but don't throw
                         Log::error('Streaming error: '.$e->getMessage());
                     }
                 }
             }
+            ob_end_clean();
+        } catch (Exception $e) {
+            $this->logAssistantError("AIChat:streamAssistantReply", $e);
+            echo "<p class='text-red-600'>An error occurred: {$e->getMessage()}</p>";
         } finally {
             if (ob_get_level()) {
                 ob_end_clean();
             }
         }
-
     }
 }

@@ -34,7 +34,7 @@ class ChatResponse extends Component {
 
        Help them answer the question.
     PROMPT;
-        $this->createStreamingMessage($this->threadId, $prompt);
+        $this->sendStreamingMessageToAssistant($this->threadId, $prompt);
         return $this;
     }
 

@@ -13,7 +13,7 @@ trait ReviewPromptHandler {
     {
         $customerName = session('cust.first_name');
         $customerRating = session('rating')[0];
-        $bizCategory = session('location.category');
+        $bizCategory = session('location.type');
         /** @TODO add a description to the user table */
         $description = 'None';
         $place = $this->getPlaces($placeId);

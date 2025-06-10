@@ -34,10 +34,6 @@ trait ReviewQuestionSet {
             if (json_last_error() !== JSON_ERROR_NONE) {
                 throw new RuntimeException('Invalid JSON format: '.json_last_error_msg());
             }
-
-            //    $type = session('location.type');
-            //    $freq = session('location.customer_frequency');
-
             if (!in_array($inType, ['retail', 'service'])) {
                 throw new InvalidArgumentException('Invalid location type');
             }
@@ -63,7 +59,6 @@ trait ReviewQuestionSet {
             return true;
         } catch (Exception $e) {
             Log::error('Error preparing questions: '.$e->getMessage());
-            //throw $e;
             return false;
         }
     }
