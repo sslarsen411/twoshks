@@ -15,6 +15,7 @@ Route::controller(AppController::class)->group(function () {
 Route::view('/home', 'pages.home')->name('pages.home');
 Route::view('/start', 'pages.start')->name('pages.start');
 Route::view('/error', 'pages.error')->name('pages.error');
+Route::view('/thanks', 'pages.thanks')->name('pages.thanks');
 /* Login with Google Routing */
 Route::controller(GoogleSocialiteController::class)->group(function () {
     Route::get('auth/google', 'redirectToGoogle')->name('google.redirect');  // redirect to google login
