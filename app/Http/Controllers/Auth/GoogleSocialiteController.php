@@ -20,7 +20,7 @@ class GoogleSocialiteController extends Controller {
         return Socialite::driver('google')->redirect();
     }
 
-    public function handleCallback(): object
+    public function handleCallback(): object|null
     {
         try {
             $user = Socialite::driver('google')->user();
@@ -40,10 +40,12 @@ class GoogleSocialiteController extends Controller {
                 alert()->question('What happened?', 'Please tell us how we can improve your experience');
                 return redirect('/care');
             }
-            alert()->success('Success', 'You can begin your feedback');
+
+            alert()->success($newUser->first_name.', You\'re ready to start', text: "Here's the first question");
             return redirect('/question');
         } catch (Exception $e) {
-            dd($e->getMessage());
+            $this->logAssistantError("GoogleSocialiteController:handleCallback", $e->getMessage());
+            return null;
         }
     }
 }

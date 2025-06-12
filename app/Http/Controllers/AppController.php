@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Mail\InactiveAccount;
 use App\Models\Location;
 use App\Traits\AIReview;
-use App\Traits\GooglePlaces;
 use App\Traits\ReviewQuestionSet;
 use Exception;
 use Illuminate\Http\Request;
@@ -13,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class AppController extends Controller {
-    use ReviewQuestionSet, AIReview, GooglePlaces;
+    use ReviewQuestionSet, AIReview;
 
     private const string LOCATION_INACTIVE = 'inactive';
     private const string STRIPE_ACTIVE = 'active';
@@ -35,7 +34,7 @@ class AppController extends Controller {
             if ($location->status === self::LOCATION_INACTIVE) {
                 return $this->handleInactiveLocation($location);
             }
-            // If company has active or trialing stripe status initialize the questions and start review process
+            // If a company has active or trialing stripe status, initialize the questions and start review process
             if ($location->stripe_status === self::STRIPE_ACTIVE || $location->stripe_status === self::STRIPE_TRIALING) {
                 if (!$this->prepQuestions($location->type, $location->customer_frequency)) {
                     throw new Exception('Question initialization failed for location: '.$request->query('loc'));
@@ -87,7 +86,6 @@ class AppController extends Controller {
     {
         session()->put('location', $location);
 
-        //session()->put('desc', $this->getDescription(session('location.PID')) ?? null);
         session()->put('registered', false);
 
         $threadID = $this->setThread();

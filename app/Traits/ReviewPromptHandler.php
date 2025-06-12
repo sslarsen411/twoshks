@@ -17,6 +17,7 @@ trait ReviewPromptHandler {
         /** @TODO add a description to the user table */
         $description = 'None';
         $place = $this->getPlaces($placeId);
+        ray($place);
         /** @noinspection PhpUndefinedFieldInspection */
         $currentReviewsArray = $this->formatReviews(reviews: $place->reviews);
         $placeDetails = $this->formatPlaceDetails($place, $description);

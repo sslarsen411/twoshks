@@ -91,10 +91,8 @@ trait AIReview {
             if (!$threadId) {
                 throw new Exception("Thread ID not found in session.");
             }
-
             // $status = 'queued';
             $startTime = time();
-
             do {
                 sleep(self::POLL_INTERVAL);
                 $run = OpenAI::threads()->runs()->retrieve($threadId, $runId);

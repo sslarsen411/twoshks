@@ -55,12 +55,10 @@ class Questions extends Component {
      */
     public function handleFormSubmission(): null|string
     {
-        //  ray(session()->all());
         //AI Assistant validates the answer
-        if ($this->currentIndex < 2) {
-            // if ($this->currentIndex < session('question_num')) {
+        // if ($this->currentIndex < 2) {
+        if ($this->currentIndex < session('question_num') - 1) { // skip the last question
             $this->checkAnswer($this->question, $this->answer);
-            //     ray($this->validationPassed);
             if (!$this->validationPassed && $this->validationMessage) {
                 return back()->withErrors($this->validationMessage);
             }
@@ -166,31 +164,4 @@ PROMPT;
     {
         return view('livewire.questions');
     }
-
-    /**
-     * @param  string|null  $inAnsStr
-     * @param  string|int  $dex
-     * @param  string  $newAns
-     * @return null | string
-     */
-//    function updateAnswers(string|null $inAnsStr, string|int $dex, string $newAns): string|null
-//    {
-//        if ($inAnsStr) {
-//            $ansArr = unserialize($inAnsStr);
-//        } else {
-//            $ansArr = [];
-//        }
-//        $ansArr[$dex] = $newAns;
-//        return serialize($ansArr);
-//    }
-
-    /**
-     * @return string[]
-     */
-//    protected function rules(): array
-//    {
-//        return [
-//            'answer' => 'required|string|min:6',
-//        ];
-//    }
 }
