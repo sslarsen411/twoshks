@@ -2,6 +2,9 @@
 
 namespace App\Traits;
 
+/**
+ *
+ */
 trait ReviewPromptHandler {
     use GooglePlaces;
 
@@ -14,12 +17,11 @@ trait ReviewPromptHandler {
         $customerName = session('cust.first_name');
         $customerRating = session('rating')[0];
         $place = $this->getPlaces($placeId);
-        ray($place);
         /** @noinspection PhpUndefinedFieldInspection */
         $currentReviews = $this->formatReviews(reviews: $place->reviews);
         $placeDetails = $this->formatPlaceDetails($place);
 
-        $prompt = <<<PROMPT
+        return <<<PROMPT
         {
         The following is information about the business this reviewer is rating and the reviewer. You’ll use this
         context later when composing their review.
@@ -43,11 +45,14 @@ trait ReviewPromptHandler {
         Wait for the reviewer’s answers before writing the review.
         }
         PROMPT;
-        ray($prompt);
-        return $prompt;
     }
 
-    function formatReviews(?array $reviews): string
+    /**
+     * Extracts reviews from an array and formats them as text
+     * @param  array|null  $reviews
+     * @return string
+     */
+    private function formatReviews(?array $reviews): string
     {
         if (empty($reviews)) {
             return 'No reviews';
@@ -61,29 +66,28 @@ trait ReviewPromptHandler {
         return $reviewStr;
     }
 
+/**
+     * Extracts data from a Google Places object and formats them as text
+     * @param  object  $place
+     * @return string
+     */
     private function formatPlaceDetails(object $place): string
     {
-        $description = 'none given';
         $bizCategory = session('location.type');
         $bizFrequency = session('location.engagement_frequency');
-        if (isset($place->editorial_summary)) {
-            $description = $place->editorial_summary;
-        }
-        //    return <<<DATA
-        $prompt = <<<DATA
-          -  Business name: $place->name
-          -  Address: $place->formatted_address
-          -  Category: $bizCategory
-          -  Customer Frequency: $bizFrequency
-          -  Google business type: {$place->types()[0]}
-          -  Google editorial summary: $description
-          - Overall rating: $place->rating
+        $description = $place->editorial_summary ?: "none given";
+        return <<<DATA
+          - Business name: $place->name
+          - Address: $place->formatted_address
+          - Category: $bizCategory
+          - Customer frequency: $bizFrequency
+          - Google business type: {$place->types()[0]}
+          - Google editorial summary: $description
+          - Current Google ratings total: $place->rating
         DATA;
-        ray($prompt);
-        return $prompt;
     }
 
-    /**
+        /**
      * @param $inAnswers
      * @return string
      */
@@ -104,8 +108,6 @@ INSTRUCTIONS;
             - Keep the tone positive and forward-looking.
 INSTRUCTIONS;
         }
-
-        // ray($inAnswers);
         return <<<PROMPT
             Now, use the following responses from the customer to craft a well-structured, natural-sounding review:
             and a business reply using the following information:
@@ -145,5 +147,5 @@ INSTRUCTIONS;
             - The "reply" field must use clean, basic HTML such as <p>, <strong>, and <br> for formatting. Do not include styling, scripts, or external links.
 
         PROMPT;
-    }
+    }/**/
 }
