@@ -52,6 +52,7 @@ class OverallRating extends Component {
 
         $review = $this->initReview($customer);
         session()->put('reviewID', $review->id);
+        ray(session()->all());
 
         if ($this->rating < session('location.min_rate')) {
             alert()->question('What happened?', 'Please tell us how we can improve your experience');

@@ -13,67 +13,74 @@ trait ReviewPromptHandler {
     {
         $customerName = session('cust.first_name');
         $customerRating = session('rating')[0];
-        $bizCategory = session('location.type');
-        /** @TODO add a description to the user table */
-        $description = 'None';
         $place = $this->getPlaces($placeId);
         ray($place);
         /** @noinspection PhpUndefinedFieldInspection */
-        $currentReviewsArray = $this->formatReviews(reviews: $place->reviews);
-        $placeDetails = $this->formatPlaceDetails($place, $description);
-        /** @var string $bizType */
-        return <<<PROMPT
+        $currentReviews = $this->formatReviews(reviews: $place->reviews);
+        $placeDetails = $this->formatPlaceDetails($place);
+
+        $prompt = <<<PROMPT
         {
-            "context": "A customer named $customerName is starting a review for a business. Your role is to assist them
-            in providing thoughtful, engaging answers to the review questions through chat.
-            The review question are the subset of questions referenced by the category key.
-            You will help guide them, offer suggestions, and ensure they feel supported throughout the process.
-            A prompt to generate the final review will follow later. Below are key details:",
+        The following is information about the business this reviewer is rating and the reviewer. You’ll use this
+        context later when composing their review.
 
-            "instructions": "Acknowledge the customer by name and confirm that you're ready to assist. If they have
-            any questions or need help, respond as instructed above.",
+        Reviewer information:
+        - Name: $customerName
+        - Overall rating: $customerRating stars
 
-            "customer": {
-                "name": "$customerName",
-                "overall_rating": $customerRating
-            },
+        Business summary:
+        $placeDetails
 
-            "business": {
-                "category": "$bizCategory",
-                "details": $placeDetails
-            },
+        The most relevant reviews currently posted on Google
+        $currentReviews
 
-            "reviews": $currentReviewsArray
+        Next, the reviewer will answer a series of feedback questions. Once you receive their answers, you’ll write a short, polished review that:
+        - Reflects their voice and tone
+        - Matches the sentiment of their rating
+        - Incorporates the experience they describe
+        - Helps other customers evaluating this business
+
+        Wait for the reviewer’s answers before writing the review.
         }
         PROMPT;
+        ray($prompt);
+        return $prompt;
     }
 
-    private function formatReviews(?array $reviews): string
+    function formatReviews(?array $reviews): string
     {
         if (empty($reviews)) {
-            return json_encode(['No reviews']);
+            return 'No reviews';
         }
-        //   ray($reviews);
-        $formattedReviews = array_filter(
-            array_map(fn($review) => $review['text'] ?? '', $reviews),
-            fn($text) => strlen($text) > 0
-        );
-        //   ray($formattedReviews);
-        return json_encode(array_values($formattedReviews));
+        $reviewStr = '';
+        $i = 1;
+        foreach ($reviews as $review) {
+            $reviewStr .= "$i: {$review['rating']} stars - {$review['text']}  - date posted: {$review['relative_time_description']}\n";
+            $i++;
+        }
+        return $reviewStr;
     }
 
-    private function formatPlaceDetails(object $place, string $description): string
+    private function formatPlaceDetails(object $place): string
     {
-        return <<<JSON
-        {
-            "BusinessName": "$place->name",
-            "address": "$place->formatted_address",
-            "type": "{$place->types[0]}",
-            "average_rating": $place->rating,
-            "description": "$description",
-            "total_reviews": $place->user_ratings_total
+        $description = 'none given';
+        $bizCategory = session('location.type');
+        $bizFrequency = session('location.engagement_frequency');
+        if (isset($place->editorial_summary)) {
+            $description = $place->editorial_summary;
         }
-        JSON;
+        //    return <<<DATA
+        $prompt = <<<DATA
+          -  Business name: $place->name
+          -  Address: $place->formatted_address
+          -  Category: $bizCategory
+          -  Customer Frequency: $bizFrequency
+          -  Google business type: {$place->types()[0]}
+          -  Google editorial summary: $description
+          - Overall rating: $place->rating
+        DATA;
+        ray($prompt);
+        return $prompt;
     }
 
     /**
