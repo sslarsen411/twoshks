@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Traits\AIReview;
 use App\Traits\ReviewInitializer;
 use Exception;
+use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -20,7 +21,7 @@ class GoogleSocialiteController extends Controller {
         return Socialite::driver('google')->redirect();
     }
 
-    public function handleCallback(): object|null
+    public function handleCallback(): ?object
     {
         try {
             $user = Socialite::driver('google')->user();
@@ -40,11 +41,10 @@ class GoogleSocialiteController extends Controller {
                 alert()->question('What happened?', 'Please tell us how we can improve your experience');
                 return redirect('/care');
             }
-
             alert()->success($newUser->first_name.', You\'re ready to start', text: "Here's the first question");
             return redirect('/question');
         } catch (Exception $e) {
-            $this->logAssistantError("GoogleSocialiteController:handleCallback", $e->getMessage());
+            Log::error('Google login error: '.$e->getMessage());
             return null;
         }
     }
