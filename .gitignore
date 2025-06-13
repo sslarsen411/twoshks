@@ -32,3 +32,4 @@ yarn-error.log
 /resources/views/email/basic-templ.blade.php
 /_ide_helper.php
 /herd.yml
+/.nvmrc
