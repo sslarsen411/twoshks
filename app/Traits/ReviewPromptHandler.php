@@ -87,6 +87,10 @@ trait ReviewPromptHandler {
         DATA;
     }
 
+    /**
+     * Create a prompt to have the assistant validate a user's answer
+     * @return string
+     */
     public function getValidationPrompt(): string
     {
         return <<<PROMPT
@@ -147,6 +151,10 @@ PROMPT;
         PROMPT;
     }
 
+    /**
+     * Combine the question set with the answer set for the makeReviewPrompt function
+     * @return string
+     */
     private function pairQuestionsWithAnswers(): string
     {
         $questions = session('question_set', []);
@@ -161,18 +169,20 @@ PROMPT;
             ];
         }
         return $this->formatForPrompt($paired);
-        //return $paired;
     }
 
+    /**
+     * Format the question/answer pairs as a string for the makeReviewPrompt function
+     * @param  array  $qaPairs
+     * @return string
+     */
     function formatForPrompt(array $qaPairs): string
     {
         $output = "Here is the feedback:\n\n";
-
         foreach ($qaPairs as $pair) {
             $output .= "Q: {$pair['question']}\n";
             $output .= "A: {$pair['answer']}\n\n";
         }
-
         return trim($output);
     }
 }

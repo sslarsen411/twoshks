@@ -14,19 +14,21 @@ class ReviewController extends Controller {
     private const string ERROR_PAGE_VIEW = 'pages.error';
     private const string FINISH_PAGE_VIEW = 'pages.finish';
 
-    public function composeReview(): object|string
+    /**
+     * Have the assistant write a review
+     * @return object
+     */
+    public function composeReview(): object
     {
         try {
             // Step 1: Retrieve the review record
             $reviewCollection = $this->retrieveReview(session('reviewID'));
-            // Step 2: Deserialize the answers
-            $answers = $this->deserializeAnswers($reviewCollection->answers, session('reviewID'));
-            // Step 3: Generate the review prompt
-            $msg = $this->makeReviewPrompt($answers);
+            // Step 2: Generate the review prompt
+            $msg = $this->makeReviewPrompt();
             if (empty($msg)) {
                 throw new Exception("Failed to generate review prompt for review ID: ".session('reviewID'));
             }
-            // Step 4: Send the prompt to the assistant and get the response
+            // Step 3: Have the assistant write a review/reply and handle the response
             $generatedReview = $this->createUserMessage($msg, self::MESSAGE_TYPE_FINAL);
             if (!$generatedReview) {
                 throw new Exception("Failed to generate the review from the assistant.");
@@ -40,17 +42,9 @@ class ReviewController extends Controller {
             if (!$customerReview || !$businessReply) {
                 throw new Exception("Missing review or reply in assistant response.");
             }
-
-            // Step 5: Update review record in the database
-
-            // $this->updateReview($reviewCollection, $review);
+            // Step 4: Update review record in the database
             $this->updateReview($reviewCollection, $customerReview, $businessReply);
-
-            // Step 6: Clean up the review for the final display
-            //   $finalReview = str_replace('"', '', $review);
-            //   ray($finalReview);
-            // Step 7: Return the page view
-            //   return view(self::FINISH_PAGE_VIEW, ['review' => $finalReview]);
+            // Step 5: Return the page view
             return view(self::FINISH_PAGE_VIEW, ['review' => $customerReview, 'reply' => $businessReply]);
         } catch (Exception $e) {
             // Log the error for debugging purposes
@@ -70,18 +64,6 @@ class ReviewController extends Controller {
             throw new Exception("Review not found with ID: $reviewID");
         }
         return $reviewCollection;
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function deserializeAnswers(string $serializedAnswers, string $reviewID): array
-    {
-        $answers = unserialize($serializedAnswers);
-        if ($answers === false) {
-            throw new Exception("Failed to unserialize answers for review ID: $reviewID");
-        }
-        return $answers;
     }
 
     /**
