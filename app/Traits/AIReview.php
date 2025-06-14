@@ -39,12 +39,10 @@ trait AIReview {
     public function createUserMessage($inMessage, string $reviewPromptType = ''): string
     { // 'first' or 'final'
         try {
-            //$response = OpenAI::threads()->messages()->create(session('threadID'), [
             OpenAI::threads()->messages()->create(session('threadID'), [
                 'role' => self::ROLE_USER,
                 'content' => $inMessage,
             ]);
-
             return $this->runAssistant($reviewPromptType);
         } catch (Exception $e) {
             $this->logAssistantError("AIReview:createUserMessageAndRun", $e);
@@ -65,10 +63,8 @@ trait AIReview {
                     'assistant_id' => config('openai.assistant'),
                 ],
             );
-            // Get the thread ID from the response
             $runId = $response['id'];
-            // Poll for completion and retrieve the result
-            if ($inPromptType === 'first') {
+            if ($inPromptType === 'first') { // No content is returned from the assistant
                 $jsonData = array(
                     'status' => 'success',
                     'message' => 'review initialized',
@@ -83,7 +79,7 @@ trait AIReview {
     }
 
     /**
-     * Run the tread and return the content when statis = completed
+     * Run the tread and return the content when status = completed
      * @param $runId
      * @return string|null
      */
@@ -136,7 +132,6 @@ trait AIReview {
     public function sendToAssistantSync(array $messages): string
     {
         try {
-            // $result =  OpenAI::threads()->messages()->create(session('threadID'),[
             $result = OpenAI::chat()->create([
                 'model' => 'gpt-4o',
                 'messages' => $messages,
@@ -145,7 +140,7 @@ trait AIReview {
 
             return $result->choices[0]->message->content ?? '';
         } catch (Throwable $e) {
-            logger()->error('OpenAI sync request failed: '.$e->getMessage());
+            $this->logAssistantError("AIReview:sendToAssistantSync", $e);
             return '';
         }
     }
