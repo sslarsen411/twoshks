@@ -13,9 +13,9 @@ trait ReviewInitializer {
     /**
      * @param  Customer  $customer
      * @param  string  $status
-     * @return array|Review|null
+     * @return  Review|null
      */
-    public function initReview(Customer $customer, string $status = Review::STARTED): array|Review|null
+    public function initReview(Customer $customer, string $status = Review::STARTED): Review|null
     {
         $newReview = [];
         try {
