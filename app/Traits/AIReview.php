@@ -115,38 +115,6 @@ trait AIReview {
             return null;
         }
     }
-//    /**
-//     * @param $runId
-//     * @param  int  $timeout
-//     * @param  int  $interval
-//     * @return string
-//     */
-//    public function getThreadResult($runId, int $timeout = self::TIMEOUT, int $interval = self::POLL_INTERVAL): string
-//    {
-//        $startTime = time();
-//        while (true) {
-//            // Query the thread for status
-//            $response = OpenAI::threads()->runs()->retrieve(
-//                threadId: session('threadID'),
-//                runId: $runId,
-//            );
-//            // Check if the thread status is completed
-//            if ($response['status'] === 'completed') {
-//                $list = OpenAI::threads()->messages()->list(session('threadID'), [
-//                    'limit' => 10,
-//                ]);
-//                $rev = OpenAI::threads()->messages()->retrieve(threadId: session('threadID'),
-//                    messageId: $list->firstId);
-//                return $rev['content'][0]['text']['value'] ?? "No text found in the response.";
-//            }
-//            // Check if the timeout has been reached
-//            if ((time() - $startTime) >= $timeout) {
-//                return "Error: Timed out while waiting for the thread to complete.";
-//            }
-//            // Wait before polling again
-//            sleep($interval);
-//        }
-//    }
 
     public function sendOpenAiRequest(array $messages): string
     {
@@ -170,16 +138,4 @@ trait AIReview {
             return '';
         }
     }
-
-//    private function logMessageStatus(string $reviewId, string $messageStatus): void
-//    {
-//        if ($messageStatus === json_encode(['status' => 'success', 'message' => 'review initialized'])) {
-//            //   Log::info("Review:$reviewId Initial instructions successfully sent");
-//            $this->logAssistantMessage('AIReview:runAssistant', session('threadID'), 'none',
-//                "Review:$reviewId Initial instructions successfully sent");
-//        } else {
-//            Log::error('There was a problem sending the initial instructions');
-//            $this->logAssistantError('AIReview:runAssistant', 'There was a problem sending the initial instructions');
-//        }
-//    }
 }
