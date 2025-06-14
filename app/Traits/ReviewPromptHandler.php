@@ -24,7 +24,7 @@ trait ReviewPromptHandler {
         return <<<PROMPT
         {
         The following is information about the business this reviewer is rating and the reviewer. You’ll use this
-        context later when composing their review.
+        context later when composing their review and a reply.
 
         Reviewer information:
         - Name: $customerName
@@ -66,7 +66,7 @@ trait ReviewPromptHandler {
         return $reviewStr;
     }
 
-/**
+    /**
      * Extracts data from a Google Places object and formats them as text
      * @param  object  $place
      * @return string
@@ -78,65 +78,63 @@ trait ReviewPromptHandler {
         $description = $place->editorial_summary ?: "none given";
         return <<<DATA
           - Business name: $place->name
-          - Address: $place->formatted_address
           - Category: $bizCategory
           - Customer frequency: $bizFrequency
           - Google business type: {$place->types()[0]}
           - Google editorial summary: $description
-          - Current Google ratings total: $place->rating
+          - Current Google ratings: $place->rating
+          - Current Google ratings total: $place->user_ratings_total
         DATA;
     }
 
-        /**
-     * @param $inAnswers
+    public function getValidationPrompt(): string
+    {
+        return <<<PROMPT
+            You are a helpful assistant evaluating customer responses to review questions. Your job is to decide if the answer is
+            clear and specific enough to be turned into a helpful review.
+
+            You will be given:
+            - The review question the customer is responding to
+            - The customer’s answer
+
+            If the answer is meaningful and specific, return:
+            {
+              "status": "okay"
+            }
+
+            If the answer is vague, too short, or unclear, return:
+            {
+              "status": "not_okay",
+              "message": "A short, friendly prompt encouraging the customer to expand their answer, tailored to the question"
+            }
+
+            Make your message sound natural and supportive. Offer gentle suggestions or ask for examples to help them
+            elaborate. Do not use the phrase “vague” or “incomplete” in the message. Keep the tone positive and conversational.
+
+            **Important:** Respond ONLY with a valid JSON object. No extra explanation.
+PROMPT;
+    }
+
+    /**
      * @return string
      */
-    public function makeReviewPrompt($inAnswers): string
+    public function makeReviewPrompt(): string
     {
-        if (session('rating')[0] >= 4.5) {
-            $replyInstructions = <<<INSTRUCTIONS
-            - Goal: Express sincere appreciation, reinforce key strengths, and encourage repeat business.
-            - Highlight positive aspects the customer mentioned.
-            - Reinforce your commitment to excellence.
-            - Invite them back warmly and encourage ongoing engagement.
-INSTRUCTIONS;
-        } else {
-            $replyInstructions = <<<INSTRUCTIONS
-            - Goal: Show appreciation while professionally addressing any concerns.
-            - Acknowledge what they liked.
-            - Address any issues they raised and offer a solution or improvement where applicable.
-            - Keep the tone positive and forward-looking.
-INSTRUCTIONS;
-        }
+        $feedback = $this->pairQuestionsWithAnswers();
+
         return <<<PROMPT
-            Now, use the following responses from the customer to craft a well-structured, natural-sounding review:
-            and a business reply using the following information:
-                — **Question 1 Response: "$inAnswers[0]"
-                - **Question 2 Response: "$inAnswers[1]"
-                - **Question 3 Response: ""$inAnswers[2]"
-                - **Question 4 Response: ""$inAnswers[3]"
-                - **Question 5 Response: ""$inAnswers[4]}"
-                - **Question 6 Response: ""$inAnswers[5]"
+        The reviewer has now answered the feedback questions. Use their answers—along with the previously provided business information and tone—to write a short, helpful review in the reviewer's voice.
 
-             ### Review Instructions:
-            - **Use the provided customer responses and business details to create a detailed review.**
-            - **Make the review sound human and natural, NOT like a generic report.**
-            - **Incorporate the customer's favorite aspect and overall experience to emphasize what makes the business stand out.**
-            - **If the rating is lower than 4 stars, acknowledge concerns professionally.**
-            - **Match the tone of the customer based on their answers.**
-            - **Focus on clarity, keeping the review concise and impactful.**
-            - **Conclude with a strong closing statement that fits the customer's sentiment.**
+        Here is the feedback:
 
-            - Then write a thoughtful business reply thanking them for that review.
+        $feedback
 
-            ### Business Reply Instructions:
-            - Always thank the reviewer by name.
-            - Reference specific positives they mentioned to show appreciation.
-            $replyInstructions
+        Instructions for writing the review:
+
+        The review should sound like something a real person would post on a public platform—helpful, authentic, and easy to read.
 
           ### Output Instructions:
             - Return both the customer review and the business reply in a valid JSON object using this format:
-
             {
               "review": "...",
               "reply": "..."
@@ -147,5 +145,34 @@ INSTRUCTIONS;
             - The "reply" field must use clean, basic HTML such as <p>, <strong>, and <br> for formatting. Do not include styling, scripts, or external links.
 
         PROMPT;
-    }/**/
+    }
+
+    private function pairQuestionsWithAnswers(): string
+    {
+        $questions = session('question_set', []);
+        $answers = session('answers', []); // Or wherever you're storing the reviewer's inputs
+
+        $paired = [];
+
+        foreach ($questions as $index => $question) {
+            $paired[] = [
+                'question' => $question,
+                'answer' => $answers[$index] ?? '',
+            ];
+        }
+        return $this->formatForPrompt($paired);
+        //return $paired;
+    }
+
+    function formatForPrompt(array $qaPairs): string
+    {
+        $output = "Here is the feedback:\n\n";
+
+        foreach ($qaPairs as $pair) {
+            $output .= "Q: {$pair['question']}\n";
+            $output .= "A: {$pair['answer']}\n\n";
+        }
+
+        return trim($output);
+    }
 }

@@ -6,7 +6,6 @@
 namespace App\Traits;
 
 use Exception;
-use Illuminate\Support\Facades\Log;
 use OpenAI\Laravel\Facades\OpenAI;
 use Throwable;
 
@@ -108,7 +107,7 @@ trait AIReview {
                 ->firstWhere('role', 'assistant');
 
             $content = $assistantReply->content[0]->text->value ?? '';
-            $this->logAssistantMessage("AIReview:getThreadResult", $threadId, $runId, $content);
+            $this->logAssistantMessage("AIReview:getThreadResult", $threadId, $runId, 'Successful run');
             return $content;
         } catch (Exception $e) {
             //  Log::error("[AIReview:getThreadResult] Error: {$e->getMessage()}");
@@ -172,15 +171,15 @@ trait AIReview {
         }
     }
 
-    private function logMessageStatus(string $reviewId, string $messageStatus): void
-    {
-        if ($messageStatus === json_encode(['status' => 'success', 'message' => 'review initialized'])) {
-            //   Log::info("Review:$reviewId Initial instructions successfully sent");
-            $this->logAssistantMessage('AIReview:runAssistant', session('threadID'), 'none',
-                "Review:$reviewId Initial instructions successfully sent");
-        } else {
-            Log::error('There was a problem sending the initial instructions');
-            $this->logAssistantError('AIReview:runAssistant', 'There was a problem sending the initial instructions');
-        }
-    }
+//    private function logMessageStatus(string $reviewId, string $messageStatus): void
+//    {
+//        if ($messageStatus === json_encode(['status' => 'success', 'message' => 'review initialized'])) {
+//            //   Log::info("Review:$reviewId Initial instructions successfully sent");
+//            $this->logAssistantMessage('AIReview:runAssistant', session('threadID'), 'none',
+//                "Review:$reviewId Initial instructions successfully sent");
+//        } else {
+//            Log::error('There was a problem sending the initial instructions');
+//            $this->logAssistantError('AIReview:runAssistant', 'There was a problem sending the initial instructions');
+//        }
+//    }
 }
