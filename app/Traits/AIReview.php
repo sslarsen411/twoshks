@@ -110,7 +110,6 @@ trait AIReview {
             $this->logAssistantMessage("AIReview:getThreadResult", $threadId, $runId, 'Successful run');
             return $content;
         } catch (Exception $e) {
-            //  Log::error("[AIReview:getThreadResult] Error: {$e->getMessage()}");
             $this->logAssistantError("AIReview:getThreadResult", $e);
             return null;
         }
