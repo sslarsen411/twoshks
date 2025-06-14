@@ -130,30 +130,7 @@ class Questions extends Component {
 
     private function checkAnswer($question, $answer): void
     {
-        $prompt = <<<PROMPT
-            You are a helpful assistant evaluating customer responses to review questions. Your job is to decide if the answer is
-            clear and specific enough to be turned into a helpful review.
-
-            You will be given:
-            - The review question the customer is responding to
-            - The customer’s answer
-
-            If the answer is meaningful and specific, return:
-            {
-              "status": "okay"
-            }
-
-            If the answer is vague, too short, or unclear, return:
-            {
-              "status": "not_okay",
-              "message": "A short, friendly prompt encouraging the customer to expand their answer, tailored to the question"
-            }
-
-            Make your message sound natural and supportive. Offer gentle suggestions or ask for examples to help them
-            elaborate. Do not use the phrase “vague” or “incomplete” in the message. Keep the tone positive and conversational.
-
-            **Important:** Respond ONLY with a valid JSON object. No extra explanation.
-PROMPT;
+        $prompt = $this->getValidationPrompt();
 
         $ValidationMessages = [
             [
@@ -165,19 +142,14 @@ PROMPT;
                 'content' => "Question: $question\nAnswer: $answer"
             ]
         ];
-        //ray($ValidationMessages);
         $response = $this->sendOpenAiRequest($ValidationMessages);
-
         $json = json_decode($response, true);
-        // ray($json);
-
         if (isset($json['status']) && $json['status'] === 'okay') {
             $this->validationPassed = true;
             $this->validationMessage = '';
         } elseif (isset($json['status']) && $json['status'] === 'not_okay') {
             $this->validationPassed = false;
             $this->validationMessage = $json['message'].' If you need help, you can chat with me below.';
-
         } else {
             $this->validationPassed = false;
             $this->validationMessage = "You're off to a good start! Try adding a few details about what stood out
