@@ -9,6 +9,9 @@ use Exception;
 use OpenAI\Laravel\Facades\OpenAI;
 use Throwable;
 
+/**
+ *
+ */
 trait AIReview {
     use ReviewPromptHandler, AILog;
 
@@ -80,6 +83,7 @@ trait AIReview {
     }
 
     /**
+     * Run the tread and return the content when statis = completed
      * @param $runId
      * @return string|null
      */
@@ -90,7 +94,6 @@ trait AIReview {
             if (!$threadId) {
                 throw new Exception("Thread ID not found in session.");
             }
-            // $status = 'queued';
             $startTime = time();
             do {
                 sleep(self::POLL_INTERVAL);
@@ -115,15 +118,24 @@ trait AIReview {
         }
     }
 
+    /**
+     * Handle an answer validation request
+     * @param  array  $messages
+     * @return string
+     */
     public function sendOpenAiRequest(array $messages): string
     {
         return $this->sendToAssistantSync($messages);
     }
 
+    /**
+     * Send an answer to the assistant for validation
+     * @param  array  $messages
+     * @return string
+     */
     public function sendToAssistantSync(array $messages): string
     {
         try {
-
             // $result =  OpenAI::threads()->messages()->create(session('threadID'),[
             $result = OpenAI::chat()->create([
                 'model' => 'gpt-4o',
