@@ -24,7 +24,6 @@ class OverallRating extends Component {
     // UI Flags
     public bool $isDisabled = true;
     public bool $showInstr = true;
-    //  protected int $seconds = 3600;
 
     /**
      * @param $propertyName
@@ -52,13 +51,12 @@ class OverallRating extends Component {
 
         $review = $this->initReview($customer);
         session()->put('reviewID', $review->id);
-        ray(session()->all());
+        //ray(session()->all());
 
         if ($this->rating < session('location.min_rate')) {
             alert()->question('What happened?', 'Please tell us how we can improve your experience');
             return $this->redirect(self::CARE_URL, navigate: true);
         }
-
         alert()->success($this->first_name.', You\'re ready to start', text: "Here's the first question");
         return $this->redirect(self::QUESTION_URL, navigate: true);
     }
