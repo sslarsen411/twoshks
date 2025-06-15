@@ -21,7 +21,7 @@ class AppController extends Controller {
     public function initialize(Request $request)
     {
         try {
-            // Early return when location is missing
+            /* "loc" is the business location in the query string. Go to the home page if the location is missing */
             if (!$request->has('loc')) {
                 return redirect('home');
             }
@@ -34,12 +34,17 @@ class AppController extends Controller {
             if ($location->status === self::LOCATION_INACTIVE) {
                 return $this->handleInactiveLocation($location);
             }
-            // If a company has active or trialing stripe status, initialize the questions and start review process
+            // Initialize the questions and start the review process
             if ($location->stripe_status === self::STRIPE_ACTIVE || $location->stripe_status === self::STRIPE_TRIALING) {
                 if (!$this->prepQuestions($location->type, $location->customer_frequency)) {
                     throw new Exception('Question initialization failed for location: '.$request->query('loc'));
                 }
-                return $this->initializeActiveStatus($location);
+                if ($this->initializeActiveStatus($location)) {
+                    alert()->info('Thank you', $location->company.' appreciates your feedback.');
+                    return redirect('/start');
+                } else {
+                    return view('pages.error', ['error' => 'Unable to initialize active status.']);
+                }
             }
             // Handle all other cases (e.g., inactive stripe)
             return $this->notifyInactiveStripe($location);
@@ -82,19 +87,23 @@ class AppController extends Controller {
     /**
      * @throws Exception
      */
-    private function initializeActiveStatus($location): object
+    private function initializeActiveStatus($location): bool
     {
-        session()->put('location', $location);
-        session()->put('registered', false);
+        try {
+            session()->put('location', $location);
+            session()->put('registered', false);
 
-        $threadID = $this->setThread();
-        if (!$threadID) {
-            throw new Exception("Failed to initialize thread ID.");
+            $threadID = $this->setThread();
+            if (!$threadID) {
+                throw new Exception("Failed to initialize thread ID.");
+            }
+            session()->put('threadID', $threadID);
+            return true;
+
+        } catch (Exception $e) {
+            Log::error('Active Status Initialization Error: '.$e->getMessage());
+            return false;
         }
-        session()->put('threadID', $threadID);
-        ray(session()->all());
-        alert()->info('Thank you', $location->company.' appreciates your feedback.');
-        return redirect('/start');
     }
 
 
