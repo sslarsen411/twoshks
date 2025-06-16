@@ -29,7 +29,7 @@ class CustomerCareForm extends Component {
         'concerns.required' => 'Please type something',
         'phone.phone' => 'Enter a valid phone number',
     ];
-    private string $url = '/home';
+    private string $url = '/thanks';
 
     public function mount(): void
     {

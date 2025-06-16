@@ -22,7 +22,8 @@
         </div>
         <div class="w-[90%] mx-auto">
             <p class="mt-4 text-xl">
-                Your experience matters to us at [COMPANY]. It helps us understand where we can improve and how we can
+                Your experience matters to us at {{ session('location.company') }}. It helps us understand where we can
+                improve and how we can
                 better
                 serve you and others in the future.
             </p>
